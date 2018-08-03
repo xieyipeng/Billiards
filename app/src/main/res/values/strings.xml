@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Billiards</string>
+    <string name="title_teach">教 学</string>
+    <string name="title_order">预 约</string>
+    <string name="title_share">分 享</string>
+    <string name="title_mine">我 的</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_billiards">BilliardsActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
