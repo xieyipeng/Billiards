@@ -9,6 +9,15 @@ public class ShopKeeper extends User{
 
     private String longitude;//店铺所在位置的经度
     private String latitude;//店铺所在位置的纬度
+    private String location;//地址
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     public String getLongitude() {
         return longitude;

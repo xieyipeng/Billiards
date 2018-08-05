@@ -32,6 +32,9 @@ import com.example.a13834598889.billiards.R;
 //import com.netease.nimlib.sdk.auth.AuthService;
 //import com.netease.nimlib.sdk.auth.LoginInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
 import cn.bmob.v3.exception.BmobException;
@@ -51,6 +54,13 @@ public class LoginActivity extends AppCompatActivity {
     boolean isRember1;
     private ProgressBar progressBar;
 
+    private String[] permissions = new String[]{Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private List<String> mPermissionList=new ArrayList<>();
+    private final int mRequestCode=100;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,83 +78,128 @@ public class LoginActivity extends AppCompatActivity {
         Bmob.initialize(config);
 
         initView();
+        if (Build.VERSION.SDK_INT >= 23) {//6.0才用动态权限
+            initPermission();
+        }
+    }
 
+    //权限判断和申请
+    private void initPermission() {
 
-        if(ContextCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.READ_PHONE_STATE},1);
+        mPermissionList.clear();//清空没有通过的权限
 
-        }else{
-            if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},3);
-
-            }else{
-                if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},4);
-
-                }else{
-                    if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
-                    }else{
-                        Toast.makeText(this, "请给定位权限", Toast.LENGTH_SHORT).show();
-                    }
-                }
+        //逐个判断你要的权限是否已经通过
+        for (int i = 0; i < permissions.length; i++) {
+            if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
+                mPermissionList.add(permissions[i]);//添加还未授予的权限
             }
         }
-    }
 
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case 1:
-                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
-                        ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},2);
-                        Log.e("Test", "onCreate: case WRITE_EXTERNAL_STORAGE" );
-                    }
-                }else {
-                    Toast.makeText(LoginActivity.this,"拒绝了拨打电话权限权限",Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case 2:
-                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
-                        ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},4);
-                        Log.e("Test", "onCreate: case ACCESS_COARSE_LOCATION 1" );
-                    }
-                }else {
-                    Toast.makeText(LoginActivity.this,"拒绝了存储权限",Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case 3:
-                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
-                        ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},4);
-                        Log.e("Test", "onCreate: case ACCESS_COARSE_LOCATION 2" );
-                    }
-                }else {
-                    Toast.makeText(LoginActivity.this,"拒绝了定位权限1",Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case 4:
-                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-//                    ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},4);
-//                    Log.e("Test", "onCreate: case ACCESS_COARSE_LOCATION 3" );
-                    if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
-                        ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},4);
-                        Log.e("Test", "onCreate: case ACCESS_COARSE_LOCATION 3" );
-                    }
-                }else {
-                    Toast.makeText(LoginActivity.this,"拒绝了定位权限2",Toast.LENGTH_SHORT).show();
-                }
-                break;
+        //申请权限
+        if (mPermissionList.size() > 0) {//有权限没有通过，需要申请
+            ActivityCompat.requestPermissions(this, permissions, mRequestCode);
+        }else{
+            Toast.makeText(this, "所有权限均通过", Toast.LENGTH_SHORT).show();
         }
     }
+    //请求权限后回调的方法
+    //参数： requestCode  是我们自己定义的权限请求码
+    //参数： permissions  是我们请求的权限名称数组
+    //参数： grantResults 是我们在弹出页面后是否允许权限的标识数组，数组的长度对应的是权限名称数组的长度，数组的数据0表示允许权限，-1表示我们点击了禁止权限
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean hasPermissionDismiss = false;//有权限没有通过
+        if (mRequestCode == requestCode) {
+            for (int i = 0; i < grantResults.length; i++) {
+                if (grantResults[i] == -1) {
+                    hasPermissionDismiss = true;
+                }
+            }
+            //如果有权限没有被允许
+            if (!hasPermissionDismiss) {
+                Toast.makeText(this, "权限申请完成", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(this, "存在权限申请失败", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
+
+//        if(ContextCompat.checkSelfPermission(LoginActivity.this, Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED){
+//            ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.READ_PHONE_STATE},1);
+//
+//        }else{
+//            if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
+//                ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},3);
+//
+//            }else{
+//                if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
+//                    ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},4);
+//
+//                }else{
+//                    if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
+//                    }else{
+//                        Toast.makeText(this, "请给定位权限", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            }
+//        }
+//    }
+//
+//
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        switch (requestCode){
+//            case 1:
+//                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+//                    if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
+//                        ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},2);
+//                        Log.e("Test", "onCreate: case WRITE_EXTERNAL_STORAGE" );
+//                    }
+//                }else {
+//                    Toast.makeText(LoginActivity.this,"拒绝了拨打电话权限权限",Toast.LENGTH_SHORT).show();
+//                }
+//                break;
+//            case 2:
+//                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+//                    if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
+//                        ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},4);
+//                        Log.e("Test", "onCreate: case ACCESS_COARSE_LOCATION 1" );
+//                    }
+//                }else {
+//                    Toast.makeText(LoginActivity.this,"拒绝了存储权限",Toast.LENGTH_SHORT).show();
+//                }
+//                break;
+//            case 3:
+//                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+//                    if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
+//                        ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},4);
+//                        Log.e("Test", "onCreate: case ACCESS_COARSE_LOCATION 2" );
+//                    }
+//                }else {
+//                    Toast.makeText(LoginActivity.this,"拒绝了定位权限1",Toast.LENGTH_SHORT).show();
+//                }
+//                break;
+//            case 4:
+//                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+////                    ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},4);
+////                    Log.e("Test", "onCreate: case ACCESS_COARSE_LOCATION 3" );
+//                    if(ContextCompat.checkSelfPermission(LoginActivity.this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED){
+//                        ActivityCompat.requestPermissions(LoginActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},4);
+//                        Log.e("Test", "onCreate: case ACCESS_COARSE_LOCATION 3" );
+//                    }
+//                }else {
+//                    Toast.makeText(LoginActivity.this,"拒绝了定位权限2",Toast.LENGTH_SHORT).show();
+//                }
+//                break;
+//        }
+//    }
 
 
     private void login() {
-
-
-
         progressBar.setVisibility(View.VISIBLE);
         button_login.setEnabled(false);
         register_login_button.setEnabled(false);
@@ -215,21 +270,21 @@ public class LoginActivity extends AppCompatActivity {
         register_login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder dialog=new AlertDialog.Builder(LoginActivity.this);
+                AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
                 dialog.setTitle("请选择用户初测类型：")
                         .setMessage("A：店家\nB：球友")
                         .setCancelable(true);
                 dialog.setPositiveButton("B", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent1=RegisterActivity.newInstance(LoginActivity.this,"B");
+                        Intent intent1 = RegisterActivity.newInstance(LoginActivity.this, "B");
                         startActivity(intent1);
                     }
                 });
                 dialog.setNegativeButton("A", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent1=RegisterActivity.newInstance(LoginActivity.this,"A");
+                        Intent intent1 = RegisterActivity.newInstance(LoginActivity.this, "A");
                         startActivity(intent1);
                     }
                 });
@@ -257,5 +312,4 @@ public class LoginActivity extends AppCompatActivity {
         button_login.setEnabled(true);
         register_login_button.setEnabled(true);
     }
-
 }

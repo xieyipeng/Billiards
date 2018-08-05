@@ -159,6 +159,7 @@ public class Fragment_order extends Fragment implements View.OnClickListener {
         Log.d(TAG, "navigateTo: isFirstLocate "+isFirstLocate);
         if (isFirstLocate){
             LatLng latLng=new LatLng(location.getLatitude(),location.getLongitude());
+
             Log.d(TAG, "navigateTo: getLatitude "+latLng.toString());
 
             //定位到自己的位置
@@ -183,7 +184,7 @@ public class Fragment_order extends Fragment implements View.OnClickListener {
     }
 
 
-    public class MyLocationListener implements BDLocationListener {
+    public  class MyLocationListener implements BDLocationListener {
         /**
          * 地图
          * @param bdLocation
@@ -197,6 +198,7 @@ public class Fragment_order extends Fragment implements View.OnClickListener {
             if (bdLocation.getLocType() == BDLocation.TypeGpsLocation
                     || bdLocation.getLocType() == BDLocation.TypeNetWorkLocation) {
                 navigateTo(bdLocation);
+                Log.e(TAG, "onReceiveLocation: 1"+bdLocation.getLatitude()+","+bdLocation.getLongitude() );
             }
         }
     }
