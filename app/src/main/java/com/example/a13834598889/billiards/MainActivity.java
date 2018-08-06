@@ -1,6 +1,5 @@
 package com.example.a13834598889.billiards;
 
-import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,9 +28,6 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
 
-import static com.example.a13834598889.billiards.R.menu.customer_navigation;
-import static com.example.a13834598889.billiards.R.menu.shop_keeper_navigation;
-
 public class MainActivity extends AppCompatActivity {
     private Fragment save_fragment_mine;
     private Fragment save_fragment_order;
@@ -59,15 +55,33 @@ public class MainActivity extends AppCompatActivity {
 
         customerNavigation = findViewById(R.id.navigation);
         shopNavigation = findViewById(R.id.shop_navigation);
-
         bmobCheckStore();
+    }
 
-        Log.e(TAG, "onCreate: isStore:" + isStore);
+    @Override
+    public void onBackPressed() {
+        find_jude();
+        //获取当前id上的fragment
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (fragment==fragmentManager.findFragmentByTag("shop_keeper_mine_help")
+                ||fragment==fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting")
+                ||fragment==fragmentManager.findFragmentByTag("shop_keeper_mine_members_message")
+                ||fragment==fragmentManager.findFragmentByTag("shop_keeper_mine_three_ad")
+                ||fragment==fragmentManager.findFragmentByTag("shop_keeper_mine_store_location")){
+            Log.e(TAG, "onBackPressed: other" );
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .show(fragmentManager.findFragmentByTag("shop_fragment_mine"))
+                    .commit();
+        }else {
+            finish();
+        }
     }
 
     private void loadBottomMenu() {
         if (isStore) {
             customerNavigation.setVisibility(View.GONE);
+            shopNavigation.setVisibility(View.VISIBLE);
             shopNavigation.setOnNavigationItemSelectedListener(shopKeeperBottomView);
             fragmentManager = getSupportFragmentManager();
             fragment = FragmentShopKeeperNo1.newInstance();
@@ -88,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
             shopNavigation.setItemIconTintList(colorStateList);
         } else {
             shopNavigation.setVisibility(View.GONE);
+            customerNavigation.setVisibility(View.VISIBLE);
             customerNavigation.setOnNavigationItemSelectedListener(customBottomView);
             fragmentManager = getSupportFragmentManager();
             fragment = Fragment_order.newInstance();
@@ -154,6 +169,37 @@ public class MainActivity extends AppCompatActivity {
                     .remove(fragmentManager.findFragmentByTag("account_fragment"))
                     .commit();
         }
+        if (fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting"))
+                    .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting"))
+                    .commit();
+        }
+        if (fragmentManager.findFragmentByTag("shop_keeper_mine_members_message") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_members_message"))
+                    .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_members_message"))
+                    .commit();
+        }
+        if (fragmentManager.findFragmentByTag("shop_keeper_mine_three_ad") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_three_ad"))
+                    .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_three_ad"))
+                    .commit();
+        }
+        if (fragmentManager.findFragmentByTag("shop_keeper_mine_store_location") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_store_location"))
+                    .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_store_location"))
+                    .commit();
+        }
+        if (fragmentManager.findFragmentByTag("shop_keeper_mine_help") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_help"))
+                    .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_help"))
+                    .commit();
+        }
+//        isMainFragment=true;
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener customBottomView
@@ -237,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             find_jude();
             switch (item.getItemId()) {
+                //我的
                 case R.id.shop_keeper_navigation_mine:
                     fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
                             android.R.anim.fade_out).hide(fragment).commit();
@@ -254,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
                             android.R.anim.fade_out).show(fragment).commit();
                     return true;
                 case R.id.shop_keeper_navigation_order:
+                    //球桌
                     fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
                             android.R.anim.fade_out).hide(fragment).commit();
                     if (shop_fragment_no1 == null) {
@@ -261,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
                         shop_fragment_no1 = fragment;
                         fragmentManager.beginTransaction()
                                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                                .add(R.id.fragment_container, fragment, "shop_fragment_no1")
+                                .add(R.id.fragment_container, fragment, "shop_fragment_table")
                                 .commit();
                     } else {
                         fragment = shop_fragment_no1;
@@ -270,6 +318,7 @@ public class MainActivity extends AppCompatActivity {
                             android.R.anim.fade_out).show(fragment).commit();
                     return true;
                 case R.id.shop_keeper_navigation_share:
+                    //账单
                     fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
                             android.R.anim.fade_out).hide(fragment).commit();
                     if (shop_fragment_no3 == null) {
@@ -277,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
                         shop_fragment_no3 = fragment;
                         fragmentManager.beginTransaction()
                                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                                .add(R.id.fragment_container, fragment, "shop_fragment_no3")
+                                .add(R.id.fragment_container, fragment, "shop_fragment_bill")
                                 .commit();
                     } else {
                         fragment = shop_fragment_no3;
@@ -286,6 +335,7 @@ public class MainActivity extends AppCompatActivity {
                             android.R.anim.fade_out).show(fragment).commit();
                     return true;
                 case R.id.shop_keeper_navigation_teach:
+                    //零食
                     fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
                             android.R.anim.fade_out).hide(fragment).commit();
                     if (shop_fragment_no2 == null) {
@@ -293,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
                         shop_fragment_no2 = fragment;
                         fragmentManager.beginTransaction()
                                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                                .add(R.id.fragment_container, fragment, "shop_fragment_no2")
+                                .add(R.id.fragment_container, fragment, "shop_fragment_snacks")
                                 .commit();
                     } else {
                         fragment = shop_fragment_no2;

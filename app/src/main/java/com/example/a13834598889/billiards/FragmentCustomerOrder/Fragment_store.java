@@ -38,7 +38,7 @@ public class Fragment_store extends Fragment {
         View view = inflater.inflate(R.layout.store_drink,container,false);
         recyclerView_drink=(RecyclerView)view.findViewById(R.id.recycler_View_goods);
 
-        test();
+//        test();
 
         adapter=new DrinkAdapter(goods);
         LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
@@ -97,13 +97,13 @@ public class Fragment_store extends Fragment {
 
     //以下为测试方法
 
-    public void test(){
-        goods.add(new Goods("农夫山泉",2.0,1));
-        goods.add(new Goods("脉动",3.0,1));
-        goods.add(new Goods("娃哈哈",4.0,1));
-        goods.add(new Goods("红牛",5.0,1));
-        goods.add(new Goods("冰红茶",4.0,1));
-        goods.add(new Goods("健力宝",4.0,1));
-        goods.add(new Goods("雪碧",8.0,1));
-    }
+//    public void test(){
+//        goods.add(new Goods("农夫山泉",2.0,1));
+//        goods.add(new Goods("脉动",3.0,1));
+//        goods.add(new Goods("娃哈哈",4.0,1));
+//        goods.add(new Goods("红牛",5.0,1));
+//        goods.add(new Goods("冰红茶",4.0,1));
+//        goods.add(new Goods("健力宝",4.0,1));
+//        goods.add(new Goods("雪碧",8.0,1));
+//    }
 }

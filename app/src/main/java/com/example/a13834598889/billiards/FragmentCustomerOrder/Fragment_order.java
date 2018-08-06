@@ -53,8 +53,6 @@ public class Fragment_order extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
     }
 
     @Nullable
@@ -62,6 +60,7 @@ public class Fragment_order extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order, container, false);
         SDKInitializer.initialize(getActivity().getApplicationContext());
+
         mapView = (MapView) view.findViewById(R.id.mapView);
         button_yuyuedaqiu = (Button) view.findViewById(R.id.button_fragment_order_yuyuedaqiu);
         button_xitongtuijian = (Button) view.findViewById(R.id.button_fragment_order_xitongtuiijian);
