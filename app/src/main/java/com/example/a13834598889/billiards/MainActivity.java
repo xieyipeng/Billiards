@@ -1,5 +1,6 @@
 package com.example.a13834598889.billiards;
 
+import android.annotation.SuppressLint;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
@@ -27,6 +29,9 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
 
+import static com.example.a13834598889.billiards.R.menu.customer_navigation;
+import static com.example.a13834598889.billiards.R.menu.shop_keeper_navigation;
+
 public class MainActivity extends AppCompatActivity {
     private Fragment save_fragment_mine;
     private Fragment save_fragment_order;
@@ -42,7 +47,114 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private boolean isStore = false;
     private final String TAG = "MainActivity";
+    BottomNavigationView customerNavigation;
+    BottomNavigationView shopNavigation;
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SDKInitializer.initialize(getApplicationContext());
+        setContentView(R.layout.activity_main);
+
+        customerNavigation = findViewById(R.id.navigation);
+        shopNavigation = findViewById(R.id.shop_navigation);
+
+        bmobCheckStore();
+
+        Log.e(TAG, "onCreate: isStore:" + isStore);
+    }
+
+    private void loadBottomMenu() {
+        if (isStore) {
+            customerNavigation.setVisibility(View.GONE);
+            shopNavigation.setOnNavigationItemSelectedListener(shopKeeperBottomView);
+            fragmentManager = getSupportFragmentManager();
+            fragment = FragmentShopKeeperNo1.newInstance();
+            shop_fragment_no1 = fragment;
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .add(R.id.fragment_container, fragment, "shop_fragment_no1")
+                    .commit();
+            int[][] states = new int[][]{
+                    new int[]{-android.R.attr.state_checked},
+                    new int[]{android.R.attr.state_checked}
+            };
+            int[] colors = new int[]{ContextCompat.getColor(this, R.color.toolbar_and_menu_color),
+                    ContextCompat.getColor(this, R.color.testColor)
+            };
+            ColorStateList colorStateList = new ColorStateList(states, colors);
+            shopNavigation.setItemTextColor(colorStateList);
+            shopNavigation.setItemIconTintList(colorStateList);
+        } else {
+            shopNavigation.setVisibility(View.GONE);
+            customerNavigation.setOnNavigationItemSelectedListener(customBottomView);
+            fragmentManager = getSupportFragmentManager();
+            fragment = Fragment_order.newInstance();
+            save_fragment_order = fragment;
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .add(R.id.fragment_container, fragment, "fragment_order")
+                    .commit();
+            int[][] states = new int[][]{
+                    new int[]{-android.R.attr.state_checked},
+                    new int[]{android.R.attr.state_checked}
+            };
+            int[] colors = new int[]{ContextCompat.getColor(this, R.color.toolbar_and_menu_color),
+                    ContextCompat.getColor(this, R.color.testColor)
+            };
+            ColorStateList colorStateList = new ColorStateList(states, colors);
+            customerNavigation.setItemTextColor(colorStateList);
+            customerNavigation.setItemIconTintList(colorStateList);
+        }
+    }
+
+    /**
+     * 检查是否店家
+     */
+    private void bmobCheckStore() {
+        BmobQuery<User> bmobQuery = new BmobQuery<>();
+        bmobQuery.getObject(User.getCurrentUser().getObjectId(), new QueryListener<User>() {
+            @Override
+            public void done(User object, BmobException e) {
+                if (e == null) {
+                    if (object.isStore()) {
+                        isStore = true;
+                        Log.e(TAG, "done: " + "店家好 " + object.isStore());
+                        Toast.makeText(MainActivity.this, "店家好", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.e(TAG, "done: " + "球友好 " + object.isStore());
+                        Toast.makeText(MainActivity.this, "球友好", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Log.e(TAG, "done: 检查店家或球友失败，错误：" + e.getMessage());
+                }
+                loadBottomMenu();
+            }
+        });
+    }
+
+
+    private void find_jude() {
+        if (fragmentManager.findFragmentByTag("friends_fragment") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("friends_fragment"))
+                    .remove(fragmentManager.findFragmentByTag("friends_fragment"))
+                    .commit();
+        }
+        if (fragmentManager.findFragmentByTag("card_fragment") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("card_fragment"))
+                    .remove(fragmentManager.findFragmentByTag("card_fragment"))
+                    .commit();
+        }
+        if (fragmentManager.findFragmentByTag("account_fragment") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("account_fragment"))
+                    .remove(fragmentManager.findFragmentByTag("account_fragment"))
+                    .commit();
+        }
+    }
 
     private BottomNavigationView.OnNavigationItemSelectedListener customBottomView
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -193,97 +305,5 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        SDKInitializer.initialize(getApplicationContext());
-        setContentView(R.layout.activity_main);
-
-        bmobCheckStore();
-
-        BmobQuery<User> bmobQuery = new BmobQuery<>();
-        bmobQuery.getObject(User.getCurrentUser().getObjectId(), new QueryListener<User>() {
-            @Override
-            public void done(User object, BmobException e) {
-                if (e == null) {
-                    if (object.isStore()) {
-                        isStore = true;
-                        Log.e(TAG, "done: " + "店家好 " + object.isStore());
-                        Toast.makeText(MainActivity.this, "店家好", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Log.e(TAG, "done: " + "球友好 " + object.isStore());
-                        Toast.makeText(MainActivity.this, "球友好", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Log.e(TAG, "done: 检查店家或球友失败，错误：" + e.getMessage());
-                }
-                Log.e(TAG, "done: "+"has checked" );
-            }
-        });
-
-        BottomNavigationView navigation = findViewById(R.id.navigation);
-        Log.e(TAG, "onCreate: isStore:"+isStore );
-        if (isStore){
-            Log.e(TAG, "onCreate: "+"dianjia" );
-            navigation.setOnNavigationItemSelectedListener(shopKeeperBottomView);
-            fragmentManager = getSupportFragmentManager();
-            fragment = FragmentShopKeeperNo1.newInstance();
-            shop_fragment_no1 = fragment;
-            fragmentManager.beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .add(R.id.fragment_container, fragment, "fragment_order")
-                    .commit();
-        }else {
-            Log.e(TAG, "onCreate: "+"qiuyou" );
-            navigation.setOnNavigationItemSelectedListener(customBottomView);
-            fragmentManager = getSupportFragmentManager();
-            fragment = Fragment_order.newInstance();
-            save_fragment_order = fragment;
-            fragmentManager.beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .add(R.id.fragment_container, fragment, "fragment_order")
-                    .commit();
-        }
-        int[][] states = new int[][]{
-                new int[]{-android.R.attr.state_checked},
-                new int[]{android.R.attr.state_checked}
-        };
-        int[] colors = new int[]{ContextCompat.getColor(this, R.color.toolbar_and_menu_color),
-                ContextCompat.getColor(this, R.color.testColor)
-        };
-        ColorStateList colorStateList = new ColorStateList(states, colors);
-        navigation.setItemTextColor(colorStateList);
-        navigation.setItemIconTintList(colorStateList);
-    }
-
-    /**
-     * 检查是否店家
-     */
-    private void bmobCheckStore() {
-
-    }
-
-
-    private void find_jude() {
-        if (fragmentManager.findFragmentByTag("friends_fragment") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("friends_fragment"))
-                    .remove(fragmentManager.findFragmentByTag("friends_fragment"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("card_fragment") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("card_fragment"))
-                    .remove(fragmentManager.findFragmentByTag("card_fragment"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("account_fragment") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("account_fragment"))
-                    .remove(fragmentManager.findFragmentByTag("account_fragment"))
-                    .commit();
-        }
-    }
 }
 
