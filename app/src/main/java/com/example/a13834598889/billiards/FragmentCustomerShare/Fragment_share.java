@@ -1,4 +1,4 @@
-package com.example.a13834598889.billiards.Fragment_Share;
+package com.example.a13834598889.billiards.FragmentCustomerShare;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -17,13 +17,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.a13834598889.billiards.JavaBean.Cards;
-import com.example.a13834598889.billiards.JavaBean.Customer;
 import com.example.a13834598889.billiards.R;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import cn.bmob.v3.datatype.BmobFile;

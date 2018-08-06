@@ -5,6 +5,11 @@
     <string name="title_share">分 享</string>
     <string name="title_mine">我 的</string>
 
+    <string name="shop_keeper_title_no1">未 知</string>
+    <string name="shop_keeper_title_no2">未 知</string>
+    <string name="shop_keeper_title_no3">未 知</string>
+    <string name="shop_keeper_title_mine">我 的</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_billiards">BilliardsActivity</string>

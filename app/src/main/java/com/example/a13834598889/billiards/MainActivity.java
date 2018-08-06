@@ -13,23 +13,18 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
-import com.example.a13834598889.billiards.Fragment_Mine.Fragment_mine;
-import com.example.a13834598889.billiards.Fragment_Order.Fragment_order;
-import com.example.a13834598889.billiards.Fragment_Share.Fragment_share;
-import com.example.a13834598889.billiards.Fragment_Teach.Fragment_teach;
-import com.example.a13834598889.billiards.JavaBean.Customer;
+import com.example.a13834598889.billiards.FragmentCustomerMine.Fragment_mine;
+import com.example.a13834598889.billiards.FragmentCustomerOrder.Fragment_order;
+import com.example.a13834598889.billiards.FragmentCustomerShare.Fragment_share;
+import com.example.a13834598889.billiards.FragmentCustomerTeach.Fragment_teach;
+import com.example.a13834598889.billiards.FragmentShopKeeperNo1.FragmentShopKeeperNo1;
+import com.example.a13834598889.billiards.FragmentShopKeeperNo2.FragmentShopKeeperNo2;
+import com.example.a13834598889.billiards.FragmentShopKeeperNo3.FragmentShopKeeperNo3;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKeeperMine;
 import com.example.a13834598889.billiards.JavaBean.User;
 
-import org.json.JSONArray;
-
-import java.util.List;
-
-import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,15 +32,20 @@ public class MainActivity extends AppCompatActivity {
     private Fragment save_fragment_order;
     private Fragment save_fragment_share;
     private Fragment save_fragment_teach;
+
+    private Fragment shop_fragment_mine;
+    private Fragment shop_fragment_no1;
+    private Fragment shop_fragment_no2;
+    private Fragment shop_fragment_no3;
+
     private Fragment fragment = null;
     private FragmentManager fragmentManager;
     private boolean isStore = false;
     private final String TAG = "MainActivity";
 
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+    private BottomNavigationView.OnNavigationItemSelectedListener customBottomView
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             find_jude();
@@ -119,41 +119,89 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private BottomNavigationView.OnNavigationItemSelectedListener shopKeeperBottomView
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            find_jude();
+            switch (item.getItemId()) {
+                case R.id.shop_keeper_navigation_mine:
+                    fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                            android.R.anim.fade_out).hide(fragment).commit();
+                    if (shop_fragment_mine == null) {
+                        fragment = FragmentShopKeeperMine.newInstance();
+                        shop_fragment_mine = fragment;
+                        fragmentManager.beginTransaction()
+                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                .add(R.id.fragment_container, fragment, "shop_fragment_mine")
+                                .commit();
+                    } else {
+                        fragment = shop_fragment_mine;
+                    }
+                    fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                            android.R.anim.fade_out).show(fragment).commit();
+                    return true;
+                case R.id.shop_keeper_navigation_order:
+                    fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                            android.R.anim.fade_out).hide(fragment).commit();
+                    if (shop_fragment_no1 == null) {
+                        fragment = FragmentShopKeeperNo1.newInstance();
+                        shop_fragment_no1 = fragment;
+                        fragmentManager.beginTransaction()
+                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                .add(R.id.fragment_container, fragment, "shop_fragment_no1")
+                                .commit();
+                    } else {
+                        fragment = shop_fragment_no1;
+                    }
+                    fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                            android.R.anim.fade_out).show(fragment).commit();
+                    return true;
+                case R.id.shop_keeper_navigation_share:
+                    fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                            android.R.anim.fade_out).hide(fragment).commit();
+                    if (shop_fragment_no3 == null) {
+                        fragment = FragmentShopKeeperNo3.newInstance();
+                        shop_fragment_no3 = fragment;
+                        fragmentManager.beginTransaction()
+                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                .add(R.id.fragment_container, fragment, "shop_fragment_no3")
+                                .commit();
+                    } else {
+                        fragment = shop_fragment_no3;
+                    }
+                    fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                            android.R.anim.fade_out).show(fragment).commit();
+                    return true;
+                case R.id.shop_keeper_navigation_teach:
+                    fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                            android.R.anim.fade_out).hide(fragment).commit();
+                    if (shop_fragment_no2 == null) {
+                        fragment = FragmentShopKeeperNo2.newInstance();
+                        shop_fragment_no2 = fragment;
+                        fragmentManager.beginTransaction()
+                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                .add(R.id.fragment_container, fragment, "shop_fragment_no2")
+                                .commit();
+                    } else {
+                        fragment = shop_fragment_no2;
+                    }
+                    fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
+                            android.R.anim.fade_out).show(fragment).commit();
+                    return true;
+            }
+            return false;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
-        bmobCheckStore();
-
         setContentView(R.layout.activity_main);
 
+        bmobCheckStore();
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        fragmentManager = getSupportFragmentManager();
-        fragment = Fragment_order.newInstance();
-        save_fragment_order = fragment;
-        fragmentManager.beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                .add(R.id.fragment_container, fragment, "fragment_order")
-                .commit();
-        int[][] states = new int[][]{
-                new int[]{-android.R.attr.state_checked},
-                new int[]{android.R.attr.state_checked}
-        };
-        int[] colors = new int[]{ContextCompat.getColor(this, R.color.toolbar_and_menu_color),
-                ContextCompat.getColor(this, R.color.testColor)
-        };
-        ColorStateList colorStateList = new ColorStateList(states, colors);
-        navigation.setItemTextColor(colorStateList);
-        navigation.setItemIconTintList(colorStateList);
-    }
-
-    /**
-     * 检查是否店家
-     */
-    private void bmobCheckStore() {
         BmobQuery<User> bmobQuery = new BmobQuery<>();
         bmobQuery.getObject(User.getCurrentUser().getObjectId(), new QueryListener<User>() {
             @Override
@@ -170,8 +218,50 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Log.e(TAG, "done: 检查店家或球友失败，错误：" + e.getMessage());
                 }
+                Log.e(TAG, "done: "+"has checked" );
             }
         });
+
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        Log.e(TAG, "onCreate: isStore:"+isStore );
+        if (isStore){
+            Log.e(TAG, "onCreate: "+"dianjia" );
+            navigation.setOnNavigationItemSelectedListener(shopKeeperBottomView);
+            fragmentManager = getSupportFragmentManager();
+            fragment = FragmentShopKeeperNo1.newInstance();
+            shop_fragment_no1 = fragment;
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .add(R.id.fragment_container, fragment, "fragment_order")
+                    .commit();
+        }else {
+            Log.e(TAG, "onCreate: "+"qiuyou" );
+            navigation.setOnNavigationItemSelectedListener(customBottomView);
+            fragmentManager = getSupportFragmentManager();
+            fragment = Fragment_order.newInstance();
+            save_fragment_order = fragment;
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .add(R.id.fragment_container, fragment, "fragment_order")
+                    .commit();
+        }
+        int[][] states = new int[][]{
+                new int[]{-android.R.attr.state_checked},
+                new int[]{android.R.attr.state_checked}
+        };
+        int[] colors = new int[]{ContextCompat.getColor(this, R.color.toolbar_and_menu_color),
+                ContextCompat.getColor(this, R.color.testColor)
+        };
+        ColorStateList colorStateList = new ColorStateList(states, colors);
+        navigation.setItemTextColor(colorStateList);
+        navigation.setItemIconTintList(colorStateList);
+    }
+
+    /**
+     * 检查是否店家
+     */
+    private void bmobCheckStore() {
+
     }
 
 

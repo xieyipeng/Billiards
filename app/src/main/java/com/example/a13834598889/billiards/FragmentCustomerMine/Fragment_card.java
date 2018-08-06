@@ -1,36 +1,24 @@
-package com.example.a13834598889.billiards.Fragment_Mine;
+package com.example.a13834598889.billiards.FragmentCustomerMine;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.a13834598889.billiards.JavaBean.Customer;
 import com.example.a13834598889.billiards.R;
 import com.example.a13834598889.billiards.Tool.CardPagerAdapter;
 import com.flyco.tablayout.SlidingTabLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static cn.bmob.v3.Bmob.getApplicationContext;
 
 
 /**

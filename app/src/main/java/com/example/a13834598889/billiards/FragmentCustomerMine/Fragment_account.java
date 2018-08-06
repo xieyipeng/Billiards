@@ -1,11 +1,9 @@
-package com.example.a13834598889.billiards.Fragment_Mine;
+package com.example.a13834598889.billiards.FragmentCustomerMine;
 
 import android.os.Bundle;
-import android.os.VibrationEffect;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

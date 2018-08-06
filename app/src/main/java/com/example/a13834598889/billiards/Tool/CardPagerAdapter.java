@@ -1,12 +1,10 @@
 package com.example.a13834598889.billiards.Tool;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.example.a13834598889.billiards.Fragment_Mine.Fragment_card_mine;
-import com.example.a13834598889.billiards.Fragment_Mine.Fragment_card_star;
-import com.example.a13834598889.billiards.R;
+import com.example.a13834598889.billiards.FragmentCustomerMine.Fragment_card_mine;
+import com.example.a13834598889.billiards.FragmentCustomerMine.Fragment_card_star;
 
 
 /**

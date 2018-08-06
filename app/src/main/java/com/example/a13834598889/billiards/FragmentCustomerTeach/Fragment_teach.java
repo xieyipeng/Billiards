@@ -1,4 +1,4 @@
-package com.example.a13834598889.billiards.Fragment_Teach;
+package com.example.a13834598889.billiards.FragmentCustomerTeach;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

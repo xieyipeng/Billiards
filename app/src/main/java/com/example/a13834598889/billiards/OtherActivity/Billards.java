@@ -19,7 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.a13834598889.billiards.Fragment_Order.Fragment_billiards;
+import com.example.a13834598889.billiards.FragmentCustomerOrder.Fragment_billiards;
 import com.example.a13834598889.billiards.R;
 
 public class Billards extends AppCompatActivity
@@ -121,7 +121,7 @@ public class Billards extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        // Handle customer_navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {

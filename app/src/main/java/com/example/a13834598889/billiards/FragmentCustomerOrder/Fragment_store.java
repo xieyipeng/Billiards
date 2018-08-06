@@ -1,4 +1,4 @@
-package com.example.a13834598889.billiards.Fragment_Order;
+package com.example.a13834598889.billiards.FragmentCustomerOrder;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
