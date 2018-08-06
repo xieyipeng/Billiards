@@ -9,25 +9,18 @@ import cn.bmob.v3.datatype.BmobFile;
  */
 
 public class Goods extends BmobObject {
-    private ShopKeeper storeID;//店主
+    private String storeID;//店主
     private String shop_name;//商品名字
     private Double shop_price;//商品价格
     private Integer shop_num;//商品库存量
     private BmobFile picture;//商品图片
     private Integer pictureId;//商品图片Id
 
-
-    public Goods(String shop_name,Double shop_price,Integer pictureId){
-        this.shop_name=shop_name;
-        this.shop_price=shop_price;
-        this.pictureId=pictureId;
-    }
-
-    public ShopKeeper getStoreID() {
+    public String getStoreID() {
         return storeID;
     }
 
-    public void setStoreID(ShopKeeper storeID) {
+    public void setStoreID(String storeID) {
         this.storeID = storeID;
     }
 
@@ -67,7 +60,7 @@ public class Goods extends BmobObject {
         return pictureId;
     }
 
-    public void setPictureId(int pictureId) {
+    public void setPictureId(Integer pictureId) {
         this.pictureId = pictureId;
     }
 }
