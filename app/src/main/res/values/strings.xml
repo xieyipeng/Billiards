@@ -23,4 +23,5 @@
     <string name="help2">971106029@qq.com</string>
     <string name="help3">App由中北大学Android实验室Century小</string>
     <string name="help4">组完成，未经允许不得进行任何商业活动</string>
+    <string name="noSign">你还没有设置个性签名，快来设置吧！</string>
 </resources>

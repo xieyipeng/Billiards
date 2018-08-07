@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
@@ -21,7 +22,6 @@ import com.example.a13834598889.billiards.FragmentCustomerTeach.Fragment_teach;
 import com.example.a13834598889.billiards.FragmentShopKeeperNo1.FragmentShopKeeperNo1;
 import com.example.a13834598889.billiards.FragmentShopKeeperNo2.FragmentShopKeeperNo2;
 import com.example.a13834598889.billiards.FragmentShopKeeperNo3.FragmentShopKeeperNo3;
-import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopChangeSomething;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKeeperMine;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopMessageSetting;
 import com.example.a13834598889.billiards.JavaBean.User;
@@ -29,6 +29,8 @@ import com.example.a13834598889.billiards.JavaBean.User;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
+
+import static cn.bmob.newim.core.BmobIMClient.getContext;
 
 public class MainActivity extends AppCompatActivity {
     private Fragment save_fragment_mine;
@@ -82,7 +84,8 @@ public class MainActivity extends AppCompatActivity {
                     .show(fragmentManager.findFragmentByTag("shop_fragment_mine"))
                     .commit();
         }
-        if (fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout")) {
+        if (fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout")
+                ||fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_change_email_layout")) {
             Log.e(TAG, "onBackPressed: 3 -> 2");
             fragmentManager.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -224,6 +227,12 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction()
                     .hide(fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout"))
                     .remove(fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout"))
+                    .commit();
+        }
+        if (fragmentManager.findFragmentByTag("shop_message_setting_change_email_layout") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("shop_message_setting_change_email_layout"))
+                    .remove(fragmentManager.findFragmentByTag("shop_message_setting_change_email_layout"))
                     .commit();
         }
 //        isMainFragment=true;

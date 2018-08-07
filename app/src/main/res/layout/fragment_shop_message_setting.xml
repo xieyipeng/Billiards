@@ -21,7 +21,8 @@
                 android:layout_width="30dp"
                 android:background="@drawable/ic_back1"
                 android:layout_height="30dp"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                android:onClick="onClick"/>
         </RelativeLayout>
 
         <TextView
@@ -46,8 +47,7 @@
             android:layout_marginTop="30dp"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:onClick="onClick">
+            android:layout_height="44dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -90,10 +90,10 @@
                 android:textColor="#000"
                 android:text="店铺名称" />
             <TextView
+                android:id="@+id/shop_message_setting_store_name_TextView"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="Mine Store"
                 android:layout_weight="3"/>
 
             <ImageView
@@ -161,10 +161,10 @@
                 android:textColor="#000"
                 android:text="手机号" />
             <TextView
+                android:id="@+id/shop_message_setting_change_phone_number_TextView"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="15035086636"
                 android:layout_weight="3"/>
 
             <ImageView
@@ -179,8 +179,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#efefef"
-            android:layout_marginLeft="10dp" />
+            android:background="#efefef" />
 
         <LinearLayout
             android:id="@+id/shop_message_setting_change_email_layout"
@@ -200,10 +199,10 @@
                 android:textColor="#000"
                 android:text="邮箱" />
             <TextView
+                android:id="@+id/shop_message_setting_change_email_TextView"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="123456@qq.com"
                 android:layout_weight="3"/>
 
             <ImageView
@@ -217,7 +216,8 @@
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="30dp" />
+            android:layout_height="1dp"
+            android:background="#efefef"/>
 
         <LinearLayout
             android:id="@+id/shop_message_setting_change_sign_layout"
@@ -226,21 +226,23 @@
             android:paddingRight="10dp"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="44dp"
+            android:layout_height="wrap_content"
             android:onClick="onClick">
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="44dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:textColor="#000"
                 android:text="个性签名" />
             <TextView
+                android:id="@+id/shop_message_setting_change_sign_TextView"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="你还没有设置个性签名，快来设置吧！"
                 android:layout_weight="3"/>
 
             <ImageView
