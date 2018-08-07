@@ -21,7 +21,9 @@ import com.example.a13834598889.billiards.FragmentCustomerTeach.Fragment_teach;
 import com.example.a13834598889.billiards.FragmentShopKeeperNo1.FragmentShopKeeperNo1;
 import com.example.a13834598889.billiards.FragmentShopKeeperNo2.FragmentShopKeeperNo2;
 import com.example.a13834598889.billiards.FragmentShopKeeperNo3.FragmentShopKeeperNo3;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopChangeSomething;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKeeperMine;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopMessageSetting;
 import com.example.a13834598889.billiards.JavaBean.User;
 
 import cn.bmob.v3.BmobQuery;
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView customerNavigation;
     BottomNavigationView shopNavigation;
 
+    private Fragment fragmentTest = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,20 +64,36 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+        Log.e(TAG, "onBackPressed: 点击返回键");
+
         find_jude();
         //获取当前id上的fragment
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (fragment==fragmentManager.findFragmentByTag("shop_keeper_mine_help")
-                ||fragment==fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting")
-                ||fragment==fragmentManager.findFragmentByTag("shop_keeper_mine_members_message")
-                ||fragment==fragmentManager.findFragmentByTag("shop_keeper_mine_three_ad")
-                ||fragment==fragmentManager.findFragmentByTag("shop_keeper_mine_store_location")){
-            Log.e(TAG, "onBackPressed: other" );
+        fragmentTest = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+        if (fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_help")
+                || fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting")
+                || fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_members_message")
+                || fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_three_ad")
+                || fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_store_location")) {
+            Log.e(TAG, "onBackPressed: 2 -> 1" );
             fragmentManager.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .show(fragmentManager.findFragmentByTag("shop_fragment_mine"))
                     .commit();
-        }else {
+        }
+        if (fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout")) {
+            Log.e(TAG, "onBackPressed: 3 -> 2");
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .add(R.id.fragment_container, FragmentShopMessageSetting.newInstance(),"shop_keeper_mine_message_setting")
+                    .commit();
+        }
+        if (fragmentTest == fragmentManager.findFragmentByTag("shop_fragment_mine")
+                || fragmentTest == fragmentManager.findFragmentByTag("shop_fragment_snacks")
+                || fragmentTest == fragmentManager.findFragmentByTag("shop_fragment_bill")
+                || fragmentTest == fragmentManager.findFragmentByTag("shop_fragment_table")) {
+            Log.e(TAG, "onBackPressed: finish");
             finish();
         }
     }
@@ -151,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void find_jude() {
+        Log.e(TAG, "find_jude: jude" );
         if (fragmentManager.findFragmentByTag("friends_fragment") != null) {
             fragmentManager.beginTransaction()
                     .hide(fragmentManager.findFragmentByTag("friends_fragment"))
@@ -197,6 +218,12 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction()
                     .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_help"))
                     .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_help"))
+                    .commit();
+        }
+        if (fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout"))
+                    .remove(fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout"))
                     .commit();
         }
 //        isMainFragment=true;
