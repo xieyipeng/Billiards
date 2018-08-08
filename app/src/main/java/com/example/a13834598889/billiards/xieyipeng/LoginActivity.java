@@ -58,8 +58,8 @@ public class LoginActivity extends AppCompatActivity {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private List<String> mPermissionList=new ArrayList<>();
-    private final int mRequestCode=100;
+    private List<String> mPermissionList = new ArrayList<>();
+    private final int mRequestCode = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,10 +98,11 @@ public class LoginActivity extends AppCompatActivity {
         //申请权限
         if (mPermissionList.size() > 0) {//有权限没有通过，需要申请
             ActivityCompat.requestPermissions(this, permissions, mRequestCode);
-        }else{
+        } else {
             Toast.makeText(this, "所有权限均通过", Toast.LENGTH_SHORT).show();
         }
     }
+
     //请求权限后回调的方法
     //参数： requestCode  是我们自己定义的权限请求码
     //参数： permissions  是我们请求的权限名称数组
@@ -120,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
             //如果有权限没有被允许
             if (!hasPermissionDismiss) {
                 Toast.makeText(this, "权限申请完成", Toast.LENGTH_SHORT).show();
-            }else {
+            } else {
                 Toast.makeText(this, "存在权限申请失败", Toast.LENGTH_SHORT).show();
             }
         }

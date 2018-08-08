@@ -1,5 +1,6 @@
 package com.example.a13834598889.billiards.FragmentShopKepperMine;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,18 +11,21 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.example.a13834598889.billiards.R;
+import com.example.a13834598889.billiards.Tool.GetBmobFile;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FragmentShopKeeperMine extends Fragment implements View.OnClickListener {
 
     private FragmentManager fragmentManager;
-//    private CircleImageView profilePhoto; //android:id="@+id/shop_keeper_mine_profile_photo"
+    private static CircleImageView profilePhoto;
     private LinearLayout mineMessageSetting;
     private LinearLayout membersSetting;
     private LinearLayout threeAd;
     private LinearLayout mineLocation;
     private LinearLayout helpLayout;
+
+    private Boolean firstLoading=true;
 
     public static FragmentShopKeeperMine newInstance() {
         FragmentShopKeeperMine fragmentShopKeeperMine = new FragmentShopKeeperMine();
@@ -33,7 +37,15 @@ public class FragmentShopKeeperMine extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_keeper_mine, container, false);
         initViews(view);
+        if (firstLoading){
+            GetBmobFile.initInterface("店铺信息界面",1);
+            firstLoading=false;
+        }
         return view;
+    }
+
+    public static void setInterfacePhoto(Bitmap bitmap){
+        profilePhoto.setImageBitmap(bitmap);
     }
 
     @Override
@@ -82,8 +94,12 @@ public class FragmentShopKeeperMine extends Fragment implements View.OnClickList
         }
     }
 
+    public static void setShopShowIcon(Bitmap bitmap){
+        profilePhoto.setImageBitmap(bitmap);
+    }
+
     private void initViews(View view) {
-//        profilePhoto = view.findViewById(R.id.shop_keeper_mine_profile_photo);
+        profilePhoto = view.findViewById(R.id.shop_keeper_mine_profile_photo);
         mineMessageSetting = view.findViewById(R.id.shop_keeper_mine_message_setting);
         membersSetting = view.findViewById(R.id.shop_keeper_mine_members_message);
         threeAd = view.findViewById(R.id.shop_keeper_mine_three_ad);

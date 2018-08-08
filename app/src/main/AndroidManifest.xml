@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    //bmob上传图片到服务器
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     //获取设备网络状态，禁用后无法获取网络状态
@@ -40,13 +43,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.hanrui.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths">
+            </meta-data>
+        </provider>
+
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="ZRK5jnIFQYEG7Mg2lTotxGVlzRIccM4w" />
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            >
+
 
         </activity>
 

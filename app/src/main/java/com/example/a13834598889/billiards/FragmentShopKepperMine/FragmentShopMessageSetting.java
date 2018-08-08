@@ -1,6 +1,7 @@
 package com.example.a13834598889.billiards.FragmentShopKepperMine;
 
 import android.app.Dialog;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,13 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.a13834598889.billiards.JavaBean.User;
 import com.example.a13834598889.billiards.R;
+import com.example.a13834598889.billiards.Tool.GetBmobFile;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
@@ -37,7 +38,9 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
     private LinearLayout emailSetting;
     private LinearLayout signSetting;
 
-    private Dialog dialog;
+    private static CircleImageView shopProfilePhoto;
+
+    public static Dialog dialog;
     private View inflate;
 
     private TextView takePhoto;
@@ -50,6 +53,8 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
     private TextView signTextView;
 
     private FragmentManager fragmentManager;
+
+    private Boolean isFirstLoading;
 
     //签名字数：17*2
 
@@ -65,10 +70,20 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
         initViews(view);
 
         bmobCheck();//初始化个人界面
+        initPhoto();
 
         initClicks(view);
 
         return view;
+    }
+
+    private void initPhoto() {
+        GetBmobFile.initInterface("编辑资料界面",2);
+    }
+
+
+    public static void setShopChangeIcon(Bitmap bitmap){
+        shopProfilePhoto.setImageBitmap(bitmap);
     }
 
     private void initClicks(View view) {
@@ -80,39 +95,17 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
             @Override
             public void onClick(View v) {
                 Log.e(TAG, "onClick: click");
-                dialogShow(v);
+                dialogShow();
             }
         });
 
     }
 
-    private void dialogShow(View view) {
+    private void dialogShow() {
         dialog = new Dialog(getContext(), R.style.ActionSheetDialogStyle);
         inflate = LayoutInflater.from(getContext()).inflate(R.layout.mine_dialog_view, null);
         dialog.setContentView(inflate);
 
-        takePhoto = view.findViewById(R.id.shop_take_photo);
-        getPhoto = view.findViewById(R.id.shop_get_photo);
-        cancerPhoto = view.findViewById(R.id.shop_photo_cancer);
-
-        takePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "拍照", Toast.LENGTH_SHORT).show();
-            }
-        });
-        getPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "打开相册", Toast.LENGTH_SHORT).show();
-            }
-        });
-        cancerPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
         Window dialogWindow = dialog.getWindow();
         assert dialogWindow != null;
         dialogWindow.setGravity(Gravity.BOTTOM);
@@ -136,12 +129,8 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
                     } else {
                         signTextView.setText(R.string.noSign);
                     }
-                    Log.e(TAG, "done: NickName " + object.getNickName());
-                    Log.e(TAG, "done: PhoneNumber  " + object.getMobilePhoneNumber());
-                    Log.e(TAG, "done: email " + object.getEmail());
-                    Log.e(TAG, "done: sign " + object.getSign());
                 } else {
-                    Toast.makeText(getActivity(), "更新个人面板失败!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "店铺面板更新失败!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -194,6 +183,8 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
         phoneNumberSetting = view.findViewById(R.id.shop_message_setting_change_phone_number_layout);
         emailSetting = view.findViewById(R.id.shop_message_setting_change_email_layout);
         signSetting = view.findViewById(R.id.shop_message_setting_change_sign_layout);
+
+        shopProfilePhoto = view.findViewById(R.id.shop_profile_photo);
 
         backImageView.setOnClickListener(this);
         nickNameSetting.setOnClickListener(this);
