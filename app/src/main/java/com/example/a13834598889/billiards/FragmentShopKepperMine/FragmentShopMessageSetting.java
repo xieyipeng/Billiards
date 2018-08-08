@@ -47,7 +47,7 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
     private TextView getPhoto;
     private TextView cancerPhoto;
 
-    private TextView nickNameTextView;
+    public static TextView staticNickNameTextView;
     private TextView phoneNumberTextView;
     private TextView emailTextView;
     private TextView signTextView;
@@ -121,7 +121,7 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
             @Override
             public void done(User object, BmobException e) {
                 if (e == null) {
-                    nickNameTextView.setText(object.getNickName());
+                    staticNickNameTextView.setText(object.getNickName());
                     phoneNumberTextView.setText(object.getMobilePhoneNumber());
                     emailTextView.setText(object.getEmail());
                     if (object.getSign() != null) {
@@ -193,7 +193,7 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
         emailSetting.setOnClickListener(this);
         signSetting.setOnClickListener(this);
 
-        nickNameTextView = view.findViewById(R.id.shop_message_setting_store_name_TextView);
+        staticNickNameTextView = view.findViewById(R.id.shop_message_setting_store_name_TextView);
         phoneNumberTextView = view.findViewById(R.id.shop_message_setting_change_phone_number_TextView);
         emailTextView = view.findViewById(R.id.shop_message_setting_change_email_TextView);
         signTextView = view.findViewById(R.id.shop_message_setting_change_sign_TextView);

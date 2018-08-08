@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="65dp">
+
+        <RelativeLayout
+            android:layout_marginLeft="5dp"
+            android:layout_width="65dp"
+            android:layout_height="match_parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/shop_member_photo"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/test_touxiang3" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp">
+
+            <TextView
+                android:id="@+id/shop_member_nick_name"
+                android:layout_marginTop="15dp"
+                android:layout_width="match_parent"
+                android:textColor="#000"
+                android:layout_height="wrap_content"
+                android:text="球友"/>
+
+            <TextView
+                android:id="@+id/shop_member_sign"
+                android:layout_width="match_parent"
+                android:paddingTop="33dp"
+                android:layout_height="wrap_content"
+                android:text="个性签名"/>
+
+            <View
+                android:layout_alignParentBottom="true"
+                android:layout_width="match_parent"
+                android:layout_height="1sp"
+                android:background="#dedede"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

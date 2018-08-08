@@ -11,7 +11,6 @@ import cn.bmob.v3.datatype.BmobFile;
 public class User extends BmobUser{
 
     private String phone;//手机号
-//    private String email;//邮箱
     private String passWord;//登录密码
     private String nickName;//昵称
     private BmobFile picture_head;//头像
@@ -33,16 +32,6 @@ public class User extends BmobUser{
     public void setPhone(String phone) {
         this.phone = phone;
     }
-
-//    @Override
-//    public String getEmail() {
-//        return email;
-//    }
-
-//    @Override
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
 
     public String getPassWord() {
         return passWord;

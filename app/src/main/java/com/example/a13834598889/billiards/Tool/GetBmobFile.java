@@ -53,7 +53,7 @@ public class GetBmobFile {
 
                             @Override
                             public void onProgress(Integer integer, long l) {
-                                Log.e("bmob", "onProgress: " + temp + "文件时下载进度：" + integer + "," + l);
+                                Log.d("bmob", "onProgress: " + temp + "文件时下载进度：" + integer + "," + l);
                             }
 
                             @Override
