@@ -1,4 +1,4 @@
-package com.example.a13834598889.billiards.FragmentShopKepperMine;
+package com.example.a13834598889.billiards.FragmentShopKepperMine.third;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMessageSetting;
 import com.example.a13834598889.billiards.JavaBean.User;
 import com.example.a13834598889.billiards.R;
 

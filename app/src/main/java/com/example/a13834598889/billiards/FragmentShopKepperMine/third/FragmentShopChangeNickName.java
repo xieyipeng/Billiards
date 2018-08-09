@@ -1,10 +1,9 @@
-package com.example.a13834598889.billiards.FragmentShopKepperMine;
+package com.example.a13834598889.billiards.FragmentShopKepperMine.third;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,18 +11,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.a13834598889.billiards.JavaBean.ShopKeeper;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMessageSetting;
 import com.example.a13834598889.billiards.JavaBean.User;
 import com.example.a13834598889.billiards.R;
 
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.UpdateListener;
 import de.hdodenhof.circleimageview.CircleImageView;
-
-import static cn.volley.VolleyLog.TAG;
 
 public class FragmentShopChangeNickName extends Fragment implements View.OnClickListener {
 

@@ -1,4 +1,4 @@
-package com.example.a13834598889.billiards.Tool;
+package com.example.a13834598889.billiards.Tool.Adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;

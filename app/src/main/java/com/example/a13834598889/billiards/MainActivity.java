@@ -1,9 +1,7 @@
 package com.example.a13834598889.billiards;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -39,8 +37,8 @@ import com.example.a13834598889.billiards.FragmentShopKeeperNo1.FragmentShopKeep
 import com.example.a13834598889.billiards.FragmentShopKeeperNo2.FragmentShopKeeperNo2;
 import com.example.a13834598889.billiards.FragmentShopKeeperNo3.FragmentShopKeeperNo3;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKeeperMine;
-import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopMessageSetting;
-import com.example.a13834598889.billiards.JavaBean.ShopKeeper;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMemberMessage;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMessageSetting;
 import com.example.a13834598889.billiards.JavaBean.User;
 
 import java.io.File;
@@ -48,18 +46,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
 
 import static com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKeeperMine.setShopShowIcon;
-import static com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopMessageSetting.dialog;
-import static com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopMessageSetting.setShopChangeIcon;
+import static com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMessageSetting.dialog;
+import static com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMessageSetting.setShopChangeIcon;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private Fragment save_fragment_mine;
@@ -86,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Fragment fragment = null;
     private FragmentManager fragmentManager;
     private boolean isStore = false;
-    private final String TAG = "MainActivity";
+    private static final String TAG = "MainActivity";
     BottomNavigationView customerNavigation;
     BottomNavigationView shopNavigation;
 
@@ -277,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        return null;
 //    }
 
-    public void startPhotoZoom(Uri uri) {
+    private void startPhotoZoom(Uri uri) {
         File CropPhoto=new File(getExternalCacheDir(),"crop_image.jpg");
         try{
             if(CropPhoto.exists()){
@@ -382,19 +381,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-
-        Log.e(TAG, "onBackPressed: 点击返回键");
-
         find_jude();
-        //获取当前id上的fragment
         fragmentTest = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-
         if (fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_help")
                 || fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting")
                 || fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_members_message")
                 || fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_three_ad")
                 || fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_store_location")) {
-            Log.e(TAG, "onBackPressed: 2 -> 1");
+            //2 -> 我的信息
             fragmentManager.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .show(fragmentManager.findFragmentByTag("shop_fragment_mine"))
@@ -402,17 +396,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout")
                 || fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_change_email_layout")) {
-            Log.e(TAG, "onBackPressed: 3 -> 2");
+            //3 -> 基本信息设置
             fragmentManager.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                     .add(R.id.fragment_container, FragmentShopMessageSetting.newInstance(), "shop_keeper_mine_message_setting")
+                    .commit();
+        }
+        if (fragmentTest == fragmentManager.findFragmentByTag("shop_member_add_ImageView")) {
+            //3 -> 会员信息
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .add(R.id.fragment_container, FragmentShopMemberMessage.newInstance(), "shop_keeper_mine_members_message")
                     .commit();
         }
         if (fragmentTest == fragmentManager.findFragmentByTag("shop_fragment_mine")
                 || fragmentTest == fragmentManager.findFragmentByTag("shop_fragment_snacks")
                 || fragmentTest == fragmentManager.findFragmentByTag("shop_fragment_bill")
                 || fragmentTest == fragmentManager.findFragmentByTag("shop_fragment_table")) {
-            Log.e(TAG, "onBackPressed: finish");
+            //finish
             finish();
         }
     }
@@ -551,7 +552,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .remove(fragmentManager.findFragmentByTag("shop_message_setting_change_email_layout"))
                     .commit();
         }
-//        isMainFragment=true;
+        if (fragmentManager.findFragmentByTag("shop_keeper_mine_members_message") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_members_message"))
+                    .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_members_message"))
+                    .commit();
+        }
+        if (fragmentManager.findFragmentByTag("shop_member_add_ImageView") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("shop_member_add_ImageView"))
+                    .remove(fragmentManager.findFragmentByTag("shop_member_add_ImageView"))
+                    .commit();
+        }
+
+//        isMainFragment=true;shop_keeper_mine_members_message
     }
 
     private void initViews() {

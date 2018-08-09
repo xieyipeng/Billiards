@@ -1,4 +1,4 @@
-package com.example.a13834598889.billiards.FragmentShopKepperMine;
+package com.example.a13834598889.billiards.FragmentShopKepperMine.second;
 
 import android.app.Dialog;
 import android.graphics.Bitmap;
@@ -17,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.a13834598889.billiards.FragmentShopKepperMine.third.FragmentShopChangeEmail;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.third.FragmentShopChangeNickName;
 import com.example.a13834598889.billiards.JavaBean.User;
 import com.example.a13834598889.billiards.R;
 import com.example.a13834598889.billiards.Tool.GetBmobFile;
@@ -47,17 +49,13 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
     private TextView getPhoto;
     private TextView cancerPhoto;
 
-    public static TextView staticNickNameTextView;
+    private static TextView staticNickNameTextView;
     private TextView phoneNumberTextView;
     private TextView emailTextView;
     private TextView signTextView;
 
     private FragmentManager fragmentManager;
-
-    private Boolean isFirstLoading;
-
     //签名字数：17*2
-
     public static FragmentShopMessageSetting newInstance() {
         FragmentShopMessageSetting fragmentShopMessageSetting = new FragmentShopMessageSetting();
         return fragmentShopMessageSetting;
@@ -70,7 +68,6 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
         initViews(view);
 
         bmobCheck();//初始化个人界面
-        initPhoto();
 
         initClicks(view);
 
@@ -116,6 +113,7 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
     }
 
     private void bmobCheck() {
+        initPhoto();
         BmobQuery<User> bmobQuery = new BmobQuery<>();
         bmobQuery.getObject(User.getCurrentUser().getObjectId(), new QueryListener<User>() {
             @Override
@@ -145,6 +143,7 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
         switch (v.getId()) {
             case R.id.shop_message_setting_back_ImageView:
                 if (fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting") != null) {
+                    Log.e(TAG, "onClick: != null" );
                     fragmentManager.beginTransaction()
                             .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting"))
                             .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting"))

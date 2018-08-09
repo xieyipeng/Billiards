@@ -1,4 +1,4 @@
-package com.example.a13834598889.billiards.FragmentShopKepperMine;
+package com.example.a13834598889.billiards.FragmentShopKepperMine.second;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,16 +9,16 @@ import android.view.ViewGroup;
 
 import com.example.a13834598889.billiards.R;
 
-public class FragmentShopThreeAd extends Fragment {
-    public static FragmentShopThreeAd newInstance(){
-        FragmentShopThreeAd fragmentShopThreeAd=new FragmentShopThreeAd();
-        return fragmentShopThreeAd;
+public class FragmentShopLocation extends Fragment {
+    public static FragmentShopLocation newInstance(){
+        FragmentShopLocation fragmentShopLocation=new FragmentShopLocation();
+        return fragmentShopLocation;
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_three_ad, container, false);
+        View view = inflater.inflate(R.layout.fragment_shop_location, container, false);
         return view;
     }
 }

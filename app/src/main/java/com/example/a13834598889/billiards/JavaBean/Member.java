@@ -6,11 +6,11 @@ public class Member extends BmobObject{
     private String userName;
     private String storeName;
 
-    public String getUserName() {
+    public String getNickName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
+    public void setNickName(String userName) {
         this.userName = userName;
     }
 

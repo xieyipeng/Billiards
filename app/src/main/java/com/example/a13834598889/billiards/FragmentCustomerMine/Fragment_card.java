@@ -13,7 +13,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.example.a13834598889.billiards.R;
-import com.example.a13834598889.billiards.Tool.CardPagerAdapter;
+import com.example.a13834598889.billiards.Tool.Adapter.CardPagerAdapter;
 import com.flyco.tablayout.SlidingTabLayout;
 
 import java.util.List;

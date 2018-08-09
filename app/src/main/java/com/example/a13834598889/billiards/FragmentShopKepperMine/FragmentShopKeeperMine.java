@@ -10,6 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopHelp;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopLocation;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMemberMessage;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMessageSetting;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopThreeAd;
 import com.example.a13834598889.billiards.R;
 import com.example.a13834598889.billiards.Tool.GetBmobFile;
 
@@ -25,8 +30,6 @@ public class FragmentShopKeeperMine extends Fragment implements View.OnClickList
     private LinearLayout mineLocation;
     private LinearLayout helpLayout;
 
-    private Boolean firstLoading=true;
-
     public static FragmentShopKeeperMine newInstance() {
         FragmentShopKeeperMine fragmentShopKeeperMine = new FragmentShopKeeperMine();
         return fragmentShopKeeperMine;
@@ -37,14 +40,12 @@ public class FragmentShopKeeperMine extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_keeper_mine, container, false);
         initViews(view);
-        if (firstLoading){
-            GetBmobFile.initInterface("店铺信息界面",1);
-            firstLoading=false;
-        }
+        GetBmobFile.initInterface("店铺信息界面", 1);
+
         return view;
     }
 
-    public static void setInterfacePhoto(Bitmap bitmap){
+    public static void setInterfacePhoto(Bitmap bitmap) {
         profilePhoto.setImageBitmap(bitmap);
     }
 
@@ -94,7 +95,7 @@ public class FragmentShopKeeperMine extends Fragment implements View.OnClickList
         }
     }
 
-    public static void setShopShowIcon(Bitmap bitmap){
+    public static void setShopShowIcon(Bitmap bitmap) {
         profilePhoto.setImageBitmap(bitmap);
     }
 
