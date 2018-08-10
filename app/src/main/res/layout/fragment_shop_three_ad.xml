@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fff"
-    android:orientation="vertical">
-
-    <ScrollView
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
         android:layout_width="match_parent"
+<<<<<<< HEAD
         android:layout_height="wrap_content">
 
         <LinearLayout
@@ -202,7 +199,11 @@
 
 
             </LinearLayout>
+=======
+        android:layout_height="match_parent"
+        android:text="三个广告"
+        android:textSize="30sp"
+        android:gravity="center"/>
+>>>>>>> parent of f32335e... 三张广告的搭建
 
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

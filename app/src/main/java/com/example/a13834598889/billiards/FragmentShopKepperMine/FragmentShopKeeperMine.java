@@ -41,9 +41,9 @@ public class FragmentShopKeeperMine extends Fragment implements View.OnClickList
         View view = inflater.inflate(R.layout.fragment_shop_keeper_mine, container, false);
         initViews(view);
         GetBmobFile.initInterface("店铺信息界面", 1);
+
         return view;
     }
-
 
     public static void setInterfacePhoto(Bitmap bitmap) {
         profilePhoto.setImageBitmap(bitmap);
