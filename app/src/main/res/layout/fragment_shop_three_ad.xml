@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <TextView
         android:layout_width="match_parent"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -201,21 +199,5 @@
 
 
             </LinearLayout>
-=======
-=======
->>>>>>> parent of f32335e... 三张广告的搭建
-=======
->>>>>>> parent of f32335e... 三张广告的搭建
-        android:layout_height="match_parent"
-        android:text="三个广告"
-        android:textSize="30sp"
-        android:gravity="center"/>
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> parent of f32335e... 三张广告的搭建
-=======
->>>>>>> parent of f32335e... 三张广告的搭建
-=======
->>>>>>> parent of f32335e... 三张广告的搭建
 
 </android.support.constraint.ConstraintLayout>
