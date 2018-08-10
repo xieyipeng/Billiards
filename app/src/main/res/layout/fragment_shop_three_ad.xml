@@ -5,6 +5,7 @@
     <TextView
         android:layout_width="match_parent"
 <<<<<<< HEAD
+<<<<<<< HEAD
         android:layout_height="wrap_content">
 
         <LinearLayout
@@ -200,10 +201,15 @@
 
             </LinearLayout>
 =======
+=======
+>>>>>>> parent of f32335e... 三张广告的搭建
         android:layout_height="match_parent"
         android:text="三个广告"
         android:textSize="30sp"
         android:gravity="center"/>
+<<<<<<< HEAD
+>>>>>>> parent of f32335e... 三张广告的搭建
+=======
 >>>>>>> parent of f32335e... 三张广告的搭建
 
 </android.support.constraint.ConstraintLayout>
