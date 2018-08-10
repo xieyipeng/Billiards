@@ -22,6 +22,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +56,7 @@ import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKeeperMine.setShopShowIcon;
 import static com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMessageSetting.dialog;
@@ -91,8 +93,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Fragment fragmentTest = null;
 
+    public static File path;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        path = getExternalCacheDir();
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
@@ -104,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.shop_take_photo:
-                //先验证手机是否有sdcard
+//先验证手机是否有sdcard
                 String status = Environment.getExternalStorageState();
                 if (status.equals(Environment.MEDIA_MOUNTED)) {
                     //创建File对象，用于存储拍照后的照片
@@ -177,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case CROP_PICTURE: // 取得裁剪后的图片
-                if(resultCode==RESULT_OK) {
+                if (resultCode == RESULT_OK) {
                     try {
                         Bitmap headShot = BitmapFactory.decodeStream(getContentResolver().openInputStream(cropImageUri));
                         setShopChangeIcon(headShot);
@@ -195,53 +200,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void commitToBmob() {
 //        BmobFile bmobFile=new BmobFile(uriToFile(cropImageUri,this));
-        BmobFile bmobFile= null;
+        BmobFile bmobFile = null;
         try {
             bmobFile = new BmobFile(new File(new URI(cropImageUri.toString())));
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        if (bmobFile!=null){
-            final User user=new User();
+        if (bmobFile != null) {
+            final User user = new User();
             user.setPicture_head(bmobFile);
             user.setStore(true);
             user.getPicture_head().uploadblock(new UploadFileListener() {
                 @Override
                 public void done(BmobException e) {
-                    if (e==null){
-                        Log.e(TAG, "done: 上传服务器成功" );
+                    if (e == null) {
+                        Log.e(TAG, "done: 上传服务器成功");
                         user.update(User.getCurrentUser(User.class).getObjectId(), new UpdateListener() {
                             @Override
                             public void done(BmobException e) {
-                                if (e==null){
+                                if (e == null) {
                                     Toast.makeText(MainActivity.this, "bmob上传成功", Toast.LENGTH_SHORT).show();
-                                }else {
-                                    Log.e(TAG, "done: "+e.getMessage() );
+                                } else {
+                                    Log.e(TAG, "done: " + e.getMessage());
                                     Toast.makeText(MainActivity.this, "bmob上传失败", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
-                    }else {
-                        Log.e(TAG, "done: 上传服务器失败 "+e.getMessage() );
+                    } else {
+                        Log.e(TAG, "done: 上传服务器失败 " + e.getMessage());
                     }
                 }
             });
-        }else {
-            Log.e(TAG, "commitToBmob: file is null" );
+        } else {
+            Log.e(TAG, "commitToBmob: file is null");
         }
     }
 
     private void startPhotoZoom(Uri uri) {
-        File CropPhoto=new File(getExternalCacheDir(),"crop_image.jpg");
-        try{
-            if(CropPhoto.exists()){
+        File CropPhoto = new File(getExternalCacheDir(), "crop_image.jpg");
+        try {
+            if (CropPhoto.exists()) {
                 CropPhoto.delete();
             }
             CropPhoto.createNewFile();
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        cropImageUri=Uri.fromFile(CropPhoto);
+        cropImageUri = Uri.fromFile(CropPhoto);
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -265,35 +270,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-
-    private void handlerImageOnKitKat(Intent data){
-        String imagePath=null;
-        Uri uri=data.getData();
+    private void handlerImageOnKitKat(Intent data) {
+        String imagePath = null;
+        Uri uri = data.getData();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if(DocumentsContract.isDocumentUri(this,uri)){
+            if (DocumentsContract.isDocumentUri(this, uri)) {
                 //如果是document类型的Uri,则通过document id处理
-                String docId=DocumentsContract.getDocumentId(uri);
-                if("com.android.providers.media.documents".equals(uri.getAuthority())){
-                    String id=docId.split(":")[1];//解析出数字格式的id
-                    String selection=MediaStore.Images.Media._ID+"="+id;
-                    imagePath=getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,selection);
-                }else if("com.android.providers.downloads.documents".equals(uri.getAuthority())){
-                    Uri contentUri= ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"),Long.valueOf(docId));
-                    imagePath=getImagePath(contentUri,null);
+                String docId = DocumentsContract.getDocumentId(uri);
+                if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                    String id = docId.split(":")[1];//解析出数字格式的id
+                    String selection = MediaStore.Images.Media._ID + "=" + id;
+                    imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+                } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(docId));
+                    imagePath = getImagePath(contentUri, null);
                 }
-            }else if("content".equalsIgnoreCase(uri.getScheme())){
+            } else if ("content".equalsIgnoreCase(uri.getScheme())) {
                 //如果是content类型的URI，则使用普通方式处理
-                imagePath=getImagePath(uri,null);
-            }else if("file".equalsIgnoreCase(uri.getScheme())){
+                imagePath = getImagePath(uri, null);
+            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
                 //如果是file类型的Uri,直接获取图片路径即可
-                imagePath=uri.getPath();
+                imagePath = uri.getPath();
             }
         }
         startPhotoZoom(uri);
     }
 
-    private void handlerImageBeforeKitKat(Intent data){
-        Uri cropUri=data.getData();
+    private void handlerImageBeforeKitKat(Intent data) {
+        Uri cropUri = data.getData();
         startPhotoZoom(cropUri);
     }
 
@@ -530,6 +534,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         customerNavigation = findViewById(R.id.navigation);
         shopNavigation = findViewById(R.id.shop_navigation);
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener customBottomView

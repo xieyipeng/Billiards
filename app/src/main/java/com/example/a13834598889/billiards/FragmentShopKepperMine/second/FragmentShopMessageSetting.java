@@ -89,7 +89,7 @@ public class FragmentShopMessageSetting extends Fragment{
 
     private void dialogShow() {
         dialog = new Dialog(getContext(), R.style.ActionSheetDialogStyle);
-        inflate = LayoutInflater.from(getContext()).inflate(R.layout.mine_dialog_view, null);
+        inflate = LayoutInflater.from(getContext()).inflate(R.layout.mine_photo_dialog_view, null);
         dialog.setContentView(inflate);
 
         Window dialogWindow = dialog.getWindow();
