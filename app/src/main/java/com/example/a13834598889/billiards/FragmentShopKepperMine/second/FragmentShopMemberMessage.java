@@ -83,16 +83,15 @@ public class FragmentShopMemberMessage extends Fragment {
     }
 
     private void loadingMessage() {
-        users.clear();
-        final String[] nickName = new String[1];
+        final String[] storeUserName = new String[1];
         BmobQuery<User> bmobQuery = new BmobQuery<>();
         bmobQuery.getObject(User.getCurrentUser().getObjectId(), new QueryListener<User>() {
             @Override
             public void done(User user, BmobException e) {
                 //拿到店名
                 if (e == null) {
-                    nickName[0] = user.getNickName();
-                    getMembers(nickName);
+                    storeUserName[0] = user.getUsername();
+                    getMembers(storeUserName);
                 } else {
                     Log.e(TAG, "done: 获取店铺名错误");
                 }
@@ -100,7 +99,7 @@ public class FragmentShopMemberMessage extends Fragment {
         });
     }
 
-    private void getMembers(final String[] nickName) {
+    private void getMembers(final String[] storeUserName) {
         BmobQuery<Member> memberBmobQuery = new BmobQuery<>();
         memberBmobQuery.findObjects(new FindListener<Member>() {
             @Override
@@ -109,16 +108,22 @@ public class FragmentShopMemberMessage extends Fragment {
                 if (e == null) {
                     List<Member> list1 = new ArrayList<>();
                     for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).getStoreName().equals(nickName[0])) {
+                        if (list.get(i).getStoreName().equals(storeUserName[0])) {
                             list1.add(list.get(i));
                         }
                     }
+                    Log.e(TAG, "done: list1.size() " + list1.size());
+
+                    if (list1.size() > 1) {
+                        users.clear();
+                    }
+
                     for (int i = 0; i < list1.size(); i++) {
                         boolean isLast = false;
                         if (i == list1.size() - 1) {
                             isLast = true;
                         }
-                        getUsers(list1.get(i).getNickName(), isLast);
+                        getUsers(list1.get(i).getUserName(), isLast);
                     }
                 } else {
                     Log.e(TAG, "done: 加载会员界面时出现错误");
@@ -127,7 +132,7 @@ public class FragmentShopMemberMessage extends Fragment {
         });
     }
 
-    private void getUsers(final String nickname, final boolean isLast) {
+    private void getUsers(final String username, final boolean isLast) {
         final BmobQuery<User> userBmobQuery = new BmobQuery<>();
         userBmobQuery.findObjects(new FindListener<User>() {
             @Override
@@ -135,7 +140,7 @@ public class FragmentShopMemberMessage extends Fragment {
                 //拿到user
                 if (e == null) {
                     for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).getNickName().equals(nickname)) {
+                        if (list.get(i).getUsername().equals(username)) {
                             users.add(list.get(i));
                         }
                     }

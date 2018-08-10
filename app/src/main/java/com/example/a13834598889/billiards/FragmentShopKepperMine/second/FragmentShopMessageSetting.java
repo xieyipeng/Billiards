@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKeeperMine;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.third.FragmentShopChangeEmail;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.third.FragmentShopChangeNickName;
 import com.example.a13834598889.billiards.JavaBean.User;
@@ -30,7 +31,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static cn.volley.VolleyLog.TAG;
 
-public class FragmentShopMessageSetting extends Fragment implements View.OnClickListener {
+public class FragmentShopMessageSetting extends Fragment{
 
     private CircleImageView backImageView;
     private LinearLayout nickNameSetting;
@@ -54,6 +55,7 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
     private TextView emailTextView;
     private TextView signTextView;
 
+    private Fragment fragmentTest;
     private FragmentManager fragmentManager;
     //签名字数：17*2
     public static FragmentShopMessageSetting newInstance() {
@@ -66,10 +68,11 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_message_setting, container, false);
         initViews(view);
+        fragmentManager = getActivity().getSupportFragmentManager();
 
         bmobCheck();//初始化个人界面
 
-        initClicks(view);
+        initClicks();
 
         return view;
     }
@@ -83,20 +86,6 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
         shopProfilePhoto.setImageBitmap(bitmap);
     }
 
-    private void initClicks(View view) {
-
-        takePhoto = view.findViewById(R.id.shop_take_photo);
-        getPhoto = view.findViewById(R.id.shop_get_photo);
-        cancerPhoto = view.findViewById(R.id.shop_photo_cancer);
-        headPictureSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e(TAG, "onClick: click");
-                dialogShow();
-            }
-        });
-
-    }
 
     private void dialogShow() {
         dialog = new Dialog(getContext(), R.style.ActionSheetDialogStyle);
@@ -134,44 +123,52 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
         });
     }
 
-    @Override
-    public void onClick(View v) {
-        fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                .remove(this)
-                .commit();
-        switch (v.getId()) {
-            case R.id.shop_message_setting_back_ImageView:
-                if (fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting") != null) {
-                    Log.e(TAG, "onClick: != null" );
-                    fragmentManager.beginTransaction()
-                            .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting"))
-                            .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting"))
-                            .show(fragmentManager.findFragmentByTag("shop_fragment_mine"))
-                            .commit();
-                }
-                break;
-            case R.id.shop_message_setting_store_name_layout:
-                fragmentManager.beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+
+    private void initClicks() {
+        headPictureSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e(TAG, "onClick: click");
+                dialogShow();
+            }
+        });
+
+        backImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .remove(fragmentTest)
+                        .add(R.id.fragment_container, FragmentShopKeeperMine.newInstance(), "shop_fragment_mine")
+                        .commit();
+            }
+        });
+
+        nickNameSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .remove(fragmentTest)
                         .add(R.id.fragment_container, FragmentShopChangeNickName.newInstance(), "shop_message_setting_store_name_layout")
                         .commit();
-                break;
-            case R.id.shop_message_setting_change_email_layout:
-                fragmentManager.beginTransaction()
-                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+            }
+        });
+
+        emailSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .remove(fragmentTest)
                         .add(R.id.fragment_container, FragmentShopChangeEmail.newInstance(), "shop_message_setting_change_email_layout")
                         .commit();
-                break;
-            case R.id.shop_message_setting_change_password_layout:
-                break;
-            case R.id.shop_message_setting_change_phone_number_layout:
-                break;
-            case R.id.shop_message_setting_change_sign_layout:
-                break;
-            default:
-                break;
-        }
+            }
+        });
+
     }
 
     private void initViews(View view) {
@@ -185,16 +182,14 @@ public class FragmentShopMessageSetting extends Fragment implements View.OnClick
 
         shopProfilePhoto = view.findViewById(R.id.shop_profile_photo);
 
-        backImageView.setOnClickListener(this);
-        nickNameSetting.setOnClickListener(this);
-        passWordSetting.setOnClickListener(this);
-        phoneNumberSetting.setOnClickListener(this);
-        emailSetting.setOnClickListener(this);
-        signSetting.setOnClickListener(this);
 
         staticNickNameTextView = view.findViewById(R.id.shop_message_setting_store_name_TextView);
         phoneNumberTextView = view.findViewById(R.id.shop_message_setting_change_phone_number_TextView);
         emailTextView = view.findViewById(R.id.shop_message_setting_change_email_TextView);
         signTextView = view.findViewById(R.id.shop_message_setting_change_sign_TextView);
+
+        takePhoto = view.findViewById(R.id.shop_take_photo);
+        getPhoto = view.findViewById(R.id.shop_get_photo);
+        cancerPhoto = view.findViewById(R.id.shop_photo_cancer);
     }
 }

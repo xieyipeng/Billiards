@@ -79,20 +79,25 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
             @Override
             public void onClick(View view) {
                 int n = holder.getLayoutPosition();
-                //球友名=member.get(n).getNickName();
-                String userNickName = member.get(n).getNickName();
+                //球友名=member.get(n).getUserName();
+                Log.e(TAG, "onClick: 删除 " );
+                String userName = member.get(n).getUsername();
                 //店家名
-                getShopNickName(userNickName, n);
+                getShopNickName(userName, n);
             }
 
-            private void getShopNickName(final String userNickName, final int position) {
+            private void getShopNickName(final String userName, final int position) {
                 //店家名
                 BmobQuery<User> userBmobQuery = new BmobQuery<>();
                 userBmobQuery.getObject(User.getCurrentUser(User.class).getObjectId(), new QueryListener<User>() {
                     @Override
                     public void done(User user, BmobException e) {
                         if (e == null) {
-                            getMemberID(userNickName, position, user.getNickName());
+                            if (user==null){
+                                Log.e(TAG, "done: 删除会员时，user为空");
+                            }
+                            assert user != null;
+                            getMemberID(userName, position, user.getUsername());
                         } else {
                             Log.e(TAG, "done: 删除会员时错误" + e.getMessage());
                         }
@@ -101,14 +106,14 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.MemberHold
             }
 
             //拿到店铺名和球友名
-            private void getMemberID(final String userNickName, final int position, final String storeNickName) {
+            private void getMemberID(final String userName, final int position, final String storeNickName) {
                 //拿到该会员的id
                 BmobQuery<Member> memberBmobQuery = new BmobQuery<>();
                 memberBmobQuery.findObjects(new FindListener<Member>() {
                     @Override
                     public void done(List<Member> list, BmobException e) {
                         for (int i = 0; i < list.size(); i++) {
-                            if (list.get(i).getStoreName().equals(storeNickName) && list.get(i).getNickName().equals(userNickName)) {
+                            if (list.get(i).getStoreName().equals(storeNickName) && list.get(i).getUserName().equals(userName)) {
                                 Member deleteMember=new Member();
                                 deleteMember.setObjectId(list.get(i).getObjectId());
                                 deleteMember.delete(new UpdateListener() {

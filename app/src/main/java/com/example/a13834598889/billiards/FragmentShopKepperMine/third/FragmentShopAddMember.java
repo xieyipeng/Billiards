@@ -65,21 +65,21 @@ public class FragmentShopAddMember extends Fragment {
         commitTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String inputNickName = inputEditText.getText().toString();
-                getShopNickName(inputNickName);
+                final String inputUserName = inputEditText.getText().toString();
+                getShopUserName(inputUserName);
             }
         });
     }
 
-    private void getShopNickName(final String inputNickName) {
+    private void getShopUserName(final String inputUserName) {
         BmobQuery<User> bmobQuery = new BmobQuery<>();
         bmobQuery.getObject(User.getCurrentUser().getObjectId(), new QueryListener<User>() {
             @Override
             public void done(User user, BmobException e) {
                 if (e == null) {
                     Member member = new Member();
-                    member.setStoreName(user.getNickName());
-                    setMemberUserNickName(member, inputNickName);
+                    member.setStoreName(user.getUsername());
+                    setMemberUserName(member, inputUserName);
                 } else {
                     Log.e(TAG, "done: " + e.getMessage());
                 }
@@ -87,7 +87,7 @@ public class FragmentShopAddMember extends Fragment {
         });
     }
 
-    private void setMemberUserNickName(final Member member, final String inputNickName) {
+    private void setMemberUserName(final Member member, final String inputUserName) {
         BmobQuery<User> bmobQuery = new BmobQuery<>();
         bmobQuery.findObjects(new FindListener<User>() {
             @Override
@@ -97,9 +97,9 @@ public class FragmentShopAddMember extends Fragment {
                     boolean have = false;
                     for (int i = 0; i < list.size(); i++) {
                         Log.e(TAG, "done: " + list.get(i).getNickName());
-                        if (list.get(i).getNickName().equals(inputNickName)) {
+                        if (list.get(i).getUsername().equals(inputUserName)) {
                             have = true;
-                            member.setNickName(list.get(i).getNickName());
+                            member.setUserName(list.get(i).getUsername());
                             Log.e(TAG, "done: nickName:" + member.getStoreName());
                             member.save(new SaveListener<String>() {
                                 @Override
