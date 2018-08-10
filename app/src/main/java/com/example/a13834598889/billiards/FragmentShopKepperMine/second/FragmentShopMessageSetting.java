@@ -1,11 +1,25 @@
 package com.example.a13834598889.billiards.FragmentShopKepperMine.second;
 
+import android.Manifest;
 import android.app.Dialog;
+import android.content.ContentUris;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,17 +35,30 @@ import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKee
 import com.example.a13834598889.billiards.FragmentShopKepperMine.third.FragmentShopChangeEmail;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.third.FragmentShopChangeNickName;
 import com.example.a13834598889.billiards.JavaBean.User;
+import com.example.a13834598889.billiards.MainActivity;
 import com.example.a13834598889.billiards.R;
 import com.example.a13834598889.billiards.Tool.GetBmobFile;
+import com.example.a13834598889.billiards.Tool.MineDialog;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.QueryListener;
+import cn.bmob.v3.listener.UpdateListener;
+import cn.bmob.v3.listener.UploadFileListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.app.Activity.RESULT_OK;
 import static cn.volley.VolleyLog.TAG;
+import static com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKeeperMine.setShopShowIcon;
 
-public class FragmentShopMessageSetting extends Fragment{
+public class FragmentShopMessageSetting extends Fragment {
 
     private CircleImageView backImageView;
     private LinearLayout nickNameSetting;
@@ -43,12 +70,14 @@ public class FragmentShopMessageSetting extends Fragment{
 
     private static CircleImageView shopProfilePhoto;
 
-    public static Dialog dialog;
-    private View inflate;
-
-    private TextView takePhoto;
-    private TextView getPhoto;
-    private TextView cancerPhoto;
+    //头像操作
+    public MineDialog dialog;
+    private static final int RESULT_CAMERA = 200;
+    private static final int RESULT_IMAGE = 100;
+    private Uri imageUri;
+    private static final int CROP_PICTURE = 2;//裁剪后图片返回码
+    //裁剪图片存放地址的Uri
+    private Uri cropImageUri;
 
     private static TextView staticNickNameTextView;
     private TextView phoneNumberTextView;
@@ -57,6 +86,7 @@ public class FragmentShopMessageSetting extends Fragment{
 
     private Fragment fragmentTest;
     private FragmentManager fragmentManager;
+
     //签名字数：17*2
     public static FragmentShopMessageSetting newInstance() {
         FragmentShopMessageSetting fragmentShopMessageSetting = new FragmentShopMessageSetting();
@@ -69,37 +99,240 @@ public class FragmentShopMessageSetting extends Fragment{
         View view = inflater.inflate(R.layout.fragment_shop_message_setting, container, false);
         initViews(view);
         fragmentManager = getActivity().getSupportFragmentManager();
-
         bmobCheck();//初始化个人界面
-
         initClicks();
-
         return view;
     }
 
-    private void initPhoto() {
-        GetBmobFile.initInterface("编辑资料界面",2);
-    }
-
-
-    public static void setShopChangeIcon(Bitmap bitmap){
-        shopProfilePhoto.setImageBitmap(bitmap);
-    }
-
-
     private void dialogShow() {
-        dialog = new Dialog(getContext(), R.style.ActionSheetDialogStyle);
-        inflate = LayoutInflater.from(getContext()).inflate(R.layout.mine_photo_dialog_view, null);
-        dialog.setContentView(inflate);
-
-        Window dialogWindow = dialog.getWindow();
-        assert dialogWindow != null;
-        dialogWindow.setGravity(Gravity.BOTTOM);
-        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        lp.y = 2;
-        dialogWindow.setAttributes(lp);
+        dialog = new MineDialog(getContext());
+        Window window = dialog.getWindow();
+        assert window != null;
+        window.setGravity(Gravity.CENTER);
+        WindowManager.LayoutParams lp = window.getAttributes();
+        window.setAttributes(lp);
         dialog.show();
+
+        dialog.setTakeButton(new MineDialog.onTakeOnclickListener() {
+            @Override
+            public void onTakeClick() {
+                String status = Environment.getExternalStorageState();
+                if (status.equals(Environment.MEDIA_MOUNTED)) {
+                    //创建File对象，用于存储拍照后的照片
+                    File outputImage = new File(MainActivity.path, "out_image.jpg");//SD卡的应用关联缓存目录
+                    try {
+                        if (outputImage.exists()) {
+                            outputImage.delete();
+                        }
+                        outputImage.createNewFile();
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            imageUri = FileProvider.getUriForFile(getContext(),
+                                    "com.hanrui.android.fileprovider", outputImage);//添加这一句表示对目标应用临时授权该Uri所代表的文件
+                        } else {
+                            imageUri = Uri.fromFile(outputImage);
+                        }
+                        //启动相机程序
+                        intent.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                        startActivityForResult(intent, RESULT_CAMERA);
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), "没有找到储存目录", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "没有储存卡", Toast.LENGTH_LONG).show();
+                }
+                dialog.dismiss();
+            }
+        });
+        dialog.setChooseButton(new MineDialog.onChooseClickListener() {
+            @Override
+            public void onChooseClick() {
+                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                } else {
+                    openAlbum();
+                }
+                dialog.dismiss();
+            }
+        });
+
     }
+
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<分界线
+
+    private void openAlbum() {
+        Intent intent = new Intent("android.intent.action.GET_CONTENT");
+        intent.setType("image/*");
+        startActivityForResult(intent, RESULT_IMAGE);//打开相册
+    }
+
+    private void startPhotoZoom(Uri uri) {
+        File CropPhoto = new File(MainActivity.path, "crop_image.jpg");
+        try {
+            if (CropPhoto.exists()) {
+                CropPhoto.delete();
+            }
+            CropPhoto.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        cropImageUri = Uri.fromFile(CropPhoto);
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); //添加这一句表示对目标应用临时授权该Uri所代表的文件
+        }
+        // 下面这个crop=true是设置在开启的Intent中设置显示的VIEW可裁剪
+        intent.putExtra("crop", "true");
+        intent.putExtra("scale", true);
+
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+
+        intent.putExtra("outputX", 300);
+        intent.putExtra("outputY", 300);
+
+        intent.putExtra("return-data", false);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, cropImageUri);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        intent.putExtra("noFaceDetection", true); // no face detection
+        startActivityForResult(intent, CROP_PICTURE);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case RESULT_CAMERA:
+                if (resultCode == RESULT_OK) {
+                    //进行裁剪
+                    startPhotoZoom(imageUri);
+                }
+                break;
+            case RESULT_IMAGE:
+
+                if (resultCode == RESULT_OK && data != null) {
+                    //判断手机系统版本号
+                    if (Build.VERSION.SDK_INT >= 19) {
+                        //4.4及以上系统使用这个方法处理图片
+                        handlerImageOnKitKat(data);
+                    } else {
+                        //4.4以下系统使用这个方法处理图片
+                        handlerImageBeforeKitKat(data);
+                    }
+                }
+                break;
+
+            case CROP_PICTURE: // 取得裁剪后的图片
+                if (resultCode == RESULT_OK) {
+                    Bitmap headShot = null;
+                    try {
+                        File file = new File(new URI(cropImageUri.toString()));
+                        headShot=BitmapFactory.decodeFile(String.valueOf(file));
+                        commitToBmob();
+                    } catch (Exception e) {
+                        Log.e(TAG, "onActivityResult: " + e.getMessage());
+                    }
+                    setShopChangeIcon(headShot);
+                    setShopShowIcon(headShot);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void handlerImageBeforeKitKat(Intent data) {
+        Uri cropUri = data.getData();
+        startPhotoZoom(cropUri);
+    }
+
+    private void commitToBmob() {
+        BmobFile bmobFile = null;
+        try {
+            bmobFile = new BmobFile(new File(new URI(cropImageUri.toString())));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        if (bmobFile != null) {
+            final User user = new User();
+            user.setPicture_head(bmobFile);
+            user.setStore(true);
+            user.getPicture_head().uploadblock(new UploadFileListener() {
+                @Override
+                public void done(BmobException e) {
+                    if (e == null) {
+                        Log.e(TAG, "done: 上传服务器成功");
+                        user.update(User.getCurrentUser(User.class).getObjectId(), new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+                                if (e == null) {
+                                    Toast.makeText(getActivity(), "bmob上传成功", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Log.e(TAG, "done: " + e.getMessage());
+                                    Toast.makeText(getActivity(), "bmob上传失败", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } else {
+                        Log.e(TAG, "done: 上传服务器失败 " + e.getMessage());
+                    }
+                }
+            });
+        } else {
+            Log.e(TAG, "commitToBmob: file is null");
+        }
+    }
+
+
+    public void handlerImageOnKitKat(Intent data) {
+        String imagePath = null;
+        Uri uri = data.getData();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            if (DocumentsContract.isDocumentUri(getContext(), uri)) {
+//                //如果是document类型的Uri,则通过document id处理
+//                String docId = DocumentsContract.getDocumentId(uri);
+//                if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+//                    String id = docId.split(":")[1];//解析出数字格式的id
+//                    String selection = MediaStore.Images.Media._ID + "=" + id;
+//                    imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+//                } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+//                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(docId));
+//                    imagePath = getImagePath(contentUri, null);
+//                }
+//            } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+//                //如果是content类型的URI，则使用普通方式处理
+//                imagePath = getImagePath(uri, null);
+//            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+//                //如果是file类型的Uri,直接获取图片路径即可
+//                imagePath = uri.getPath();
+//            }
+//        }
+        imagePath = MainActivity.getPathByUri(getContext(), uri);
+        startPhotoZoom(uri);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openAlbum();
+                } else {
+                    Toast.makeText(getContext(), "你没有开启权限", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<分界线
+
 
     private void bmobCheck() {
         initPhoto();
@@ -128,7 +361,6 @@ public class FragmentShopMessageSetting extends Fragment{
         headPictureSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e(TAG, "onClick: click");
                 dialogShow();
             }
         });
@@ -182,14 +414,17 @@ public class FragmentShopMessageSetting extends Fragment{
 
         shopProfilePhoto = view.findViewById(R.id.shop_profile_photo);
 
-
         staticNickNameTextView = view.findViewById(R.id.shop_message_setting_store_name_TextView);
         phoneNumberTextView = view.findViewById(R.id.shop_message_setting_change_phone_number_TextView);
         emailTextView = view.findViewById(R.id.shop_message_setting_change_email_TextView);
         signTextView = view.findViewById(R.id.shop_message_setting_change_sign_TextView);
+    }
 
-        takePhoto = view.findViewById(R.id.shop_take_photo);
-        getPhoto = view.findViewById(R.id.shop_get_photo);
-        cancerPhoto = view.findViewById(R.id.shop_photo_cancer);
+    private void initPhoto() {
+        GetBmobFile.initInterface("编辑资料界面", 2);
+    }
+
+    public static void setShopChangeIcon(Bitmap bitmap) {
+        shopProfilePhoto.setImageBitmap(bitmap);
     }
 }

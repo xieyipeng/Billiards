@@ -68,9 +68,6 @@ public class FragmentShopThreeAd extends Fragment {
 
     private void dialogShow1() {
         dialog1 = new Dialog(getContext(), R.style.ActionSheetDialogStyle);
-        inflate = LayoutInflater.from(getContext()).inflate(R.layout.mine_photo_dialog_view, null);
-        dialog1.setContentView(inflate);
-
         Window dialogWindow = dialog1.getWindow();
         assert dialogWindow != null;
         dialogWindow.setGravity(Gravity.BOTTOM);
