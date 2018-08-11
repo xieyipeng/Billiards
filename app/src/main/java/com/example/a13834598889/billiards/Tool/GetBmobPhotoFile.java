@@ -16,7 +16,7 @@ import static android.content.ContentValues.TAG;
 import static com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKeeperMine.setInterfacePhoto;
 import static com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMessageSetting.setShopChangeIcon;
 
-public class GetBmobFile {
+public class GetBmobPhotoFile {
     public static void initInterface(final String Interface, final int requesCode) {
         final String temp = Interface + " requesCode " + String.valueOf(requesCode) + " ";
         BmobQuery<User> bmobQuery = new BmobQuery();

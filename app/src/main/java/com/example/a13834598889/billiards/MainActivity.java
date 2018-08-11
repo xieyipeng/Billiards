@@ -52,10 +52,11 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private boolean isStore = false;
     private static final String TAG = "MainActivity";
-    BottomNavigationView customerNavigation;
-    BottomNavigationView shopNavigation;
+    private BottomNavigationView customerNavigation;
+    private BottomNavigationView shopNavigation;
 
     private Fragment fragmentTest = null;
+
 
     public static File path;
 
@@ -69,40 +70,40 @@ public class MainActivity extends AppCompatActivity {
         bmobCheckStore();
     }
 
-//    public String getImagePath(Uri uri, String selection) {
-//        String path = null;
-//        //通过Uri和selection来获取真实的图片路径
-//        Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
-//        if (cursor != null) {
-//            if (cursor.moveToFirst()) {
-//                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-//            }
-//            cursor.close();
-//        }
-//        return path;
-//    }
-
-    public static String getPathByUri(Context context, Uri uri){
-        if ( null == uri ) return null;
+    public static String getPathByUri(Context context, Uri uri) {
+        if (null == uri) return null;
         final String scheme = uri.getScheme();
         String data = null;
-        if ( scheme == null )
+        if (scheme == null)
             data = uri.getPath();
-        else if ( ContentResolver.SCHEME_FILE.equals( scheme ) ) {
+        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
             data = uri.getPath();
-        } else if ( ContentResolver.SCHEME_CONTENT.equals( scheme ) ) {
-            Cursor cursor = context.getContentResolver().query( uri, new String[] { MediaStore.Images.ImageColumns.DATA }, null, null, null );
-            if ( null != cursor ) {
-                if ( cursor.moveToFirst() ) {
-                    int index = cursor.getColumnIndex( MediaStore.Images.ImageColumns.DATA );
-                    if ( index > -1 ) {
-                        data = cursor.getString( index );
+        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            if (null != cursor) {
+                if (cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                    if (index > -1) {
+                        data = cursor.getString(index);
                     }
                 }
                 cursor.close();
             }
         }
         return data;
+    }
+
+    private String getImagePath(Uri uri, String selection) {
+        String path = null;
+        //通过Uri和selection来获取真实的图片路径
+        Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        return path;
     }
 
     @Override
@@ -121,7 +122,9 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
         if (fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout")
-                || fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_change_email_layout")) {
+                || fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_change_email_layout")
+                || fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_change_password_layout")
+                || fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_change_phone_number_layout")) {
             //3 -> 基本信息设置
             fragmentManager.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -288,6 +291,18 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction()
                     .hide(fragmentManager.findFragmentByTag("shop_member_add_ImageView"))
                     .remove(fragmentManager.findFragmentByTag("shop_member_add_ImageView"))
+                    .commit();
+        }
+        if (fragmentManager.findFragmentByTag("shop_message_setting_change_password_layout") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("shop_message_setting_change_password_layout"))
+                    .remove(fragmentManager.findFragmentByTag("shop_message_setting_change_password_layout"))
+                    .commit();
+        }
+        if (fragmentManager.findFragmentByTag("shop_message_setting_change_phone_number_layout") != null) {
+            fragmentManager.beginTransaction()
+                    .hide(fragmentManager.findFragmentByTag("shop_message_setting_change_phone_number_layout"))
+                    .remove(fragmentManager.findFragmentByTag("shop_message_setting_change_phone_number_layout"))
                     .commit();
         }
 

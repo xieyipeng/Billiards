@@ -10,8 +10,8 @@ import cn.bmob.v3.datatype.BmobFile;
 
 public class User extends BmobUser{
 
-    private String phone;//手机号
-    private String passWord;//登录密码
+//    private String phone;//手机号
+//    private String passWord;//登录密码
     private String nickName;//昵称
     private BmobFile picture_head;//头像
     private String sign;//个性签名
@@ -25,21 +25,21 @@ public class User extends BmobUser{
         isStore = store;
     }
 
-    public String getPhone() {
-        return phone;
-    }
+//    public String getPhone() {
+//        return phone;
+//    }
+//
+//    public void setPhone(String phone) {
+//        this.phone = phone;
+//    }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getPassWord() {
-        return passWord;
-    }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
+//    public String getPassWord() {
+//        return passWord;
+//    }
+//
+//    public void setPassWord(String passWord) {
+//        this.passWord = passWord;
+//    }
 
     public String getNickName() {
         return nickName;

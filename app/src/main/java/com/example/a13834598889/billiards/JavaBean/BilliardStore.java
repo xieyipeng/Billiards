@@ -10,7 +10,7 @@ import cn.bmob.v3.datatype.BmobFile;
 
 public class BilliardStore extends BmobObject{
 
-    private ShopKeeper storeID;//店主
+    private String  storeID;//店主ID
     private BmobFile picture_1;//广告图片1
     private BmobFile picture_2;//广告图片2
     private BmobFile picture_3;//广告图片3
@@ -19,11 +19,11 @@ public class BilliardStore extends BmobObject{
     private BmobFile picture_head;//店面头像
     private Integer num_customer;//客流量
 
-    public ShopKeeper getStoreID() {
+    public String getStoreID() {
         return storeID;
     }
 
-    public void setStoreID(ShopKeeper storeID) {
+    public void setStoreID(String storeID) {
         this.storeID = storeID;
     }
 

@@ -1,8 +1,6 @@
 package com.example.a13834598889.billiards.FragmentShopKepperMine.second;
 
 import android.Manifest;
-import android.app.Dialog;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -11,7 +9,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,14 +31,16 @@ import android.widget.Toast;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKeeperMine;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.third.FragmentShopChangeEmail;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.third.FragmentShopChangeNickName;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.third.FragmentShopChangePassWord;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.third.FragmentShopChangePhoneNumber;
+import com.example.a13834598889.billiards.FragmentShopKepperMine.third.FragmentShopChangeSign;
 import com.example.a13834598889.billiards.JavaBean.User;
 import com.example.a13834598889.billiards.MainActivity;
 import com.example.a13834598889.billiards.R;
-import com.example.a13834598889.billiards.Tool.GetBmobFile;
+import com.example.a13834598889.billiards.Tool.GetBmobPhotoFile;
 import com.example.a13834598889.billiards.Tool.MineDialog;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -71,15 +70,15 @@ public class FragmentShopMessageSetting extends Fragment {
     private static CircleImageView shopProfilePhoto;
 
     //头像操作
-    public MineDialog dialog;
-    private static final int RESULT_CAMERA = 200;
-    private static final int RESULT_IMAGE = 100;
+    private MineDialog dialog;
+    private final int RESULT_CAMERA = 2;
+    private final int RESULT_IMAGE = 1;
     private Uri imageUri;
-    private static final int CROP_PICTURE = 2;//裁剪后图片返回码
+    private final int CROP_PICTURE = 3;//裁剪后图片返回码
     //裁剪图片存放地址的Uri
     private Uri cropImageUri;
 
-    private static TextView staticNickNameTextView;
+    private TextView staticNickNameTextView;
     private TextView phoneNumberTextView;
     private TextView emailTextView;
     private TextView signTextView;
@@ -151,7 +150,7 @@ public class FragmentShopMessageSetting extends Fragment {
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                         PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
                 } else {
                     openAlbum();
                 }
@@ -161,12 +160,247 @@ public class FragmentShopMessageSetting extends Fragment {
 
     }
 
+    private void bmobCheck() {
+        initPhoto();
+        BmobQuery<User> bmobQuery = new BmobQuery<>();
+        bmobQuery.getObject(User.getCurrentUser().getObjectId(), new QueryListener<User>() {
+            @Override
+            public void done(User object, BmobException e) {
+                if (e == null) {
+                    staticNickNameTextView.setText(object.getNickName());
+                    phoneNumberTextView.setText(object.getMobilePhoneNumber());
+                    emailTextView.setText(object.getEmail());
+                    if (object.getSign() != null) {
+                        signTextView.setText(object.getSign());
+                    } else {
+                        signTextView.setText(R.string.noSign);
+                    }
+                } else {
+                    Toast.makeText(getActivity(), "店铺面板更新失败!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void initClicks() {
+        //头像
+        headPictureSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogShow();
+            }
+        });
+
+        //返回
+        backImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .remove(fragmentTest)
+                        .add(R.id.fragment_container, FragmentShopKeeperMine.newInstance(), "shop_fragment_mine")
+                        .commit();
+            }
+        });
+
+        //店名
+        nickNameSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .remove(fragmentTest)
+                        .add(R.id.fragment_container, FragmentShopChangeNickName.newInstance(), "shop_message_setting_store_name_layout")
+                        .commit();
+            }
+        });
+
+        //邮箱
+        emailSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .remove(fragmentTest)
+                        .add(R.id.fragment_container, FragmentShopChangeEmail.newInstance(), "shop_message_setting_change_email_layout")
+                        .commit();
+            }
+        });
+
+        //修改密码
+        passWordSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .remove(fragmentTest)
+                        .add(R.id.fragment_container, FragmentShopChangePassWord.newInstance(), "shop_message_setting_change_password_layout")
+                        .commit();
+            }
+        });
+
+        //电话号码
+        phoneNumberSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .remove(fragmentTest)
+                        .add(R.id.fragment_container, FragmentShopChangePhoneNumber.newInstance(), "shop_message_setting_change_phone_number_layout")
+                        .commit();
+            }
+        });
+
+        //个性签名
+        signSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .remove(fragmentTest)
+                        .add(R.id.fragment_container, FragmentShopChangeSign.newInstance(), "shop_message_setting_change_sign_layout")
+                        .commit();
+            }
+        });
+
+    }
+
+    private void initViews(View view) {
+        backImageView = view.findViewById(R.id.shop_message_setting_back_ImageView);
+        headPictureSetting = view.findViewById(R.id.shop_message_setting_profile_photo_layout);
+        nickNameSetting = view.findViewById(R.id.shop_message_setting_store_name_layout);
+        passWordSetting = view.findViewById(R.id.shop_message_setting_change_password_layout);
+        phoneNumberSetting = view.findViewById(R.id.shop_message_setting_change_phone_number_layout);
+        emailSetting = view.findViewById(R.id.shop_message_setting_change_email_layout);
+        signSetting = view.findViewById(R.id.shop_message_setting_change_sign_layout);
+
+        shopProfilePhoto = view.findViewById(R.id.shop_profile_photo);
+
+        staticNickNameTextView = view.findViewById(R.id.shop_message_setting_store_name_TextView);
+        phoneNumberTextView = view.findViewById(R.id.shop_message_setting_change_phone_number_TextView);
+        emailTextView = view.findViewById(R.id.shop_message_setting_change_email_TextView);
+        signTextView = view.findViewById(R.id.shop_message_setting_change_sign_TextView);
+    }
+
+    private void initPhoto() {
+        GetBmobPhotoFile.initInterface("编辑资料界面", 2);
+    }
+
+    public static void setShopChangeIcon(Bitmap bitmap) {
+        shopProfilePhoto.setImageBitmap(bitmap);
+    }
+
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<分界线
 
     private void openAlbum() {
+        Log.e(TAG, "openAlbum: 非MainActivity，打开相册" );
         Intent intent = new Intent("android.intent.action.GET_CONTENT");
         intent.setType("image/*");
         startActivityForResult(intent, RESULT_IMAGE);//打开相册
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //碎片的回调在碎片中
+        switch (requestCode) {
+            case 100:
+                Log.e(TAG, "onRequestPermissionsResult: 回调成功" );
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openAlbum();
+                } else {
+                    Toast.makeText(getContext(), "你没有开启权限", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //碎片的回调在碎片中
+        switch (requestCode) {
+            case RESULT_IMAGE:
+                if (resultCode == RESULT_OK && data != null) {
+                    Log.e(TAG, "onActivityResult: "+RESULT_IMAGE );
+                    //判断手机系统版本号
+                    if (Build.VERSION.SDK_INT >= 19) {
+                        //4.4及以上系统使用这个方法处理图片
+                        handlerImageOnKitKat(data);
+                    } else {
+                        //4.4以下系统使用这个方法处理图片
+                        handlerImageBeforeKitKat(data);
+                    }
+                }
+                break;
+            case RESULT_CAMERA:
+                Log.e(TAG, "onActivityResult: "+RESULT_CAMERA );
+                if (resultCode == RESULT_OK) {
+                    //进行裁剪
+                    startPhotoZoom(imageUri);
+                }
+                break;
+            case CROP_PICTURE: // 取得裁剪后的图片
+                Log.e(TAG, "onActivityResult: "+CROP_PICTURE );
+                if (resultCode == RESULT_OK) {
+                    Bitmap headShot = null;
+                    try {
+                        File file = new File(new URI(cropImageUri.toString()));
+                        headShot= BitmapFactory.decodeFile(String.valueOf(file));
+                    } catch (Exception e) {
+                        Log.e(TAG, "onActivityResult: 编辑资料界面获取剪裁后的照片失败：" + e.getMessage());
+                    }
+                    setShopChangeIcon(headShot);
+                    setShopShowIcon(headShot);
+                    commitToBmob();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void commitToBmob() {
+        BmobFile bmobFile = null;
+        try {
+            bmobFile = new BmobFile(new File(new URI(cropImageUri.toString())));
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        if (bmobFile != null) {
+            final User user = new User();
+            user.setPicture_head(bmobFile);
+            user.setStore(true);
+            user.getPicture_head().uploadblock(new UploadFileListener() {
+                @Override
+                public void done(BmobException e) {
+                    if (e == null) {
+                        Log.e(TAG, "done: 上传服务器成功");
+                        user.update(User.getCurrentUser(User.class).getObjectId(), new UpdateListener() {
+                            @Override
+                            public void done(BmobException e) {
+                                if (e == null) {
+                                    Toast.makeText(getContext(), "bmob上传成功", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Log.e(TAG, "done: " + e.getMessage());
+                                    Toast.makeText(getContext(), "bmob上传失败", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } else {
+                        Log.e(TAG, "done: 上传服务器失败 " + e.getMessage());
+                    }
+                }
+            });
+        } else {
+            Log.e(TAG, "commitToBmob: file is null");
+        }
     }
 
     private void startPhotoZoom(Uri uri) {
@@ -202,93 +436,12 @@ public class FragmentShopMessageSetting extends Fragment {
         startActivityForResult(intent, CROP_PICTURE);
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case RESULT_CAMERA:
-                if (resultCode == RESULT_OK) {
-                    //进行裁剪
-                    startPhotoZoom(imageUri);
-                }
-                break;
-            case RESULT_IMAGE:
-
-                if (resultCode == RESULT_OK && data != null) {
-                    //判断手机系统版本号
-                    if (Build.VERSION.SDK_INT >= 19) {
-                        //4.4及以上系统使用这个方法处理图片
-                        handlerImageOnKitKat(data);
-                    } else {
-                        //4.4以下系统使用这个方法处理图片
-                        handlerImageBeforeKitKat(data);
-                    }
-                }
-                break;
-
-            case CROP_PICTURE: // 取得裁剪后的图片
-                if (resultCode == RESULT_OK) {
-                    Bitmap headShot = null;
-                    try {
-                        File file = new File(new URI(cropImageUri.toString()));
-                        headShot=BitmapFactory.decodeFile(String.valueOf(file));
-                        commitToBmob();
-                    } catch (Exception e) {
-                        Log.e(TAG, "onActivityResult: " + e.getMessage());
-                    }
-                    setShopChangeIcon(headShot);
-                    setShopShowIcon(headShot);
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
     private void handlerImageBeforeKitKat(Intent data) {
         Uri cropUri = data.getData();
         startPhotoZoom(cropUri);
     }
 
-    private void commitToBmob() {
-        BmobFile bmobFile = null;
-        try {
-            bmobFile = new BmobFile(new File(new URI(cropImageUri.toString())));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        if (bmobFile != null) {
-            final User user = new User();
-            user.setPicture_head(bmobFile);
-            user.setStore(true);
-            user.getPicture_head().uploadblock(new UploadFileListener() {
-                @Override
-                public void done(BmobException e) {
-                    if (e == null) {
-                        Log.e(TAG, "done: 上传服务器成功");
-                        user.update(User.getCurrentUser(User.class).getObjectId(), new UpdateListener() {
-                            @Override
-                            public void done(BmobException e) {
-                                if (e == null) {
-                                    Toast.makeText(getActivity(), "bmob上传成功", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Log.e(TAG, "done: " + e.getMessage());
-                                    Toast.makeText(getActivity(), "bmob上传失败", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    } else {
-                        Log.e(TAG, "done: 上传服务器失败 " + e.getMessage());
-                    }
-                }
-            });
-        } else {
-            Log.e(TAG, "commitToBmob: file is null");
-        }
-    }
-
-
-    public void handlerImageOnKitKat(Intent data) {
+    private void handlerImageOnKitKat(Intent data) {
         String imagePath = null;
         Uri uri = data.getData();
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -311,120 +464,10 @@ public class FragmentShopMessageSetting extends Fragment {
 //                imagePath = uri.getPath();
 //            }
 //        }
-        imagePath = MainActivity.getPathByUri(getContext(), uri);
+//        imagePath = MainActivity.getPathByUri(getContext(), uri);
         startPhotoZoom(uri);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 1:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    openAlbum();
-                } else {
-                    Toast.makeText(getContext(), "你没有开启权限", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<分界线
 
-
-    private void bmobCheck() {
-        initPhoto();
-        BmobQuery<User> bmobQuery = new BmobQuery<>();
-        bmobQuery.getObject(User.getCurrentUser().getObjectId(), new QueryListener<User>() {
-            @Override
-            public void done(User object, BmobException e) {
-                if (e == null) {
-                    staticNickNameTextView.setText(object.getNickName());
-                    phoneNumberTextView.setText(object.getMobilePhoneNumber());
-                    emailTextView.setText(object.getEmail());
-                    if (object.getSign() != null) {
-                        signTextView.setText(object.getSign());
-                    } else {
-                        signTextView.setText(R.string.noSign);
-                    }
-                } else {
-                    Toast.makeText(getActivity(), "店铺面板更新失败!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-
-    private void initClicks() {
-        headPictureSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialogShow();
-            }
-        });
-
-        backImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                        .remove(fragmentTest)
-                        .add(R.id.fragment_container, FragmentShopKeeperMine.newInstance(), "shop_fragment_mine")
-                        .commit();
-            }
-        });
-
-        nickNameSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                        .remove(fragmentTest)
-                        .add(R.id.fragment_container, FragmentShopChangeNickName.newInstance(), "shop_message_setting_store_name_layout")
-                        .commit();
-            }
-        });
-
-        emailSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                        .remove(fragmentTest)
-                        .add(R.id.fragment_container, FragmentShopChangeEmail.newInstance(), "shop_message_setting_change_email_layout")
-                        .commit();
-            }
-        });
-
-    }
-
-    private void initViews(View view) {
-        backImageView = view.findViewById(R.id.shop_message_setting_back_ImageView);
-        headPictureSetting = view.findViewById(R.id.shop_message_setting_profile_photo_layout);
-        nickNameSetting = view.findViewById(R.id.shop_message_setting_store_name_layout);
-        passWordSetting = view.findViewById(R.id.shop_message_setting_change_password_layout);
-        phoneNumberSetting = view.findViewById(R.id.shop_message_setting_change_phone_number_layout);
-        emailSetting = view.findViewById(R.id.shop_message_setting_change_email_layout);
-        signSetting = view.findViewById(R.id.shop_message_setting_change_sign_layout);
-
-        shopProfilePhoto = view.findViewById(R.id.shop_profile_photo);
-
-        staticNickNameTextView = view.findViewById(R.id.shop_message_setting_store_name_TextView);
-        phoneNumberTextView = view.findViewById(R.id.shop_message_setting_change_phone_number_TextView);
-        emailTextView = view.findViewById(R.id.shop_message_setting_change_email_TextView);
-        signTextView = view.findViewById(R.id.shop_message_setting_change_sign_TextView);
-    }
-
-    private void initPhoto() {
-        GetBmobFile.initInterface("编辑资料界面", 2);
-    }
-
-    public static void setShopChangeIcon(Bitmap bitmap) {
-        shopProfilePhoto.setImageBitmap(bitmap);
-    }
 }

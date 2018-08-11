@@ -58,7 +58,6 @@ public class RegisterActivity extends AppCompatActivity {
     private String location;
     private TextView hintTextView;
     private LinearLayout hintLinearLayout;
-    //    private LinearLayout theBigestLayout;
     private LocationClient locationClient;
 
     public static Intent newInstance(Context context, String choose) {
@@ -69,11 +68,8 @@ public class RegisterActivity extends AppCompatActivity {
         return intent;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         if (Build.VERSION.SDK_INT >= 21) {
             View decorView = getWindow().getDecorView();
             //让应用主题内容占用系统状态栏的空间,注意:下面两个参数必须一起使用 stable 牢固的
@@ -102,12 +98,13 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
-
         setContentView(R.layout.activity_register);
         choose_zhuce = getIntent().getStringExtra("choose_zhuce");
-
         initViews();
+        initClicks();
+    }
 
+    private void initClicks() {
         register_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,10 +132,10 @@ public class RegisterActivity extends AppCompatActivity {
                                 shopKeeper.setStore(true);
                                 shopKeeper.setLatitude(Latitude);
                                 shopKeeper.setLongitude(Longitude);
-                                if (shopKeeper.getLatitude() != null) {
-                                    Log.e(TAG, "onClick: getLatitude success!!");
-                                }
-                                Log.e(TAG, "onClick: location是否提前知道："+location );
+//                                if (shopKeeper.getLatitude() != null) {
+//                                    Log.e(TAG, "onClick: getLatitude success!!");
+//                                }
+//                                Log.e(TAG, "onClick: location是否提前知道："+location );
                                 shopKeeper.setLocation(location);
                                 zhuce(shopKeeper);
 
@@ -179,13 +176,13 @@ public class RegisterActivity extends AppCompatActivity {
                     dialog.setTitle("温馨提醒")
                             .setMessage("您已成功注册账号，请使用账号和密码进行登陆。")
                             .setCancelable(false);
+                    dialog.show();
                     dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             finish();
                         }
                     });
-                    dialog.show();
                 } else {
                     Toast.makeText(RegisterActivity.this, "注册失败" + e.getMessage() + "Error code:" + e.getErrorCode(), Toast.LENGTH_LONG).show();
                 }
@@ -196,7 +193,6 @@ public class RegisterActivity extends AppCompatActivity {
     private void initViews() {
         hintLinearLayout = findViewById(R.id.register_hint_LinearLayout);
         hintTextView = findViewById(R.id.register_hint_TextView);
-//        theBigestLayout=findViewById(R.id.linearLayout);
         register_account = (EditText) findViewById(R.id.register_name_editText);
         register_phone = (EditText) findViewById(R.id.register_phone_editText);
         register_emile = (EditText) findViewById(R.id.register_emile_editText);

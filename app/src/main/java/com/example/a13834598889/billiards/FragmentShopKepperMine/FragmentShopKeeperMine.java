@@ -16,7 +16,7 @@ import com.example.a13834598889.billiards.FragmentShopKepperMine.second.Fragment
 import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMessageSetting;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopThreeAd;
 import com.example.a13834598889.billiards.R;
-import com.example.a13834598889.billiards.Tool.GetBmobFile;
+import com.example.a13834598889.billiards.Tool.GetBmobPhotoFile;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -40,7 +40,7 @@ public class FragmentShopKeeperMine extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_keeper_mine, container, false);
         initViews(view);
-        GetBmobFile.initInterface("店铺信息界面", 1);
+        GetBmobPhotoFile.initInterface("店铺信息界面", 1);
 
         return view;
     }
