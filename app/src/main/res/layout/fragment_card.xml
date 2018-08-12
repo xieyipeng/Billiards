@@ -1,75 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:background="#e6e6e6"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="#e6e6e6"
+    android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:background="#414141"
         android:orientation="horizontal">
 
         <RelativeLayout
             android:layout_width="50dp"
             android:layout_height="50dp">
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/circleImageView_mine99"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerInParent="true" />
         </RelativeLayout>
+
         <TextView
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
             android:text="帖    子"
             android:textColor="#ffffff"
             android:textSize="20sp" />
+
         <RelativeLayout
             android:layout_width="50dp"
             android:layout_height="50dp">
+
             <ImageView
                 android:id="@+id/fragment_card_back"
-                android:layout_centerInParent="true"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/tubiao_fanhui"
-                />
+                android:layout_centerInParent="true"
+                android:src="@drawable/tubiao_fanhui" />
         </RelativeLayout>
 
     </LinearLayout>
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:layout_height="0dp">-->
-            <!--<TextView-->
-                <!--android:text="我的帖子"-->
-                <!--android:gravity="center"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:layout_height="match_parent" />-->
-            <!--<TextView-->
-                <!--android:background="#414141"-->
-                <!--android:layout_width="1dp"-->
-                <!--android:layout_height="match_parent" />-->
-            <!--<TextView-->
-                <!--android:text="我的收藏"-->
-                <!--android:gravity="center"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:layout_height="match_parent" />-->
-        <!--</LinearLayout>-->
+        android:layout_height="50dp"
+        android:orientation="vertical">
+
         <com.flyco.tablayout.SlidingTabLayout
             android:id="@+id/sliding_tabs"
             android:layout_width="match_parent"
@@ -81,35 +61,13 @@
             app:tl_indicator_height="2dp"
             app:tl_indicator_width="40dp"
             app:tl_tab_space_equal="true" />
-
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="1dp">-->
-            <!--<TextView-->
-                <!--android:id="@+id/text_line_card_mine"-->
-                <!--android:background="@color/colorAccent"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:layout_height="match_parent" />-->
-            <!--<TextView-->
-                <!--android:background="#414141"-->
-                <!--android:layout_width="1dp"-->
-                <!--android:layout_height="match_parent" />-->
-            <!--<TextView-->
-                <!--android:id="@+id/text_line_card_star"-->
-                <!--android:background="#414141"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_weight="1"-->
-                <!--android:layout_height="match_parent" />-->
-        <!--</LinearLayout>-->
     </LinearLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager_container3"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        >
+        android:layout_weight="1">
 
     </android.support.v4.view.ViewPager>
 </LinearLayout>

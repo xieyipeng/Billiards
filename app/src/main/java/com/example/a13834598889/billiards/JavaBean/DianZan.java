@@ -1,4 +1,4 @@
-package com.example.a13834598889.billiards.xieyipeng.bean;
+package com.example.a13834598889.billiards.JavaBean;
 
 import cn.bmob.v3.BmobObject;
 

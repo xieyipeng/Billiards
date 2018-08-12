@@ -16,7 +16,8 @@ import com.example.a13834598889.billiards.R;
 public class Fragment_card_mine extends Fragment {
 
     public static Fragment_card_mine newInstance(){
-        return new Fragment_card_mine();
+        Fragment_card_mine fragment_card_mine=new Fragment_card_mine();
+        return fragment_card_mine;
     }
 
     @Nullable

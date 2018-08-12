@@ -52,8 +52,9 @@ public class FragmentShopKeeperMine extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
-                android.R.anim.fade_out).hide(this).commit();
+        fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .hide(this)
+                .commit();
         switch (v.getId()) {
             case R.id.shop_keeper_mine_message_setting:
                 //个人信息设置

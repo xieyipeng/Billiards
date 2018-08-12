@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.example.a13834598889.billiards.FragmentCustomerMine.Fragment_mine;
@@ -50,13 +49,12 @@ public class MainActivity extends AppCompatActivity {
 
     private Fragment fragment = null;
     private FragmentManager fragmentManager;
-    private boolean isStore = false;
+    private boolean isStore;
     private static final String TAG = "MainActivity";
     private BottomNavigationView customerNavigation;
     private BottomNavigationView shopNavigation;
 
-    private Fragment fragmentTest = null;
-
+    private Fragment fragmentTest;
 
     public static File path;
 
@@ -70,80 +68,84 @@ public class MainActivity extends AppCompatActivity {
         bmobCheckStore();
     }
 
-    public static String getPathByUri(Context context, Uri uri) {
-        if (null == uri) return null;
-        final String scheme = uri.getScheme();
-        String data = null;
-        if (scheme == null)
-            data = uri.getPath();
-        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
-            data = uri.getPath();
-        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
-            if (null != cursor) {
-                if (cursor.moveToFirst()) {
-                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                    if (index > -1) {
-                        data = cursor.getString(index);
-                    }
-                }
-                cursor.close();
-            }
-        }
-        return data;
-    }
-
-    private String getImagePath(Uri uri, String selection) {
-        String path = null;
-        //通过Uri和selection来获取真实的图片路径
-        Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-            }
-            cursor.close();
-        }
-        return path;
-    }
-
     @Override
     public void onBackPressed() {
-        find_jude();
         fragmentTest = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_help")
-                || fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting")
-                || fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_members_message")
-                || fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_three_ad")
-                || fragmentTest == fragmentManager.findFragmentByTag("shop_keeper_mine_store_location")) {
-            //2 -> 我的信息
-            fragmentManager.beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .show(fragmentManager.findFragmentByTag("shop_fragment_mine"))
-                    .commit();
+        find_jude();
+        caseStore();
+        caseCustomer();
+        String[] mainString = new String[]{
+                "shop_fragment_mine",
+                "shop_fragment_snacks",
+                "shop_fragment_bill",
+                "shop_fragment_table",
+                "fragment_mine",
+                "fragment_share",
+                "fragment_order",
+                "fragment_teach"};
+        for (String tag : mainString) {
+            if (tag.equals(fragmentTest.getTag())) {
+                finish();
+            }
         }
-        if (fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout")
-                || fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_change_email_layout")
-                || fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_change_password_layout")
-                || fragmentTest == fragmentManager.findFragmentByTag("shop_message_setting_change_phone_number_layout")) {
-            //3 -> 基本信息设置
-            fragmentManager.beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .add(R.id.fragment_container, FragmentShopMessageSetting.newInstance(), "shop_keeper_mine_message_setting")
-                    .commit();
+    }
+
+    private void caseCustomer() {
+        //2 -> 我的信息
+        String[] toMineMessage = new String[]{
+                "card_fragment"};
+        for (String tag : toMineMessage) {
+            if (tag.equals(fragmentTest.getTag())) {
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .show(fragmentManager.findFragmentByTag("fragment_mine"))
+                        .commit();
+            }
         }
-        if (fragmentTest == fragmentManager.findFragmentByTag("shop_member_add_ImageView")) {
-            //3 -> 会员信息
-            fragmentManager.beginTransaction()
-                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .add(R.id.fragment_container, FragmentShopMemberMessage.newInstance(), "shop_keeper_mine_members_message")
-                    .commit();
+    }
+
+    private void caseStore() {
+        //shop 2 -> 我的信息
+        String[] toMineMessage = new String[]{
+                "shop_keeper_mine_help",
+                "shop_keeper_mine_message_setting",
+                "shop_keeper_mine_members_message",
+                "shop_keeper_mine_three_ad",
+                "shop_keeper_mine_store_location"};
+        for (String tag : toMineMessage) {
+            if (tag.equals(fragmentTest.getTag())) {
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .show(fragmentManager.findFragmentByTag("shop_fragment_mine"))
+                        .commit();
+            }
         }
-        if (fragmentTest == fragmentManager.findFragmentByTag("shop_fragment_mine")
-                || fragmentTest == fragmentManager.findFragmentByTag("shop_fragment_snacks")
-                || fragmentTest == fragmentManager.findFragmentByTag("shop_fragment_bill")
-                || fragmentTest == fragmentManager.findFragmentByTag("shop_fragment_table")) {
-            //finish
-            finish();
+
+        //shop 3 -> 基本信息设置
+        String[] toBaseMessage = new String[]{
+                "shop_message_setting_store_name_layout",
+                "shop_message_setting_change_email_layout",
+                "shop_message_setting_change_password_layout",
+                "shop_message_setting_change_phone_number_layout"};
+        for (String tag : toBaseMessage) {
+            if (tag.equals(fragmentTest.getTag())) {
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .add(R.id.fragment_container, FragmentShopMessageSetting.newInstance(), "shop_keeper_mine_message_setting")
+                        .commit();
+            }
+        }
+
+        //shop 3 -> 会员信息
+        String[] toMemberMessage = new String[]{
+                "shop_member_add_ImageView"};
+        for (String tag : toMemberMessage) {
+            if (tag.equals(fragmentTest.getTag())) {
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .add(R.id.fragment_container, FragmentShopMemberMessage.newInstance(), "shop_keeper_mine_members_message")
+                        .commit();
+            }
         }
     }
 
@@ -204,11 +206,8 @@ public class MainActivity extends AppCompatActivity {
                 if (e == null) {
                     if (object.isStore()) {
                         isStore = true;
-                        Log.e(TAG, "done: " + "店家好 " + object.isStore());
-                        Toast.makeText(MainActivity.this, "店家好", Toast.LENGTH_SHORT).show();
                     } else {
-                        Log.e(TAG, "done: " + "球友好 " + object.isStore());
-                        Toast.makeText(MainActivity.this, "球友好", Toast.LENGTH_SHORT).show();
+                        isStore = false;
                     }
                 } else {
                     Log.e(TAG, "done: 检查店家或球友失败，错误：" + e.getMessage());
@@ -218,101 +217,44 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
     private void find_jude() {
-        Log.e(TAG, "find_jude: jude");
-        if (fragmentManager.findFragmentByTag("friends_fragment") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("friends_fragment"))
-                    .remove(fragmentManager.findFragmentByTag("friends_fragment"))
-                    .commit();
+        String[] customerJudeString = new String[]{
+                "friends_fragment",
+                "card_fragment",
+                "account_fragment"};
+        for (String tag : customerJudeString) {
+            if (fragmentManager.findFragmentByTag(tag) != null) {
+                fragmentManager.beginTransaction()
+                        .hide(fragmentManager.findFragmentByTag(tag))
+                        .remove(fragmentManager.findFragmentByTag(tag))
+                        .commit();
+            }
         }
-        if (fragmentManager.findFragmentByTag("card_fragment") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("card_fragment"))
-                    .remove(fragmentManager.findFragmentByTag("card_fragment"))
-                    .commit();
+        String[] shopJudeString = new String[]{
+                "shop_keeper_mine_message_setting",
+                "shop_keeper_mine_members_message",
+                "shop_keeper_mine_three_ad",
+                "shop_keeper_mine_store_location",
+                "shop_keeper_mine_help",
+                "shop_message_setting_store_name_layout",
+                "shop_message_setting_change_email_layout",
+                "shop_keeper_mine_members_message",
+                "shop_member_add_ImageView",
+                "shop_message_setting_change_password_layout",
+                "shop_message_setting_change_phone_number_layout"};
+        for (String tag : shopJudeString) {
+            if (fragmentManager.findFragmentByTag(tag) != null) {
+                fragmentManager.beginTransaction()
+                        .hide(fragmentManager.findFragmentByTag(tag))
+                        .remove(fragmentManager.findFragmentByTag(tag))
+                        .commit();
+            }
         }
-        if (fragmentManager.findFragmentByTag("account_fragment") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("account_fragment"))
-                    .remove(fragmentManager.findFragmentByTag("account_fragment"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting"))
-                    .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_message_setting"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("shop_keeper_mine_members_message") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_members_message"))
-                    .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_members_message"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("shop_keeper_mine_three_ad") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_three_ad"))
-                    .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_three_ad"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("shop_keeper_mine_store_location") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_store_location"))
-                    .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_store_location"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("shop_keeper_mine_help") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_help"))
-                    .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_help"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout"))
-                    .remove(fragmentManager.findFragmentByTag("shop_message_setting_store_name_layout"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("shop_message_setting_change_email_layout") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("shop_message_setting_change_email_layout"))
-                    .remove(fragmentManager.findFragmentByTag("shop_message_setting_change_email_layout"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("shop_keeper_mine_members_message") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("shop_keeper_mine_members_message"))
-                    .remove(fragmentManager.findFragmentByTag("shop_keeper_mine_members_message"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("shop_member_add_ImageView") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("shop_member_add_ImageView"))
-                    .remove(fragmentManager.findFragmentByTag("shop_member_add_ImageView"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("shop_message_setting_change_password_layout") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("shop_message_setting_change_password_layout"))
-                    .remove(fragmentManager.findFragmentByTag("shop_message_setting_change_password_layout"))
-                    .commit();
-        }
-        if (fragmentManager.findFragmentByTag("shop_message_setting_change_phone_number_layout") != null) {
-            fragmentManager.beginTransaction()
-                    .hide(fragmentManager.findFragmentByTag("shop_message_setting_change_phone_number_layout"))
-                    .remove(fragmentManager.findFragmentByTag("shop_message_setting_change_phone_number_layout"))
-                    .commit();
-        }
-
-//        isMainFragment=true;shop_keeper_mine_members_message
     }
 
     private void initViews() {
         customerNavigation = findViewById(R.id.navigation);
         shopNavigation = findViewById(R.id.shop_navigation);
-
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener customBottomView
@@ -382,8 +324,9 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         fragment = save_fragment_mine;
                     }
-                    fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
-                            android.R.anim.fade_out).show(fragment).commit();
+                    fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                            .show(fragment)
+                            .commit();
                     return true;
             }
             return false;
@@ -468,5 +411,41 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
+
+    public static String getPathByUri(Context context, Uri uri) {
+        if (null == uri) return null;
+        final String scheme = uri.getScheme();
+        String data = null;
+        if (scheme == null)
+            data = uri.getPath();
+        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+            data = uri.getPath();
+        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            if (null != cursor) {
+                if (cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                    if (index > -1) {
+                        data = cursor.getString(index);
+                    }
+                }
+                cursor.close();
+            }
+        }
+        return data;
+    }
+
+    private String getImagePath(Uri uri, String selection) {
+        String path = null;
+        //通过Uri和selection来获取真实的图片路径
+        Cursor cursor = getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        return path;
+    }
 
 }

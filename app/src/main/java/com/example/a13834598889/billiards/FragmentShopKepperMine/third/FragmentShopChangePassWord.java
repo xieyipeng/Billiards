@@ -16,9 +16,8 @@ import android.widget.Toast;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMessageSetting;
 import com.example.a13834598889.billiards.JavaBean.ShopKeeper;
 import com.example.a13834598889.billiards.JavaBean.User;
-import com.example.a13834598889.billiards.MainActivity;
 import com.example.a13834598889.billiards.R;
-import com.example.a13834598889.billiards.xieyipeng.LoginActivity;
+import com.example.a13834598889.billiards.LoginActivity;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;

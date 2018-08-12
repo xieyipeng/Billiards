@@ -1,4 +1,4 @@
-package com.example.a13834598889.billiards.xieyipeng;
+package com.example.a13834598889.billiards;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,8 +22,7 @@ import com.baidu.location.LocationClient;
 import com.example.a13834598889.billiards.JavaBean.Customer;
 import com.example.a13834598889.billiards.JavaBean.ShopKeeper;
 import com.example.a13834598889.billiards.JavaBean.User;
-import com.example.a13834598889.billiards.R;
-import com.example.a13834598889.billiards.xieyipeng.bean.DianZan;
+import com.example.a13834598889.billiards.JavaBean.DianZan;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

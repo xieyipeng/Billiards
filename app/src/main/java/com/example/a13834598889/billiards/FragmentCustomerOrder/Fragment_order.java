@@ -192,7 +192,7 @@ public class Fragment_order extends Fragment implements View.OnClickListener {
             if (bdLocation.getLocType() == BDLocation.TypeGpsLocation
                     || bdLocation.getLocType() == BDLocation.TypeNetWorkLocation) {
                 navigateTo(bdLocation);
-                Log.e(TAG, "onReceiveLocation: 1"+bdLocation.getLatitude()+","+bdLocation.getLongitude() );
+//                Log.e(TAG, "onReceiveLocation: "+bdLocation.getLatitude()+","+bdLocation.getLongitude() );
             }
         }
     }

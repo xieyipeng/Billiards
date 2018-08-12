@@ -4,6 +4,7 @@
     <TextView
         android:gravity="center"
         android:text="fragment222222"
+        android:background="#64ff2b"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

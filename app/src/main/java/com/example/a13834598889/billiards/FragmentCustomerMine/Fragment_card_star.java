@@ -16,7 +16,8 @@ import com.example.a13834598889.billiards.R;
 public class Fragment_card_star extends Fragment {
 
     public static Fragment_card_star newInstance(){
-        return new Fragment_card_star();
+        Fragment_card_star fragment_card_star=new Fragment_card_star();
+        return fragment_card_star;
     }
 
     @Nullable
