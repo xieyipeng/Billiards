@@ -1,4 +1,4 @@
-package com.example.a13834598889.billiards.FragmentCustomerMine;
+package com.example.a13834598889.billiards.FragmentCustomerMine.second;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

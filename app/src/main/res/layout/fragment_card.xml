@@ -16,11 +16,12 @@
             android:layout_width="50dp"
             android:layout_height="50dp">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circleImageView_mine99"
+            <ImageView
+                android:id="@+id/fragment_card_back"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"
+                android:background="@drawable/ic_back1" />
         </RelativeLayout>
 
         <TextView
@@ -37,11 +38,11 @@
             android:layout_height="50dp">
 
             <ImageView
-                android:id="@+id/fragment_card_back"
+                android:id="@+id/fragment_card_add"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerInParent="true"
-                android:src="@drawable/tubiao_fanhui" />
+                android:background="@drawable/ic_add_black_24dp"/>
         </RelativeLayout>
 
     </LinearLayout>
@@ -51,6 +52,8 @@
         android:orientation="vertical">
 
         <com.flyco.tablayout.SlidingTabLayout
+            app:tl_textSelectColor="#ffe66b"
+            app:tl_textUnselectColor="#fff"
             android:id="@+id/sliding_tabs"
             android:layout_width="match_parent"
             android:layout_height="50dp"

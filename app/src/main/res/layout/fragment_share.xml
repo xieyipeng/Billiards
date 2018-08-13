@@ -9,8 +9,7 @@
         android:background="#414141"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
         <RelativeLayout
             android:layout_width="50dp"
             android:layout_height="50dp">
@@ -37,7 +36,9 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_View_shares"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 
 </LinearLayout>

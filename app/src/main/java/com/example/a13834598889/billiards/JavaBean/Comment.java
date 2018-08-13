@@ -7,7 +7,7 @@ import cn.bmob.v3.BmobObject;
  */
 
 public class Comment extends BmobObject {
-    private Cards card;  //帖子
+    private Card card;  //帖子
     private Customer customer;  //评论人
     private String time;  //评论时间
     private String context;  //评论内容

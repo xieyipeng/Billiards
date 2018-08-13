@@ -19,6 +19,7 @@ import android.view.View;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.example.a13834598889.billiards.FragmentCustomerMine.Fragment_mine;
+import com.example.a13834598889.billiards.FragmentCustomerMine.second.Fragment_card;
 import com.example.a13834598889.billiards.FragmentCustomerOrder.Fragment_order;
 import com.example.a13834598889.billiards.FragmentCustomerShare.Fragment_share;
 import com.example.a13834598889.billiards.FragmentCustomerTeach.Fragment_teach;
@@ -93,15 +94,31 @@ public class MainActivity extends AppCompatActivity {
     private void caseCustomer() {
         //2 -> 我的信息
         String[] toMineMessage = new String[]{
-                "card_fragment"};
+                "card_fragment",
+                "text_button_bangzhu"};
         for (String tag : toMineMessage) {
             if (tag.equals(fragmentTest.getTag())) {
+                Log.e(TAG, "caseCustomer: come");
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                         .show(fragmentManager.findFragmentByTag("fragment_mine"))
                         .commit();
             }
         }
+
+        //3 -> 我的贴子
+        String[] toMineCard = new String[]{
+                "fragment_card_add"};
+        for (String tag : toMineCard) {
+            if (tag.equals(fragmentTest.getTag())) {
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .add(R.id.fragment_container, Fragment_card.newInstance(), "card_fragment")
+                        .commit();
+            }
+        }
+
+
     }
 
     private void caseStore() {
@@ -159,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             shop_fragment_no1 = fragment;
             fragmentManager.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                    .add(R.id.fragment_container, fragment, "shop_fragment_no1")
+                    .add(R.id.fragment_container, fragment, "shop_fragment_table")
                     .commit();
             int[][] states = new int[][]{
                     new int[]{-android.R.attr.state_checked},
@@ -221,7 +238,9 @@ public class MainActivity extends AppCompatActivity {
         String[] customerJudeString = new String[]{
                 "friends_fragment",
                 "card_fragment",
-                "account_fragment"};
+                "account_fragment",
+                "fragment_card_add",
+                "text_button_bangzhu"};
         for (String tag : customerJudeString) {
             if (fragmentManager.findFragmentByTag(tag) != null) {
                 fragmentManager.beginTransaction()
@@ -238,10 +257,9 @@ public class MainActivity extends AppCompatActivity {
                 "shop_keeper_mine_help",
                 "shop_message_setting_store_name_layout",
                 "shop_message_setting_change_email_layout",
-                "shop_keeper_mine_members_message",
-                "shop_member_add_ImageView",
                 "shop_message_setting_change_password_layout",
-                "shop_message_setting_change_phone_number_layout"};
+                "shop_message_setting_change_phone_number_layout",
+                "shop_member_add_ImageView"};
         for (String tag : shopJudeString) {
             if (fragmentManager.findFragmentByTag(tag) != null) {
                 fragmentManager.beginTransaction()

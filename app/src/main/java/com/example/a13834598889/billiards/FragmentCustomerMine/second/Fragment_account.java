@@ -1,4 +1,4 @@
-package com.example.a13834598889.billiards.FragmentCustomerMine;
+package com.example.a13834598889.billiards.FragmentCustomerMine.second;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,7 +21,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public class Fragment_account extends Fragment implements View.OnClickListener{
-
 
     private CircleImageView circleImageView;
     private EditText editText_age;

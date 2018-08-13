@@ -583,7 +583,7 @@ public class FragmentShopThreeAd extends Fragment {
         String imagePath = null;
         Uri uri = data.getData();
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            if (DocumentsContract.isDocumentUri(getContext(), uri)) {
+//            if (DocumentsContract.isDocumentUri(getText(), uri)) {
 //                //如果是document类型的Uri,则通过document id处理
 //                String docId = DocumentsContract.getDocumentId(uri);
 //                if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
@@ -602,7 +602,7 @@ public class FragmentShopThreeAd extends Fragment {
 //                imagePath = uri.getPath();
 //            }
 //        }
-//        imagePath = MainActivity.getPathByUri(getContext(), uri);
+//        imagePath = MainActivity.getPathByUri(getText(), uri);
         startPhotoZoom(uri);
     }
 

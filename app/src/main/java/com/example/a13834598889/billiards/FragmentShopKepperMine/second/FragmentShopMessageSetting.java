@@ -1,14 +1,17 @@
 package com.example.a13834598889.billiards.FragmentShopKepperMine.second;
 
 import android.Manifest;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -299,7 +302,7 @@ public class FragmentShopMessageSetting extends Fragment {
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<分界线
 
     private void openAlbum() {
-        Log.e(TAG, "openAlbum: 非MainActivity，打开相册" );
+        Log.e(TAG, "openAlbum: 非MainActivity，打开相册");
         Intent intent = new Intent("android.intent.action.GET_CONTENT");
         intent.setType("image/*");
         startActivityForResult(intent, RESULT_IMAGE);//打开相册
@@ -310,7 +313,7 @@ public class FragmentShopMessageSetting extends Fragment {
         //碎片的回调在碎片中
         switch (requestCode) {
             case 100:
-                Log.e(TAG, "onRequestPermissionsResult: 回调成功" );
+                Log.e(TAG, "onRequestPermissionsResult: 回调成功");
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     openAlbum();
                 } else {
@@ -328,7 +331,7 @@ public class FragmentShopMessageSetting extends Fragment {
         switch (requestCode) {
             case RESULT_IMAGE:
                 if (resultCode == RESULT_OK && data != null) {
-                    Log.e(TAG, "onActivityResult: "+RESULT_IMAGE );
+                    Log.e(TAG, "onActivityResult: " + imageUri);
                     //判断手机系统版本号
                     if (Build.VERSION.SDK_INT >= 19) {
                         //4.4及以上系统使用这个方法处理图片
@@ -340,19 +343,19 @@ public class FragmentShopMessageSetting extends Fragment {
                 }
                 break;
             case RESULT_CAMERA:
-                Log.e(TAG, "onActivityResult: "+RESULT_CAMERA );
+                Log.e(TAG, "onActivityResult: " + RESULT_CAMERA);
                 if (resultCode == RESULT_OK) {
                     //进行裁剪
                     startPhotoZoom(imageUri);
                 }
                 break;
             case CROP_PICTURE: // 取得裁剪后的图片
-                Log.e(TAG, "onActivityResult: "+CROP_PICTURE );
+                Log.e(TAG, "onActivityResult: " + CROP_PICTURE);
                 if (resultCode == RESULT_OK) {
                     Bitmap headShot = null;
                     try {
                         File file = new File(new URI(cropImageUri.toString()));
-                        headShot= BitmapFactory.decodeFile(String.valueOf(file));
+                        headShot = BitmapFactory.decodeFile(String.valueOf(file));
                     } catch (Exception e) {
                         Log.e(TAG, "onActivityResult: 编辑资料界面获取剪裁后的照片失败：" + e.getMessage());
                     }
@@ -439,33 +442,50 @@ public class FragmentShopMessageSetting extends Fragment {
     private void handlerImageBeforeKitKat(Intent data) {
         Uri cropUri = data.getData();
         startPhotoZoom(cropUri);
+        //获取image的路径
+        String imagePath;
+        imagePath = getImagePath(cropUri, null);
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+//        tupian.setImageBitmap(bitmap);
     }
 
     private void handlerImageOnKitKat(Intent data) {
         String imagePath = null;
         Uri uri = data.getData();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            if (DocumentsContract.isDocumentUri(getContext(), uri)) {
-//                //如果是document类型的Uri,则通过document id处理
-//                String docId = DocumentsContract.getDocumentId(uri);
-//                if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
-//                    String id = docId.split(":")[1];//解析出数字格式的id
-//                    String selection = MediaStore.Images.Media._ID + "=" + id;
-//                    imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
-//                } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
-//                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(docId));
-//                    imagePath = getImagePath(contentUri, null);
-//                }
-//            } else if ("content".equalsIgnoreCase(uri.getScheme())) {
-//                //如果是content类型的URI，则使用普通方式处理
-//                imagePath = getImagePath(uri, null);
-//            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
-//                //如果是file类型的Uri,直接获取图片路径即可
-//                imagePath = uri.getPath();
-//            }
-//        }
-//        imagePath = MainActivity.getPathByUri(getContext(), uri);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (DocumentsContract.isDocumentUri(getContext(), uri)) {
+                //如果是document类型的Uri,则通过document id处理
+                String docId = DocumentsContract.getDocumentId(uri);
+                if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                    String id = docId.split(":")[1];//解析出数字格式的id
+                    String selection = MediaStore.Images.Media._ID + "=" + id;
+                    imagePath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+                } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                    Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(docId));
+                    imagePath = getImagePath(contentUri, null);
+                }
+            } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+                //如果是content类型的URI，则使用普通方式处理
+                imagePath = getImagePath(uri, null);
+            } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+                //如果是file类型的Uri,直接获取图片路径即可
+                imagePath = uri.getPath();
+            }
+        }
         startPhotoZoom(uri);
+    }
+
+    public String getImagePath(Uri uri, String selection) {
+        String path = null;
+        Cursor cursor = getActivity().getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                Log.d("test", "getImagePath: " + path);
+            }
+            cursor.close();
+        }
+        return path;
     }
 
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<分界线
