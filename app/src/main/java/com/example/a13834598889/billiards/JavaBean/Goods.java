@@ -10,11 +10,13 @@ import cn.bmob.v3.datatype.BmobFile;
 
 public class Goods extends BmobObject {
     private String storeID;//店主
-    private String shop_name;//商品名字
-    private Double shop_price;//商品价格
+    private String good_name;//商品名字
+    private Double good_price;//商品价格
     private Integer shop_num;//商品库存量
     private BmobFile picture;//商品图片
     private Integer pictureId;//商品图片Id
+
+
 
     public String getStoreID() {
         return storeID;
@@ -24,20 +26,20 @@ public class Goods extends BmobObject {
         this.storeID = storeID;
     }
 
-    public String getShop_name() {
-        return shop_name;
+    public String getGood_name() {
+        return good_name;
     }
 
-    public void setShop_name(String shop_name) {
-        this.shop_name = shop_name;
+    public void setGood_name(String good_name) {
+        this.good_name = good_name;
     }
 
-    public Double getShop_price() {
-        return shop_price;
+    public Double getGood_price() {
+        return good_price;
     }
 
-    public void setShop_price(Double shop_price) {
-        this.shop_price = shop_price;
+    public void setGood_price(Double good_price) {
+        this.good_price = good_price;
     }
 
     public Integer getShop_num() {

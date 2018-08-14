@@ -129,8 +129,7 @@ public class RegisterActivity extends AppCompatActivity {
                             if (choose_zhuce.equals("A")) {
                                 ShopKeeper shopKeeper = new ShopKeeper();
                                 shopKeeper.setStore(true);
-                                shopKeeper.setLatitude(Latitude);
-                                shopKeeper.setLongitude(Longitude);
+                                shopKeeper.setLatlng(Latitude+","+Longitude);
 //                                if (shopKeeper.getLatitude() != null) {
 //                                    Log.e(TAG, "onClick: getLatitude success!!");
 //                                }

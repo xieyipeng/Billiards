@@ -8,15 +8,14 @@ import cn.bmob.v3.datatype.BmobFile;
  * 店面信息表
  */
 
-public class BilliardStore extends BmobObject{
+public class BilliardStore extends BmobObject {
 
-    private String  storeID;//店主ID
+    private String storeID;//店主ID
     private BmobFile picture_1;//广告图片1
     private BmobFile picture_2;//广告图片2
     private BmobFile picture_3;//广告图片3
     private Double price_pt;//普通用户开台单价
     private Double price_vip;//VIP用户开台单价
-    private BmobFile picture_head;//店面头像
     private Integer num_customer;//客流量
 
     public String getStoreID() {
@@ -65,14 +64,6 @@ public class BilliardStore extends BmobObject{
 
     public void setPrice_vip(Double price_vip) {
         this.price_vip = price_vip;
-    }
-
-    public BmobFile getPicture_head() {
-        return picture_head;
-    }
-
-    public void setPicture_head(BmobFile picture_head) {
-        this.picture_head = picture_head;
     }
 
     public Integer getNum_customer() {

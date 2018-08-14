@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ffffff">
+
+    <ScrollView
+        android:id="@+id/billiards_scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:padding="8dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <com.youth.banner.Banner
+                        android:id="@+id/banner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                    </com.youth.banner.Banner>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_gravity="bottom">
+                        <TextView
+                            android:id="@+id/count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:textColor="#ffffff" />
+                    </LinearLayout>
+                </LinearLayout>
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/bt_good"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="20dp"
+                    android:layout_gravity="end"
+                    android:layout_marginBottom="3dp"
+                    android:background="@drawable/shape_back1"
+                    android:text="饮料配送"/>
+
+                <Button
+                    android:id="@+id/bt_order"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="20dp"
+                    android:layout_gravity="end"
+                    android:layout_marginBottom="3dp"
+                    android:background="@drawable/shape_back1"
+                    android:text="预约打球"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:text="球桌状态实时图"
+                android:layout_margin="5dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="6dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_view_table"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/table_info"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:padding="10dp"
+                android:visibility="invisible">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10dp"
+                    android:padding="10dp"
+                    android:background="@drawable/shape_back2"
+                    android:layout_margin="4dp">
+                    <TextView
+                        android:id="@+id/choose"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"/>
+
+                    <TextView
+                        android:id="@+id/time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"/>
+
+                    <TextView
+                        android:id="@+id/state"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"/>
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

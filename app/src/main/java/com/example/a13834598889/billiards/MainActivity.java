@@ -29,13 +29,21 @@ import com.example.a13834598889.billiards.FragmentShopKeeperNo3.FragmentShopKeep
 import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKeeperMine;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMemberMessage;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMessageSetting;
+import com.example.a13834598889.billiards.JavaBean.BilliardStore;
+import com.example.a13834598889.billiards.JavaBean.ShopKeeper;
 import com.example.a13834598889.billiards.JavaBean.User;
 
 import java.io.File;
+import java.util.List;
 
+import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
+import cn.bmob.v3.listener.SaveListener;
+
+import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
     private Fragment save_fragment_mine;
@@ -65,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
+        Bmob.initialize(this, "fef642bee9678388a478d8b5b25bafa0");
         initViews();
         bmobCheckStore();
     }
@@ -188,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
             ColorStateList colorStateList = new ColorStateList(states, colors);
             shopNavigation.setItemTextColor(colorStateList);
             shopNavigation.setItemIconTintList(colorStateList);
+            initBilliardStore();
         } else {
             shopNavigation.setVisibility(View.GONE);
             customerNavigation.setVisibility(View.VISIBLE);
@@ -221,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void done(User object, BmobException e) {
                 if (e == null) {
-                    if (object.isStore()) {
+                    if (object.getStore()) {
                         isStore = true;
                     } else {
                         isStore = false;
@@ -429,6 +439,40 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
+
+    private void initBilliardStore() {
+        final BilliardStore billiardStore=new BilliardStore();
+        billiardStore.setStoreID(ShopKeeper.getCurrentUser().getObjectId());
+        BmobQuery<BilliardStore> billiardStoreBmobQuery=new BmobQuery<>();
+        billiardStoreBmobQuery.findObjects(new FindListener<BilliardStore>() {
+            @Override
+            public void done(List<BilliardStore> list, BmobException e) {
+                if (e==null){
+                    boolean have=false;
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getStoreID().equals(billiardStore.getStoreID())){
+                            have=true;
+                        }
+                    }
+                    if (!have){
+                        billiardStore.setNum_customer(0);
+                        billiardStore.save(new SaveListener<String>() {
+                            @Override
+                            public void done(String s, BmobException e) {
+                                if (e==null){
+
+                                }else {
+                                    Log.e(TAG, "done: "+e.getMessage() );
+                                }
+                            }
+                        });
+                    }
+                }else {
+                    Log.e(TAG, "done: "+e.getMessage() );
+                }
+            }
+        });
+    }
 
     public static String getPathByUri(Context context, Uri uri) {
         if (null == uri) return null;

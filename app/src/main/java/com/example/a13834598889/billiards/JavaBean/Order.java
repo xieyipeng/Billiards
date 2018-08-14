@@ -8,29 +8,39 @@ import cn.bmob.v3.BmobObject;
  */
 
 public class Order extends BmobObject {
-    private ShopKeeper storeId;//店面ID（店主）
-    private Customer userID;//结账发起人ID（顾客）
+    private String storeId;//店面ID（店主）
+    private String userID;//结账发起人ID（顾客）
     private String time;//结账时间
-    private Integer table_number;//结账桌位号
+    private String table_number;//结账桌位号
     private Double money_1;//桌费
     private Double money_2;//饮品零食费
     private Double money_all;//支付总金额
+    private Double money_order;//预约金额
 
-    public ShopKeeper getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(ShopKeeper storeId) {
-        this.storeId = storeId;
-    }
-
-    public Customer getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public void setUserID(Customer userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
+
+    public String getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
+    }
+
+    public Double getMoney_order() {
+        return money_order;
+    }
+
+    public void setMoney_order(Double money_order) {
+        this.money_order = money_order;
+    }
+
 
     public String getTime() {
         return time;
@@ -40,11 +50,12 @@ public class Order extends BmobObject {
         this.time = time;
     }
 
-    public Integer getTable_number() {
+
+    public String getTable_number() {
         return table_number;
     }
 
-    public void setTable_number(Integer table_number) {
+    public void setTable_number(String table_number) {
         this.table_number = table_number;
     }
 

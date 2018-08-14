@@ -17,7 +17,7 @@ public class User extends BmobUser{
     private String sign;//个性签名
     private boolean isStore;//是否店家
 
-    public boolean isStore() {
+    public boolean getStore() {
         return isStore;
     }
 

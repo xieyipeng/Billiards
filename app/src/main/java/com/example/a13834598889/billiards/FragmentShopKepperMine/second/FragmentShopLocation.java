@@ -87,14 +87,12 @@ public class FragmentShopLocation extends Fragment {
             @Override
             public void onClick(View v) {
                 String commitMessage=locationNowMessage.getText().toString();
-                String commitLongitude=locationNowLongitude.getText().toString();
-                String commitLatitude=locationNowLatitude.getText().toString();
+                String commitLongitude=locationNowLongitude.getText().toString()+","+locationNowLatitude.getText().toString();
                 //提交到bmob
                 ShopKeeper shopKeeper=new ShopKeeper();
                 shopKeeper.setStore(true);
                 shopKeeper.setLocation(commitMessage);
-                shopKeeper.setLongitude(commitLongitude);
-                shopKeeper.setLatitude(commitLatitude);
+                shopKeeper.setLatlng(commitLongitude);
                 shopKeeper.setObjectId(ShopKeeper.getCurrentUser().getObjectId());
                 shopKeeper.update(ShopKeeper.getCurrentUser().getObjectId(), new UpdateListener() {
                     @Override
@@ -122,9 +120,14 @@ public class FragmentShopLocation extends Fragment {
             @Override
             public void done(ShopKeeper shopKeeper, BmobException e) {
                 if (e == null) {
+
+                    String s[] = shopKeeper.getLatlng().split(",");
+                    final String latitude = s[0];
+                    final String longitude = s[1];
+
                     locationBmobMessage.setText(shopKeeper.getLocation());
-                    locationBmobLongitude.setText("经度：" + shopKeeper.getLongitude());
-                    locationBmobLatitude.setText("纬度：" + shopKeeper.getLatitude());
+                    locationBmobLongitude.setText("经度：" + longitude);
+                    locationBmobLatitude.setText("纬度：" + latitude);
                     setNowMessage();
                 } else {
                     Log.e(TAG, "done: 修改位置界面，获取店铺User出错 " + e.getMessage());

@@ -7,9 +7,25 @@ package com.example.a13834598889.billiards.JavaBean;
 
 public class ShopKeeper extends User{
 
-    private String longitude;//店铺所在位置的经度
-    private String latitude;//店铺所在位置的纬度
+    private String latlng;//店铺所在位置的经度
     private String location;//地址
+    private Integer tableNum;
+
+    public Integer getTableNum() {
+        return tableNum;
+    }
+
+    public void setTableNum(Integer tableNum) {
+        this.tableNum = tableNum;
+    }
+
+    public String getLatlng() {
+        return latlng;
+    }
+
+    public void setLatlng(String latlng) {
+        this.latlng = latlng;
+    }
 
     public String getLocation() {
         return location;
@@ -18,21 +34,4 @@ public class ShopKeeper extends User{
     public void setLocation(String location) {
         this.location = location;
     }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
 }

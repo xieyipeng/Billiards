@@ -1,53 +1,137 @@
 package com.example.a13834598889.billiards.FragmentCustomerOrder;
 
-import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.CircleOptions;
+import com.baidu.mapapi.map.GroundOverlayOptions;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.model.LatLngBounds;
+import com.baidu.mapapi.search.core.CityInfo;
+import com.baidu.mapapi.search.core.PoiInfo;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.geocode.GeoCodeOption;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
+import com.baidu.mapapi.search.poi.PoiDetailResult;
+import com.baidu.mapapi.search.poi.PoiDetailSearchOption;
+import com.baidu.mapapi.search.poi.PoiIndoorResult;
+import com.baidu.mapapi.search.poi.PoiResult;
+import com.baidu.mapapi.search.poi.PoiSearch;
+import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener;
+import com.baidu.mapapi.search.sug.SuggestionResult;
+import com.baidu.mapapi.search.sug.SuggestionSearch;
+import com.baidu.mapapi.search.sug.SuggestionSearchOption;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.bumptech.glide.Glide;
-import com.example.a13834598889.billiards.OtherActivity.Billards;
+import com.example.a13834598889.billiards.JavaBean.BilliardStore;
+import com.example.a13834598889.billiards.JavaBean.ShopKeeper;
 import com.example.a13834598889.billiards.R;
+import com.example.a13834598889.billiards.Tool.PoiOverlay;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.support.constraint.Constraints.TAG;
+import static cn.volley.VolleyLog.TAG;
 
 /**
- * Created by 13834598889 on 2018/4/29.
+ * Created by Administrator on 2018/7/18.
  */
 
-public class Fragment_order extends Fragment implements View.OnClickListener {
-    private CircleImageView circleImageView1;
-    private LocationClient locationClient;
-    private MapView mapView = null;
-    private BaiduMap baiduMap;
-    private Button button_yuyuedaqiu;
-    private Button button_xitongtuijian;
+public class Fragment_order extends Fragment implements SensorEventListener,
+        OnGetGeoCoderResultListener,
+        OnGetPoiSearchResultListener,
+        OnGetSuggestionResultListener {
 
-    private boolean isFirstLocate = true;
+    private EditText city;
+    private TextView nickname;
+    private TextView count;
+    private Button bt_into;
+    private Button mLocation;
+    private CircleImageView mCircleImageView;
+    private AutoCompleteTextView key;
+    private Button mSearch;
+    private LinearLayout mLinearLayout;
+    private TextView dis;
+
+    //定位
+    private MapView mMapView = null;
+    private BaiduMap mBaiduMap;
+    private float mCurrentAccracy;
+    private BitmapDescriptor mCurrentMark;
+    private MyLocationConfiguration.LocationMode mLocationMode;
+    private LocationClient mLocationClient;
+    private double mCurrentLat = 0.0;
+    private double mCurrentLon = 0.0;
+    boolean isFirstLoc = true;
+    private PoiSearch mPoiSearch;
+    private GeoCoder mGeoCoder = null;
+    private PoiSearch poiSearch = null;
+    private SuggestionSearch suggestionSearch = null;
+    private Double lastX = 0.0;
+    private int mCurrentDirection = 0;
+    private MyLocationData locData;
+    private List<String> suggest;
+    private ArrayAdapter<String> sugAdapter = null;
+    private int searchType = 0;
+    private LatLng center = new LatLng(39.92235, 116.380338);
+    private int radius = 500;
+    private LatLng southwest = new LatLng(39.92235, 116.380338);
+    private LatLng northeast = new LatLng(39.947246, 116.414977);
+    private LatLngBounds searchbound = new LatLngBounds.Builder().include(southwest).include(northeast).build();
+
+    private String shopID;
+    private Integer integer;//客流量
+    private String shopNickName;
 
     public static Fragment_order newInstance() {
-        Fragment_order fragment_order = new Fragment_order();
-        return fragment_order;
+        return new Fragment_order();
     }
 
     @Override
@@ -57,162 +141,432 @@ public class Fragment_order extends Fragment implements View.OnClickListener {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order, container, false);
         SDKInitializer.initialize(getActivity().getApplicationContext());
-
-        mapView = (MapView) view.findViewById(R.id.mapView);
-        button_yuyuedaqiu = (Button) view.findViewById(R.id.button_fragment_order_yuyuedaqiu);
-        button_xitongtuijian = (Button) view.findViewById(R.id.button_fragment_order_xitongtuiijian);
-        button_yuyuedaqiu.setOnClickListener(this);
-        button_xitongtuijian.setOnClickListener(this);
-        circleImageView1 = (CircleImageView) view.findViewById(R.id.circleImageView_mine1);
-        Glide.with(getActivity())
-                .load(R.drawable.test_touxiang)
-                .into(circleImageView1);
-        map();//定位
+        initViews(view);
+        addMark();
+        initClicks();
+        baiduLocation(view);
+        suggestSearch();
         return view;
     }
 
-    /**
-     * 定位
-     */
-    private void map() {
-        baiduMap = mapView.getMap();
-        // 开启定位图层
-        baiduMap.setMyLocationEnabled(true);
+    private void initClicks() {
+        mLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LatLng ll = new LatLng(mCurrentLat, mCurrentLon);
+                mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newLatLng(ll));
+            }
+        });
+        mSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mGeoCoder.geocode(new GeoCodeOption().city(city.getText().toString()).address(key.getText().toString()));
+            }
+        });
+        bt_into.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .addToBackStack(null)  //返回
+                        .add(R.id.fragment_container, Fragment_billiards.newInstance(shopID, integer, shopNickName))
+                        .commit();
+            }
+        });
 
-//        // 构造定位数据
-//        MyLocationData locData = new MyLocationData.Builder()
-//                .accuracy(location.getRadius())
-//                // 此处设置开发者获取到的方向信息，顺时针0-360
-//                .direction(100).latitude(location.getLatitude())
-//                .longitude(location.getLongitude()).build();
-////         设置定位数据
-//        baiduMap.setMyLocationData(locData);
-//        设置定位图层的配置（定位模式，是否允许方向信息，用户自定义定位图标）\
+    }
+
+    private void initViews(View view) {
+        key = view.findViewById(R.id.geocodekey);
+        city = view.findViewById(R.id.city);
+        nickname = view.findViewById(R.id.name);
+        count = view.findViewById(R.id.keliu);
+        bt_into = view.findViewById(R.id.into);
+        mLocation = view.findViewById(R.id.location);
+        mLinearLayout = view.findViewById(R.id.info);
+        mSearch = view.findViewById(R.id.search);
+        dis = view.findViewById(R.id.juli);
+        mCircleImageView = view.findViewById(R.id.circleImageView);
+        mLinearLayout.setVisibility(View.GONE);
+        Glide.with(getActivity())
+                .load(R.drawable.touxiang)
+                .into(mCircleImageView);
+    }
+
+    private void suggestSearch() {
+        //初始化建议搜索模块，注册建议搜索事件监听
+        suggestionSearch = SuggestionSearch.newInstance();
+        suggestionSearch.setOnGetSuggestionResultListener(this);
+        sugAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line);
+        key.setAdapter(sugAdapter);
+        key.setThreshold(1);
+        key.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (s.length() <= 0) {
+                    return;
+                }
+                suggestionSearch.requestSuggestion((new SuggestionSearchOption())
+                        .keyword(s.toString()).city(city.getText().toString()));
+            }
 
 
-//        BitmapDescriptor mCurrentMarker = BitmapDescriptorFactory
-//                .fromResource(R.drawable.tubikao_zhanghu);
-//        MyLocationConfiguration config = new MyLocationConfiguration(
-//                MyLocationConfiguration.LocationMode.NORMAL, true, mCurrentMarker);
-//        baiduMap.setMyLocationConfiguration(config);
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+
+    private void baiduLocation(View view) {
+        mMapView = view.findViewById(R.id.mapView);
+        mBaiduMap = mMapView.getMap();
+        //定位到当前位置
+        mBaiduMap.setMyLocationEnabled(true);
+        mLocationClient = new LocationClient(getActivity());
+        mCurrentMark = BitmapDescriptorFactory.fromResource(R.drawable.mylocation);
+        mLocationClient.registerLocationListener(new BDAbstractLocationListener() {
+            @Override
+            public void onReceiveLocation(BDLocation bdLocation) {
+                if (bdLocation == null || mMapView == null) {
+                    return;
+                }
+                mCurrentLat = bdLocation.getLatitude();
+                mCurrentLon = bdLocation.getLongitude();
+                mCurrentAccracy = bdLocation.getRadius();
+                MyLocationData locationData = new MyLocationData.Builder()
+                        .accuracy(bdLocation.getRadius())
+                        .direction(0).latitude(bdLocation.getLatitude())
+                        .longitude(bdLocation.getLongitude()).build();
+                mBaiduMap.setMyLocationData(locationData);
+                if (isFirstLoc) {
+                    isFirstLoc = false;
+                    LatLng ll = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
+                    MapStatus.Builder builder = new MapStatus.Builder();
+                    builder.target(ll).zoom(18.0f);
+                    mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+                }
+                mLocationMode = MyLocationConfiguration.LocationMode.NORMAL;
+//                MyLocationConfiguration configuration = new MyLocationConfiguration
+//                        (mLocationMode, true, mCurrentMark);
+                MapStatus.Builder builder = new MapStatus.Builder();
+                builder.overlook(0);
+                mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+            }
+        });
+
+        LocationClientOption option = new LocationClientOption();
+        option.setOpenGps(true);
+        option.setCoorType("bd09ll");
+        option.setScanSpan(1);
+        mLocationClient.setLocOption(option);
+        mLocationClient.start();
 
 
-//        baiduMap.setMyLocationEnabled(true);
+        //地理编码
+        mGeoCoder = GeoCoder.newInstance();
+        mGeoCoder.setOnGetGeoCodeResultListener(this);
+        //poi
+        poiSearch = PoiSearch.newInstance();
+        poiSearch.setOnGetPoiSearchResultListener(this);
+    }
 
-        locationClient = new LocationClient(getActivity());
-        locationClient.registerLocationListener(new MyLocationListener());
-        LocationClientOption option=new LocationClientOption();
-        option.setScanSpan(5000);
-        option.setOpenGps(true); // 打开gps
-        option.setCoorType("bd09ll"); // 设置坐标类型
-        option.setIsNeedAddress(true);
-        locationClient.setLocOption(option);
-        locationClient.start();
+    private void addMark() {
+        BmobQuery<ShopKeeper> query = new BmobQuery<>();
+        query.setLimit(30);
+        query.findObjects(new FindListener<ShopKeeper>() {
+            @Override
+            public void done(List<ShopKeeper> list, BmobException e) {
+                if (e == null) {
+                    List<String> latlngList = new ArrayList<>();
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getStore()) {
+                            latlngList.add(list.get(i).getLatlng());
+                        }
+                    }
+                    Log.e(TAG, "done: 共有店家 " + latlngList);
+                    Toast.makeText(getActivity(), "共有" + latlngList.size() + "家店铺上传了位置", Toast.LENGTH_SHORT).show();
+                    initOverlay(latlngList);
+                } else {
+                    Log.e(TAG, "done: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    public void initOverlay(List<String> latlngList) {
+        for (int i = 0; i < latlngList.size(); i++) {
+            String s[] = latlngList.get(i).split(",");
+            final String latitude = s[0];
+            final String longitude = s[1];
+            LatLng latLng = new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
+            BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.icon_gcoding);
+            OverlayOptions options = new MarkerOptions()
+                    .position(latLng)
+                    .icon(bitmapDescriptor)
+                    .draggable(true)
+                    .zIndex(9);
+            mBaiduMap.addOverlay(options);
+        }
+        baiduMarkerClicks();
+    }
+
+    private void baiduMarkerClicks() {
+        BaiduMap.OnMarkerClickListener markerClickListener = new BaiduMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(final Marker marker) {
+                loadShopMessage(marker);
+                mLocationClient = new LocationClient(getActivity());
+                mLocationClient.registerLocationListener(new BDAbstractLocationListener() {
+                    @Override
+                    public void onReceiveLocation(BDLocation bdLocation) {
+                        LatLng l1 = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
+                        LatLng l2 = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+                        double distance = ((int) (DistanceUtil.getDistance(l1, l2) * 100)) / 100;
+                        dis.setText("距离:" + String.valueOf(distance) + "米");
+                    }
+                });
+
+                LocationClientOption option = new LocationClientOption();
+                option.setOpenGps(true);
+                option.setCoorType("bd09ll");
+                option.setScanSpan(1);
+                mLocationClient.setLocOption(option);
+                mLocationClient.start();
+                return false;
+            }
+        };
+        mBaiduMap.setOnMarkerClickListener(markerClickListener);
+    }
+
+    private void loadShopMessage(Marker marker) {
+        mLinearLayout.setVisibility(View.VISIBLE);
+        final String latlng = marker.getPosition().latitude + "," + marker.getPosition().longitude;
+        BmobQuery<ShopKeeper> shopKeeperBmobQuery = new BmobQuery<>();
+        shopKeeperBmobQuery.findObjects(new FindListener<ShopKeeper>() {
+            @Override
+            public void done(List<ShopKeeper> list, BmobException e) {
+                if (e == null) {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getStore() && list.get(i).getLatlng().equals(latlng)) {
+                            nickname.setText("店铺名称：" + list.get(i).getNickName());
+                            shopNickName = list.get(i).getNickName();
+                            shopID = list.get(i).getObjectId();
+                            //客流量
+                            BmobQuery<BilliardStore> billiardStoreBmobQuery = new BmobQuery<>();
+                            billiardStoreBmobQuery.findObjects(new FindListener<BilliardStore>() {
+                                @Override
+                                public void done(List<BilliardStore> list, BmobException e) {
+                                    if (e == null) {
+                                        for (int j = 0; j < list.size(); j++) {
+                                            String temp=list.get(j).getStoreID();
+                                            temp=temp.replace("\t","");
+                                            if (temp.equals(shopID)) {
+                                                count.setText("客流量："+list.get(j).getNum_customer());
+                                                integer = list.get(j).getNum_customer();
+                                            }
+                                        }
+                                    } else {
+                                        Log.e(TAG, "done: " + e.getMessage());
+                                    }
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "done: " + e.getMessage());
+                }
+            }
+        });
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.button_fragment_order_yuyuedaqiu:
-                Intent intent = Billards.newInstance(getActivity(), 1);
-                startActivity(intent);
-                break;
-            case R.id.button_fragment_order_xitongtuiijian:
-                Toast.makeText(getActivity(), "还没实现呢", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                break;
-        }
+    public void onDestroy() {
+        super.onDestroy();
+        mMapView.onDestroy();
+        mBaiduMap.setMyLocationEnabled(false);
+        mLocationClient.stop();
+        mMapView = null;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mapView.onResume();
+        mMapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mapView.onPause();
+        mMapView.onPause();
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mapView.onDestroy();
-    }
-
-    private void navigateTo(BDLocation location){
-        /**
-         * @param location 地图
-         */
-        Log.d(TAG, "navigateTo: isFirstLocate "+isFirstLocate);
-        if (isFirstLocate){
-            LatLng latLng=new LatLng(location.getLatitude(),location.getLongitude());
-
-            Log.d(TAG, "navigateTo: getLatitude "+latLng.toString());
-
-            //定位到自己的位置
-            MapStatus mapStatus=new MapStatus.Builder()
-                    .target(latLng)
-                    .zoom(16f)
-                    .build();
-            MapStatusUpdate mapStatusUpdate= MapStatusUpdateFactory.newMapStatus(mapStatus);
-            baiduMap.setMapStatus(mapStatusUpdate);
-//            MapStatusUpdate update= MapStatusUpdateFactory.newLatLng(latLng);
-//            baiduMap.animateMapStatus(update);
-//            update=MapStatusUpdateFactory.zoomTo(16f);
-//            baiduMap.animateMapStatus(update);
-            isFirstLocate=false;
+    public void onSensorChanged(SensorEvent event) {
+        double x = event.values[SensorManager.DATA_X];
+        if (Math.abs(x - lastX) > 1.0) {
+            mCurrentDirection = (int) x;
+            locData = new MyLocationData.Builder()
+                    .accuracy(mCurrentAccracy)
+                    // 此处设置开发者获取到的方向信息，顺时针0-360
+                    .direction(mCurrentDirection).latitude(mCurrentLat)
+                    .longitude(mCurrentLon).build();
+            mBaiduMap.setMyLocationData(locData);
         }
-        //将自己显示在地图上
-        MyLocationData.Builder locationBuilder=new MyLocationData.Builder();
-        locationBuilder.latitude(location.getLatitude());
-        locationBuilder.longitude(location.getLongitude());
-        MyLocationData locationData=locationBuilder.build();
-        baiduMap.setMyLocationData(locationData);
+        lastX = x;
     }
 
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-    public  class MyLocationListener implements BDLocationListener {
-        /**
-         * 地图
-         * @param bdLocation
-         */
-        @Override
-        public void onReceiveLocation(BDLocation bdLocation) {
-            /**
-             * @param bdLocation 地图
-             */
-            Log.d(TAG, "onReceiveLocation: isFirstLocate " + isFirstLocate);
-            if (bdLocation.getLocType() == BDLocation.TypeGpsLocation
-                    || bdLocation.getLocType() == BDLocation.TypeNetWorkLocation) {
-                navigateTo(bdLocation);
-//                Log.e(TAG, "onReceiveLocation: "+bdLocation.getLatitude()+","+bdLocation.getLongitude() );
+    }
+
+    @Override
+    public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
+        if (geoCodeResult == null || geoCodeResult.error != SearchResult.ERRORNO.NO_ERROR) {
+            Toast.makeText(getActivity(), "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mBaiduMap.clear();
+        mBaiduMap.addOverlay(new MarkerOptions().position(geoCodeResult.getLocation())
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_gcoding)));
+        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(geoCodeResult.getLocation()));
+        String info = String.format("纬度：%f 经度：%f", geoCodeResult.getLocation().latitude, geoCodeResult.getLocation().longitude);
+    }
+
+    @Override
+    public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
+        if (reverseGeoCodeResult == null || reverseGeoCodeResult.error != SearchResult.ERRORNO.NO_ERROR) {
+            Toast.makeText(getActivity(), "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mBaiduMap.clear();
+        mBaiduMap.addOverlay(new MarkerOptions().position(reverseGeoCodeResult.getLocation())
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_gcoding)));
+        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(reverseGeoCodeResult.getLocation()));
+        Toast.makeText(getActivity(), reverseGeoCodeResult.getAddress() + " adcode: " + reverseGeoCodeResult.getAdcode(),
+                Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onGetPoiResult(PoiResult poiResult) {
+        if (poiResult == null || poiResult.error != SearchResult.ERRORNO.NO_ERROR) {
+            Toast.makeText(getActivity(), "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (poiResult.error == SearchResult.ERRORNO.NO_ERROR) {
+            mBaiduMap.clear();
+            PoiOverlay overlay = new MyPoiOverlay(mBaiduMap);
+            mBaiduMap.setOnMarkerClickListener(overlay);
+            overlay.setData(poiResult);
+            overlay.addToMap();
+            overlay.zoomToSpan();
+            switch (searchType) {
+                case 2:
+                    shpeNearbyArea(center, radius);
+                    break;
+                case 3:
+                    showBound(searchbound);
+                    break;
+                default:
+                    break;
             }
+            return;
+        }
+
+        if (poiResult.error == SearchResult.ERRORNO.AMBIGUOUS_KEYWORD) {
+            String info = "在";
+            for (CityInfo cityInfo : poiResult.getSuggestCityList()) {
+                info += cityInfo.city;
+                info += ",";
+            }
+            info += "找到结果";
+            Toast.makeText(getActivity(), info, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onGetPoiDetailResult(PoiDetailResult poiDetailResult) {
+        if (poiDetailResult.error != SearchResult.ERRORNO.NO_ERROR) {
+            Toast.makeText(getActivity(), "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+
+        } else {
+            Toast.makeText(getActivity(), poiDetailResult.getName() + ":" + poiDetailResult.getAddress(),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onGetPoiIndoorResult(PoiIndoorResult poiIndoorResult) {
+
+    }
+
+    @Override
+    public void onGetSuggestionResult(SuggestionResult suggestionResult) {
+        if (suggestionResult == null || suggestionResult.getAllSuggestions() == null) {
+            return;
+        }
+        suggest = new ArrayList<>();
+        for (SuggestionResult.SuggestionInfo info : suggestionResult.getAllSuggestions()) {
+            if (info.key != null) {
+                suggest.add(info.key);
+            }
+            sugAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_dropdown_item_1line, suggest);
+            key.setAdapter(sugAdapter);
+            sugAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void shpeNearbyArea(LatLng center, int radius) {
+        BitmapDescriptor centerBitmap = BitmapDescriptorFactory
+                .fromResource(R.drawable.icon_gcoding);
+        MarkerOptions markerOptions = new MarkerOptions().position(center).icon(centerBitmap);
+        mBaiduMap.addOverlay(markerOptions);
+        OverlayOptions options = new CircleOptions().fillColor(0xCCCCCC00)
+                .center(center).stroke(new Stroke(5, 0xFFFF00FF))
+                .radius(radius);
+        mBaiduMap.addOverlay(options);
+    }
+
+    public void showBound(LatLngBounds bounds) {
+        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory
+                .fromResource(R.drawable.icon_gcoding);
+        OverlayOptions options = new GroundOverlayOptions()
+                .positionFromBounds(bounds).image(bitmapDescriptor).transparency(0.8f);
+        mBaiduMap.addOverlay(options);
+        MapStatusUpdate update = MapStatusUpdateFactory.newLatLng(bounds.getCenter());
+        mBaiduMap.setMapStatus(update);
+        bitmapDescriptor.recycle();
+    }
+
+    private class MyPoiOverlay extends PoiOverlay {
+
+        /**
+         * 构造函数
+         *
+         * @param baiduMap 该 PoiOverlay 引用的 BaiduMap 对象
+         */
+        public MyPoiOverlay(BaiduMap baiduMap) {
+            super(baiduMap);
+        }
+
+        @Override
+        public boolean onPoiClick(int i) {
+            super.onPoiClick(i);
+            PoiInfo poiInfo = getPoiResult().getAllPoi().get(i);
+            mPoiSearch.searchPoiDetail((new PoiDetailSearchOption())
+                    .poiUid(poiInfo.uid));
+            return true;
         }
     }
 }
-/**
- * 开发版本
- * SHA1: BA:82:0B:5D:80:45:01:CA:3F:6F:2D:98:D2:C8:2F:A4:66:01:45:DC
- * SHA256: B2:4C:61:38:E7:AD:93:2E:09:98:A9:64:55:54:37:95:32:8D:2F:B0:11:D3:3A:66:E1:B7:FC:87:5F:73:EF:01
- * <p>
- * 发布版本
- * SHA1: 64:63:FD:78:A0:24:D8:03:23:10:DB:1B:4D:8E:33:78:72:77:21:C5
- * SHA256: 0F:ED:87:B6:AB:E1:C3:31:B0:DF:31:BF:92:03:62:8B:D9:83:B6:BF:00:0A:E8:DE:37:79:C2:42:B5:79:04:F9
- * <p>
- * 发布版本
- * SHA1: 64:63:FD:78:A0:24:D8:03:23:10:DB:1B:4D:8E:33:78:72:77:21:C5
- * SHA256: 0F:ED:87:B6:AB:E1:C3:31:B0:DF:31:BF:92:03:62:8B:D9:83:B6:BF:00:0A:E8:DE:37:79:C2:42:B5:79:04:F9
- */
-
-/**
- * 发布版本
- * SHA1: 64:63:FD:78:A0:24:D8:03:23:10:DB:1B:4D:8E:33:78:72:77:21:C5
- * SHA256: 0F:ED:87:B6:AB:E1:C3:31:B0:DF:31:BF:92:03:62:8B:D9:83:B6:BF:00:0A:E8:DE:37:79:C2:42:B5:79:04:F9
- */
