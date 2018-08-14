@@ -173,11 +173,10 @@ public class Fragment_order extends Fragment implements SensorEventListener,
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                         .addToBackStack(null)  //返回
-                        .add(R.id.fragment_container, Fragment_billiards.newInstance(shopID, integer, shopNickName))
+                        .add(R.id.fragment_container, Fragment_billiards.newInstance(shopID, integer, shopNickName),"into")
                         .commit();
             }
         });
-
     }
 
     private void initViews(View view) {
@@ -358,10 +357,12 @@ public class Fragment_order extends Fragment implements SensorEventListener,
             public void done(List<ShopKeeper> list, BmobException e) {
                 if (e == null) {
                     for (int i = 0; i < list.size(); i++) {
+                        Log.e(TAG, "done: "+latlng+"---"+list.get(i).getLatlng() );
                         if (list.get(i).getStore() && list.get(i).getLatlng().equals(latlng)) {
                             nickname.setText("店铺名称：" + list.get(i).getNickName());
                             shopNickName = list.get(i).getNickName();
                             shopID = list.get(i).getObjectId();
+                            Log.e(TAG, "done: "+shopNickName );
                             //客流量
                             BmobQuery<BilliardStore> billiardStoreBmobQuery = new BmobQuery<>();
                             billiardStoreBmobQuery.findObjects(new FindListener<BilliardStore>() {

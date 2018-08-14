@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alipay.sdk.app.EnvUtils;
 import com.example.a13834598889.billiards.JavaBean.BilliardStore;
@@ -30,7 +31,6 @@ import java.util.List;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 import static android.content.ContentValues.TAG;
@@ -48,7 +48,7 @@ public class Fragment_billiards extends Fragment {
     private Banner mBanner;
     private Button bt_good;
     private Button bt_oder;
-    private TextView custom_count;
+    private Table selectTable;
     private TextView time;
     private TextView state;
     private TextView choose;
@@ -70,28 +70,38 @@ public class Fragment_billiards extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
         View view = inflater.inflate(R.layout.fragment_billiards, container, false);
+        selectTable=new Table();
         initViews(view);
-        advertising();
+        setBanner();
         setScrollView();
+        addData();
+        initClicks();
+        return view;
+    }
 
-        final BmobQuery<Table> query = new BmobQuery<>();
-        query.addWhereEqualTo("storeId", shopID);
+    private void addData() {
+        BmobQuery<Table> query = new BmobQuery<>();
         query.findObjects(new FindListener<Table>() {
             @Override
             public void done(List<Table> list, BmobException e) {
                 if (e == null) {
-                    mTables.addAll(list);
-
-                    StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2,
-                            StaggeredGridLayoutManager.VERTICAL);
+                    for (int i = 0; i < list.size(); i++) {
+                        Log.e(TAG, "done: " + list.get(i).getStoreID() + " " + shopID);
+                        if (list.get(i).getStoreID().equals(shopID)) {
+                            Log.e(TAG, "done: " + list.get(i).getStoreID() + " " + shopID);
+                            mTables.add(list.get(i));
+                        }
+                    }
+                    Log.e(TAG, "done: " + mTables.size());
+                    StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
                     mRecyclerView.setLayoutManager(manager);
                     TableAdapter adapter = new TableAdapter(mTables);
                     mRecyclerView.setAdapter(adapter);
+                } else {
+                    Log.e(TAG, "done: " + e.getMessage());
                 }
             }
         });
-        initClicks();
-        return view;
     }
 
     private void setScrollView() {
@@ -111,6 +121,23 @@ public class Fragment_billiards extends Fragment {
                         .commit();
             }
         });
+        bt_oder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectTable.getStoreID()==null){
+                    Toast.makeText(getContext(), "请选择桌号", Toast.LENGTH_SHORT).show();
+                }else {
+                    if (Integer.valueOf(selectTable.getState()) == 1) {
+                        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                .addToBackStack(null)  //返回
+                                .add(R.id.fragment_container, FragmentPay.newInstance(shopID, shopNickName, selectTable.getTable_number()))
+                                .commit();
+                    }
+                }
+            }
+        });
     }
 
     private void initViews(View view) {
@@ -119,44 +146,48 @@ public class Fragment_billiards extends Fragment {
         mScrollView = view.findViewById(R.id.billiards_scrollView);
         mBanner = view.findViewById(R.id.banner);
         mRecyclerView = view.findViewById(R.id.recycler_view_table);
-        custom_count = view.findViewById(R.id.count);
+        TextView custom_count = view.findViewById(R.id.count);
         choose = view.findViewById(R.id.choose);
         bt_oder = view.findViewById(R.id.bt_order);
         time = view.findViewById(R.id.time);
         state = view.findViewById(R.id.state);
         mLinearLayout = view.findViewById(R.id.table_info);
+        custom_count.setText("客流量：" + shopInteger);
     }
 
 
-    private void advertising() {
+    private void setBanner() {
         BmobQuery<BilliardStore> query = new BmobQuery<>();
-        query.addWhereEqualTo("storeId", shopID);
-        query.setLimit(200);
         query.findObjects(new FindListener<BilliardStore>() {
             @Override
             public void done(List<BilliardStore> list, BmobException e) {
                 if (e == null) {
-                    for (BilliardStore billiardsStore : list) {
-                        BmobQuery<BilliardStore> query1 = new BmobQuery<>();
-                        query1.getObject(billiardsStore.getObjectId(), new QueryListener<BilliardStore>() {
-                            @Override
-                            public void done(BilliardStore billiardsStore, BmobException e) {
-                                if (e == null) {
-                                    list_image.add(billiardsStore.getPicture_1().getFileUrl());
-                                    list_image.add(billiardsStore.getPicture_2().getFileUrl());
-                                    list_image.add(billiardsStore.getPicture_3().getFileUrl());
-
-                                }
-
-                                mBanner.setImages(list_image);
-                                mBanner.setImageLoader(new GlideImageLoader());
-                                mBanner.isAutoPlay(true);
-                                mBanner.setDelayTime(2000);
-                                mBanner.start();
-                                custom_count.setText("客流量：" + shopInteger);
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getStoreID().equals(shopID)) {
+                            if (list.get(i).getPicture_1() != null) {
+                                list_image.add(list.get(i).getPicture_1().getFileUrl());
+                            } else {
+                                list_image.add("https://s1.ax1x.com/2018/08/14/P2Q75D.jpg");
                             }
-                        });
+                            if (list.get(i).getPicture_2() != null) {
+                                list_image.add(list.get(i).getPicture_2().getFileUrl());
+                            } else {
+                                list_image.add("https://s1.ax1x.com/2018/08/14/P2QOxA.jpg");
+                            }
+                            if (list.get(i).getPicture_3() != null) {
+                                list_image.add(list.get(i).getPicture_3().getFileUrl());
+                            } else {
+                                list_image.add("https://s1.ax1x.com/2018/08/14/P2QxqP.jpg");
+                            }
+                            mBanner.setImages(list_image);
+                            mBanner.setImageLoader(new GlideImageLoader());
+                            mBanner.isAutoPlay(true);
+                            mBanner.setDelayTime(2000);
+                            mBanner.start();
+                        }
                     }
+                } else {
+                    Log.e(TAG, "done: " + e.getMessage());
                 }
             }
         });
@@ -184,6 +215,11 @@ public class Fragment_billiards extends Fragment {
         }
 
         @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
         public TableHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View view1 = LayoutInflater.from(getActivity()).inflate(R.layout.table_item, parent, false);
             final TableHolder holder = new TableHolder(view1);
@@ -194,69 +230,55 @@ public class Fragment_billiards extends Fragment {
                     final Table table = mTables.get(position);
                     mLinearLayout.setVisibility(View.VISIBLE);
                     choose.setText("您已选择" + table.getTable_number() + "号球桌");
-
+                    table.setStoreID(shopID);
                     BmobQuery<Table> query = new BmobQuery<>();
-                    query.addWhereEqualTo("table_num", table.getTable_number());
-                    query.setLimit(200);
                     query.findObjects(new FindListener<Table>() {
                         @Override
                         public void done(List<Table> list, BmobException e) {
                             if (e == null) {
-                                for (Table table1 : list) {
-                                    Table table2 = new Table();
-                                    Date date = new Date();
-                                    table2.setAppoint_time(date.toString());
-                                    table2.update(table1.getObjectId(), new UpdateListener() {
-                                        @Override
-                                        public void done(BmobException e) {
-                                            if (e == null) {
-
-                                            } else {
-                                                Log.e(TAG, "done: " + e.getMessage());
-                                            }
-                                        }
-                                    });
-                                    time.setText("预约时间：" + date);
-
-
-                                    switch (table1.getState()) {
-                                        case "1":
-                                            state.setText("球桌状态： 空闲");
-                                            break;
-
-                                        case "2":
-                                            state.setText("球桌状态： 已预约");
-                                            break;
-                                        case "3":
-                                            state.setText("球桌状态： 已开始");
-                                            break;
-                                        default:
-                                            break;
-                                    }
-
-
-                                    if (Integer.valueOf(table1.getState()) == 1) {
-                                        bt_oder.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                                fragmentManager.beginTransaction()
-                                                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                                                        .addToBackStack(null)  //返回
-                                                        .add(R.id.fragment_container, FragmentPay.newInstance(shopID, shopNickName, table.getTable_number()))
-                                                        .commit();
-                                            }
-                                        });
-                                    }
+                                for (int i = 0; i < list.size(); i++) {
+                                    loadingTable(list, i, table);
                                 }
                             }
                         }
                     });
-
-
                 }
             });
             return holder;
+        }
+
+        private void loadingTable(List<Table> list, int i, Table table) {
+            if (list.get(i).getStoreID().equals(shopID)&&list.get(i).getTable_number().equals(table.getTable_number())){
+                table.setObjectId(list.get(i).getObjectId());
+                Date date = new Date();
+                time.setText("预约时间：" + date.toString());
+                list.get(i).setAppoint_time(date.toString());
+                table.setAppoint_time(date.toString());
+                switch (list.get(i).getState()) {
+                    case "1":
+                        state.setText("球桌状态： 空闲");
+                        break;
+                    case "2":
+                        state.setText("球桌状态： 已预约");
+                        break;
+                    case "3":
+                        state.setText("球桌状态： 已开始");
+                        break;
+                    default:
+                        break;
+                }
+                selectTable=table;
+                table.update(new UpdateListener() {
+                    @Override
+                    public void done(BmobException e) {
+                        if (e==null){
+                            Log.d(TAG, "done: 预约时间更新成功" );
+                        }else {
+                            Log.e(TAG, "done: "+e.getMessage() );
+                        }
+                    }
+                });
+            }
         }
 
         @Override
@@ -272,27 +294,22 @@ public class Fragment_billiards extends Fragment {
         }
     }
 
-    public class TableHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView table_number;
-        public TextView table_state;
-        public RelativeLayout mRelativeLayout;
-        public View tableView;
+    public class TableHolder extends RecyclerView.ViewHolder {
+        private TextView table_number;
+        private TextView table_state;
+        private RelativeLayout mRelativeLayout;
+        private View tableView;
 
-        public TableHolder(View itemView) {
+        private TableHolder(View itemView) {
             super(itemView);
-            table_number = (TextView) itemView.findViewById(R.id.table_number);
-            table_state = (TextView) itemView.findViewById(R.id.table_state);
-            mRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.fight_state);
+            table_number = itemView.findViewById(R.id.table_number);
+            table_state = itemView.findViewById(R.id.table_state);
+            mRelativeLayout = itemView.findViewById(R.id.fight_state);
             tableView = itemView;
         }
 
-        @Override
-        public void onClick(View v) {
-
-        }
-
         public void bindView(Table table) {
-            table_number.setText(table.getTable_number().toString());
+            table_number.setText(String.valueOf(table.getTable_number()));
             switch (Integer.valueOf(table.getState())) {
                 case 1:
                     table_state.setText("空闲");
@@ -301,7 +318,6 @@ public class Fragment_billiards extends Fragment {
                     table_state.setText("已预约");
                     mRelativeLayout.setVisibility(View.VISIBLE);
                     break;
-
                 case 3:
                     table_state.setText("已开始");
                     mRelativeLayout.setVisibility(View.VISIBLE);

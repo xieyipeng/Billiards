@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.a13834598889.billiards.FragmentCustomerMine.second.FragmentHelp;
 import com.example.a13834598889.billiards.FragmentCustomerMine.second.Fragment_card;
+import com.example.a13834598889.billiards.FragmentCustomerMine.second.Fragment_friends;
 import com.example.a13834598889.billiards.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -49,6 +50,16 @@ public class Fragment_mine extends Fragment {
     }
 
     private void initClicks() {
+        textView_button_qiuyou.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideFragment();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .add(R.id.fragment_container, Fragment_friends.newInstance(), "text_button_wodeqiuyou")
+                        .commit();
+            }
+        });
         textView_button_tiezi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

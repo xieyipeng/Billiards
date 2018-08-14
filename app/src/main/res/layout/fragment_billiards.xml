@@ -15,7 +15,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
 
             <FrameLayout
@@ -57,10 +57,10 @@
                     android:id="@+id/bt_good"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_margin="8dp"
                     android:layout_weight="1"
-                    android:layout_marginRight="20dp"
-                    android:layout_gravity="end"
-                    android:layout_marginBottom="3dp"
                     android:background="@drawable/shape_back1"
                     android:text="饮料配送"/>
 
@@ -69,9 +69,9 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:layout_marginRight="20dp"
-                    android:layout_gravity="end"
-                    android:layout_marginBottom="3dp"
+                    android:layout_margin="8dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:background="@drawable/shape_back1"
                     android:text="预约打球"/>
             </LinearLayout>
@@ -98,9 +98,9 @@
             <LinearLayout
                 android:id="@+id/table_info"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="120dp"
                 android:padding="10dp"
-                android:visibility="invisible">
+                android:visibility="gone">
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

@@ -11,7 +11,7 @@ public class Order extends BmobObject {
     private String storeId;//店面ID（店主）
     private String userID;//结账发起人ID（顾客）
     private String time;//结账时间
-    private String table_number;//结账桌位号
+    private Integer table_number;//结账桌位号
     private Double money_1;//桌费
     private Double money_2;//饮品零食费
     private Double money_all;//支付总金额
@@ -50,12 +50,11 @@ public class Order extends BmobObject {
         this.time = time;
     }
 
-
-    public String getTable_number() {
+    public Integer getTable_number() {
         return table_number;
     }
 
-    public void setTable_number(String table_number) {
+    public void setTable_number(Integer table_number) {
         this.table_number = table_number;
     }
 

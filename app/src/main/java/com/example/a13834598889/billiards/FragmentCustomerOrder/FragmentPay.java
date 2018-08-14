@@ -51,7 +51,7 @@ import static cn.volley.VolleyLog.TAG;
 public class FragmentPay extends Fragment {
     private String id;
     private String name;
-    private String table_num;
+    private Integer table_num;
     private TextView title_pay;
     private Button pay;
     private TimePicker mTimePicker;
@@ -65,7 +65,7 @@ public class FragmentPay extends Fragment {
     private static double money1;
 
 
-    public static FragmentPay newInstance(String id, String name,String num) {
+    public static FragmentPay newInstance(String id, String name,Integer num) {
         FragmentPay fragmentPay = new FragmentPay();
         fragmentPay.id = id;
         fragmentPay.name=name;

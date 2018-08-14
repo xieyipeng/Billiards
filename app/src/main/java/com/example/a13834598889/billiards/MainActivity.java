@@ -107,13 +107,26 @@ public class MainActivity extends AppCompatActivity {
                 "text_button_bangzhu"};
         for (String tag : toMineMessage) {
             if (tag.equals(fragmentTest.getTag())) {
-                Log.e(TAG, "caseCustomer: come");
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                         .show(fragmentManager.findFragmentByTag("fragment_mine"))
                         .commit();
             }
         }
+
+        //2 预约 -> 预约
+
+        String[] toMineOreder = new String[]{
+                "into"};
+        for (String tag : toMineOreder) {
+            if (tag.equals(fragmentTest.getTag())) {
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .show(fragmentManager.findFragmentByTag("fragment_order"))
+                        .commit();
+            }
+        }
+
 
         //3 -> 我的贴子
         String[] toMineCard = new String[]{
@@ -250,7 +263,8 @@ public class MainActivity extends AppCompatActivity {
                 "card_fragment",
                 "account_fragment",
                 "fragment_card_add",
-                "text_button_bangzhu"};
+                "text_button_bangzhu",
+                "into"};
         for (String tag : customerJudeString) {
             if (fragmentManager.findFragmentByTag(tag) != null) {
                 fragmentManager.beginTransaction()
@@ -259,6 +273,9 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
             }
         }
+
+
+
         String[] shopJudeString = new String[]{
                 "shop_keeper_mine_message_setting",
                 "shop_keeper_mine_members_message",

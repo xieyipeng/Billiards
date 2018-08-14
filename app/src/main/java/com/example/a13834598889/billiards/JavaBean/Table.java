@@ -10,7 +10,7 @@ import cn.bmob.v3.BmobObject;
 public class Table extends BmobObject {
 
     private String storeID;//店主
-    private String table_number;  //球桌编号,即桌位号
+    private Integer table_number;  //球桌编号,即桌位号
     private String state;//球桌状态
     private String start_time;//开桌时间
     private String end_time;//结束计费时间
@@ -38,18 +38,18 @@ public class Table extends BmobObject {
     }
 
     public Table() {
-        this.table_number = "0";
+        this.table_number = 0;
         this.isReserve = false;
         this.isStart = false;
         this.start_time = "00:00";
         this.end_time = "00:00";
     }
 
-    public String getTable_number() {
+    public Integer getTable_number() {
         return table_number;
     }
 
-    public void setTable_number(String table_number) {
+    public void setTable_number(Integer table_number) {
         this.table_number = table_number;
     }
 

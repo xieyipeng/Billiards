@@ -169,7 +169,7 @@ public class FragmentShopKeeperNo1 extends Fragment {
                             Log.e(TAG, "onClick: " + i);
                             Table table = new Table();
                             table.setStoreID(ShopKeeper.getCurrentUser().getObjectId());
-                            table.setTable_number(String.valueOf(i));
+                            table.setTable_number(i);
                             table.setState("1");
                             table.setStart(false);
                             table.setReserve(false);
