@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         fragmentTest = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        Log.e(TAG, "onBackPressed: " + fragmentTest.getTag());
         find_jude();
         caseStore();
         caseCustomer();
@@ -104,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
         //2 -> 我的信息
         String[] toMineMessage = new String[]{
                 "card_fragment",
-                "text_button_bangzhu"};
+                "text_button_bangzhu",
+                "text_button_wodeqiuyou"};
         for (String tag : toMineMessage) {
             if (tag.equals(fragmentTest.getTag())) {
                 fragmentManager.beginTransaction()
@@ -115,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //2 预约 -> 预约
-
         String[] toMineOreder = new String[]{
                 "into"};
         for (String tag : toMineOreder) {
@@ -125,6 +126,9 @@ public class MainActivity extends AppCompatActivity {
                         .show(fragmentManager.findFragmentByTag("fragment_order"))
                         .commit();
             }
+        }
+        if (fragmentTest.getTag() == "") {
+
         }
 
 
@@ -264,7 +268,8 @@ public class MainActivity extends AppCompatActivity {
                 "account_fragment",
                 "fragment_card_add",
                 "text_button_bangzhu",
-                "into"};
+                "into",
+                "text_button_wodeqiuyou"};
         for (String tag : customerJudeString) {
             if (fragmentManager.findFragmentByTag(tag) != null) {
                 fragmentManager.beginTransaction()
@@ -273,7 +278,6 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
             }
         }
-
 
 
         String[] shopJudeString = new String[]{
@@ -458,34 +462,34 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void initBilliardStore() {
-        final BilliardStore billiardStore=new BilliardStore();
+        final BilliardStore billiardStore = new BilliardStore();
         billiardStore.setStoreID(ShopKeeper.getCurrentUser().getObjectId());
-        BmobQuery<BilliardStore> billiardStoreBmobQuery=new BmobQuery<>();
+        BmobQuery<BilliardStore> billiardStoreBmobQuery = new BmobQuery<>();
         billiardStoreBmobQuery.findObjects(new FindListener<BilliardStore>() {
             @Override
             public void done(List<BilliardStore> list, BmobException e) {
-                if (e==null){
-                    boolean have=false;
+                if (e == null) {
+                    boolean have = false;
                     for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).getStoreID().equals(billiardStore.getStoreID())){
-                            have=true;
+                        if (list.get(i).getStoreID().equals(billiardStore.getStoreID())) {
+                            have = true;
                         }
                     }
-                    if (!have){
+                    if (!have) {
                         billiardStore.setNum_customer(0);
                         billiardStore.save(new SaveListener<String>() {
                             @Override
                             public void done(String s, BmobException e) {
-                                if (e==null){
+                                if (e == null) {
 
-                                }else {
-                                    Log.e(TAG, "done: "+e.getMessage() );
+                                } else {
+                                    Log.e(TAG, "done: " + e.getMessage());
                                 }
                             }
                         });
                     }
-                }else {
-                    Log.e(TAG, "done: "+e.getMessage() );
+                } else {
+                    Log.e(TAG, "done: " + e.getMessage());
                 }
             }
         });

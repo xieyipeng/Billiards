@@ -6,6 +6,7 @@
     android:layout_margin="3dp"
     android:layout_height="80dp">
     <LinearLayout
+        android:id="@+id/im_Layout"
         android:gravity="top"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -57,28 +58,6 @@
                             android:text="From now on，I will expect nothing, and just take what I get " />
                     </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="0.13"
-                android:orientation="vertical"
-                android:layout_gravity="center_vertical"
-                android:layout_height="60dp">
-
-
-                <ImageView
-                    android:id="@+id/dian_zan_button"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/tubiao_dianzan"/>
-                <TextView
-                    android:id="@+id/dian_zan_shu_text_view"
-                    android:layout_width="40dp"
-                    android:gravity="center"
-                    android:text="9999"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

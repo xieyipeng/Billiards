@@ -14,12 +14,15 @@
         <RelativeLayout
             android:layout_width="50dp"
             android:layout_height="50dp">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circleImageView_mine88"
+            <ImageView
+                android:id="@+id/fragment_friends_back"
+                android:layout_centerInParent="true"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_centerInParent="true" />
+                android:src="@drawable/tubiao_fanhui" />
         </RelativeLayout>
+
+
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -29,16 +32,19 @@
             android:text="我的球友"
             android:textColor="#ffffff"
             android:textSize="20sp" />
+
+
         <RelativeLayout
             android:layout_width="50dp"
             android:layout_height="50dp">
             <ImageView
-                android:id="@+id/fragment_friends_back"
-                android:layout_centerInParent="true"
+                android:id="@+id/circleImageView_mine88"
+                android:background="@drawable/ic_add_black_24dp"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/tubiao_fanhui" />
+                android:layout_centerInParent="true" />
         </RelativeLayout>
+
 
     </LinearLayout>
 

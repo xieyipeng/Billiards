@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#fff"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#414141"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/customer_add_friend_back"
+                android:layout_width="30dp"
+                android:background="@drawable/ic_back1"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:onClick="onClick"/>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="添加好友"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+        <RelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:id="@+id/customer_add_friend_commit"
+                android:layout_height="match_parent"
+                android:textColor="#fff"
+                android:textSize="15sp"
+                android:gravity="center"
+                android:text="完成"
+                android:onClick="onClick"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/customer_add_friend_input"
+
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="输入球友名称"/>
+
+    </LinearLayout>
+</LinearLayout>
