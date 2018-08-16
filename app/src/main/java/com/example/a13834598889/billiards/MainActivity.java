@@ -13,13 +13,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.example.a13834598889.billiards.FragmentCustomerMine.Fragment_mine;
 import com.example.a13834598889.billiards.FragmentCustomerMine.second.Fragment_card;
+import com.example.a13834598889.billiards.FragmentCustomerMine.second.Fragment_friends;
 import com.example.a13834598889.billiards.FragmentCustomerOrder.Fragment_order;
 import com.example.a13834598889.billiards.FragmentCustomerShare.Fragment_share;
 import com.example.a13834598889.billiards.FragmentCustomerTeach.Fragment_teach;
@@ -33,11 +36,19 @@ import com.example.a13834598889.billiards.JavaBean.BilliardStore;
 import com.example.a13834598889.billiards.JavaBean.ShopKeeper;
 import com.example.a13834598889.billiards.JavaBean.User;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
 import java.util.List;
 
+import cn.bmob.newim.BmobIM;
+import cn.bmob.newim.bean.BmobIMUserInfo;
+import cn.bmob.newim.core.ConnectionStatus;
+import cn.bmob.newim.listener.ConnectListener;
+import cn.bmob.newim.listener.ConnectStatusChangeListener;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
@@ -60,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private boolean isStore;
     private static final String TAG = "MainActivity";
-    private BottomNavigationView customerNavigation;
-    private BottomNavigationView shopNavigation;
+    public static BottomNavigationView customerNavigation;
+    public static BottomNavigationView shopNavigation;
 
     private Fragment fragmentTest;
 
@@ -74,6 +85,38 @@ public class MainActivity extends AppCompatActivity {
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
         Bmob.initialize(this, "fef642bee9678388a478d8b5b25bafa0");
+
+        final User user = BmobUser.getCurrentUser(User.class);
+        //连接：3.1、登录成功、注册成功或处于登录状态重新打开应用后执行连接IM服务器的操作
+        //判断用户是否登录，并且连接状态不是已连接，则进行连接操作
+        if (!TextUtils.isEmpty(user.getObjectId()) && BmobIM.getInstance().getCurrentStatus().getCode() != ConnectionStatus.CONNECTED.getCode()) {
+            BmobIM.connect(user.getObjectId(), new ConnectListener() {
+                @Override
+                public void done(String uid, BmobException e) {
+                    if (e == null) {
+                        //服务器连接成功就发送一个更新事件，同步更新会话及主页的小红点
+                        //会话：2.7、更新用户资料，用于在会话页面、聊天页面以及个人信息页面显示
+                        BmobIM.getInstance().updateUserInfo(new BmobIMUserInfo(user.getObjectId(),
+                                user.getUsername(), user.getPicture_head().getFileUrl()));
+                        EventBus.getDefault().post(new RefreshEvent());
+                    } else {
+                        Log.e(TAG, "done: " + e.getMessage());
+                    }
+                }
+            });
+            //TODO 连接：3.3、监听连接状态，可通过BmobIM.getInstance().getCurrentStatus()来获取当前的长连接状态
+            BmobIM.getInstance().setOnConnectStatusChangeListener(new ConnectStatusChangeListener() {
+                @Override
+                public void onChange(ConnectionStatus status) {
+                    Toast.makeText(MainActivity.this, status.getMsg(), Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "onChange: " + BmobIM.getInstance().getCurrentStatus().getMsg());
+                }
+            });
+        }
+        //解决leancanary提示InputMethodManager内存泄露的问题
+        IMMLeaks.fixFocusedViewLeak(getApplication());
+
+
         initViews();
         bmobCheckStore();
     }
@@ -127,8 +170,12 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
             }
         }
-        if (fragmentTest.getTag() == "") {
-
+        if (fragmentTest.getTag() == "circleImageView_mine88"
+                || fragmentTest.getTag() == "im_Layout") {
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                    .add(R.id.fragment_container, Fragment_friends.newInstance(), "text_button_wodeqiuyou")
+                    .commit();
         }
 
 
@@ -269,7 +316,8 @@ public class MainActivity extends AppCompatActivity {
                 "fragment_card_add",
                 "text_button_bangzhu",
                 "into",
-                "text_button_wodeqiuyou"};
+                "text_button_wodeqiuyou",
+                "im_Layout"};
         for (String tag : customerJudeString) {
             if (fragmentManager.findFragmentByTag(tag) != null) {
                 fragmentManager.beginTransaction()
@@ -530,5 +578,14 @@ public class MainActivity extends AppCompatActivity {
         }
         return path;
     }
+
+    /**
+     * Created by Administrator on 2016/4/28.
+     */
+    public class RefreshEvent {
+        public RefreshEvent() {
+        }
+    }
+
 
 }

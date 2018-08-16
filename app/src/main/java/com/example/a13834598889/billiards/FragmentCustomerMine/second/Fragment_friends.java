@@ -3,6 +3,7 @@ package com.example.a13834598889.billiards.FragmentCustomerMine.second;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,10 +16,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.a13834598889.billiards.FragmentCustomerMine.thired.FragmentIM;
 import com.example.a13834598889.billiards.FragmentCustomerMine.thired.Fragment_Friend_Add;
 import com.example.a13834598889.billiards.JavaBean.Customer;
 import com.example.a13834598889.billiards.JavaBean.Friend;
 import com.example.a13834598889.billiards.JavaBean.User;
+import com.example.a13834598889.billiards.MainActivity;
 import com.example.a13834598889.billiards.R;
 
 import java.util.ArrayList;
@@ -45,7 +48,6 @@ public class Fragment_friends extends Fragment {
     private ImageView addImageView;
     private ImageView imageView_back;
     private boolean isLast = false;
-
 
     private FragmentManager fragmentManager;
 
@@ -163,13 +165,22 @@ public class Fragment_friends extends Fragment {
 
         @Override
         public void onBindViewHolder(ContactsHolder holder, int position) {
-            User user = users.get(position);
+            final User user = users.get(position);
             holder.bindView(user);
 
             holder.imLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    MainActivity.customerNavigation.setVisibility(View.GONE);
+                    MainActivity.shopNavigation.setVisibility(View.GONE);
+                    if (fragmentManager.findFragmentByTag("text_button_wodeqiuyou") != null) {
+                        fragmentManager.beginTransaction()
+                                .hide(fragmentManager.findFragmentByTag("text_button_wodeqiuyou"))
+                                .remove(fragmentManager.findFragmentByTag("text_button_wodeqiuyou"))
+                                .add(R.id.fragment_container, FragmentIM.newInstance(user.getNickName(),
+                                        user.getObjectId()),"im_Layout")
+                                .commit();
+                    }
                 }
             });
 
