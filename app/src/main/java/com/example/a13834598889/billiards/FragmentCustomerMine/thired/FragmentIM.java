@@ -29,21 +29,30 @@ import android.widget.Toast;
 
 import com.example.a13834598889.billiards.FragmentCustomerMine.second.Fragment_friends;
 import com.example.a13834598889.billiards.R;
+import com.example.a13834598889.billiards.Tool.OrderInfoUtil2_0;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import cn.bmob.newim.BmobIM;
 import cn.bmob.newim.bean.BmobIMAudioMessage;
 import cn.bmob.newim.bean.BmobIMConversation;
 import cn.bmob.newim.bean.BmobIMMessage;
+import cn.bmob.newim.bean.BmobIMTextMessage;
+import cn.bmob.newim.core.BmobIMClient;
 import cn.bmob.newim.core.BmobRecordManager;
+import cn.bmob.newim.core.ConnectionStatus;
+import cn.bmob.newim.event.MessageEvent;
+import cn.bmob.newim.listener.MessageListHandler;
 import cn.bmob.newim.listener.MessageSendListener;
 import cn.bmob.newim.listener.OnRecordChangeListener;
 import cn.bmob.v3.exception.BmobException;
 
 import static android.support.constraint.Constraints.TAG;
+import static android.view.View.combineMeasuredStates;
 
-public class FragmentIM extends Fragment {
+public class FragmentIM extends Fragment{
 
     private String name;
     private String id;
@@ -62,14 +71,16 @@ public class FragmentIM extends Fragment {
     private BmobRecordManager recordManager;
     private ImageView iv_record;
     private BmobIMConversation mConversationManager;
+    private Bundle bundle;
 
 
     private FragmentManager fragmentManager;
 
-    public static FragmentIM newInstance(String name, String id) {
+    public static FragmentIM newInstance(String name, String id,Bundle bundle) {
         FragmentIM fragmentIM = new FragmentIM();
         fragmentIM.name = name;
         fragmentIM.id = id;
+        fragmentIM.bundle=bundle;
         return fragmentIM;
     }
 
@@ -78,6 +89,14 @@ public class FragmentIM extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_im, container, false);
         fragmentManager = getActivity().getSupportFragmentManager();
+
+        BmobIMConversation conversation=(BmobIMConversation)bundle.getSerializable("c");
+        mConversationManager=BmobIMConversation.obtain(BmobIMClient.getInstance(),conversation);
+
+        if (BmobIM.getInstance().getCurrentStatus().getCode() != ConnectionStatus.CONNECTED.getCode()) {
+            Toast.makeText(getContext(), "尚未连接IM服务器", Toast.LENGTH_SHORT).show();
+        }
+
         initViews(view);
         initClicks();
         return view;
@@ -150,8 +169,53 @@ public class FragmentIM extends Fragment {
 
             }
         });
+
+        btn_chat_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text=editText.getText().toString();
+                if (text.trim().equals("")){
+                    Toast.makeText(getContext(), "请输入内容", Toast.LENGTH_SHORT).show();
+                }else {
+                    BmobIMTextMessage message=new BmobIMTextMessage();
+                    message.setContent(text);
+
+                    mConversationManager.sendMessage(message, new MessageSendListener() {
+                        @Override
+                        public void done(BmobIMMessage bmobIMMessage, BmobException e) {
+                            if (e==null){
+                                Toast.makeText(getContext(), "发送成功", Toast.LENGTH_SHORT).show();
+                                editText.getText().clear();
+                            }else {
+                                Log.e(TAG, "done: "+e.getMessage() );
+                            }
+                        }
+                    });
+                }
+            }
+        });
     }
 
+
+
+
+    /**
+     * 添加消息到聊天界面中
+     *
+     * @param event
+     */
+    private void addMessage2Chat(MessageEvent event) {
+        BmobIMMessage msg = event.getMessage();
+        if (mConversationManager != null && event != null &&
+                mConversationManager.getConversationId().equals(event.getConversation().getConversationId()) //如果是当前会话的消息
+                && !msg.isTransient()) {//并且不为暂态消息
+
+                mConversationManager.updateReceiveStatus(msg);
+            scrollToBottom();
+        } else {
+            Log.e(TAG, "addMessage2Chat: "+"不是与当前聊天对象的消息" );
+        }
+    }
 
     private void initViews(View view) {
         addButton = view.findViewById(R.id.btn_chat_add);
@@ -208,7 +272,7 @@ public class FragmentIM extends Fragment {
     private void initVoiceView() {
         btn_speak.setOnTouchListener(new VoiceTouchListener());
         initVoiceAnimRes();
-        initRecordManager();
+//        initRecordManager();
     }
 
     /**
@@ -227,40 +291,40 @@ public class FragmentIM extends Fragment {
                 getResources().getDrawable(R.mipmap.chat_icon_voice6)};
     }
 
-    private void initRecordManager() {
-        // 语音相关管理器
-        recordManager = BmobRecordManager.getInstance(getContext());
-        // 设置音量大小监听--在这里开发者可以自己实现：当剩余10秒情况下的给用户的提示，类似微信的语音那样
-        recordManager.setOnRecordChangeListener(new OnRecordChangeListener() {
-
-            @Override
-            public void onVolumnChanged(int i) {
-                iv_record.setImageDrawable(drawable_Anims[i]);
-            }
-
-            @Override
-            public void onTimeChanged(int recordTime, String localPath) {
-                Log.d(TAG, "onTimeChanged: " + "已录音长度:" + recordTime);
-                if (recordTime >= BmobRecordManager.MAX_RECORD_TIME) {// 1分钟结束，发送消息
-                    // 需要重置按钮
-                    btn_speak.setPressed(false);
-                    btn_speak.setClickable(false);
-                    // 取消录音框
-                    layout_record.setVisibility(View.INVISIBLE);
-                    // 发送语音消息
-                    sendVoiceMessage(localPath, recordTime);
-                    //是为了防止过了录音时间后，会多发一条语音出去的情况。
-                    new Handler().postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            btn_speak.setClickable(true);
-                        }
-                    }, 1000);
-                }
-            }
-        });
-    }
+//    private void initRecordManager() {
+//        // 语音相关管理器
+//        recordManager = BmobRecordManager.getInstance(getContext());
+//        // 设置音量大小监听--在这里开发者可以自己实现：当剩余10秒情况下的给用户的提示，类似微信的语音那样
+//        recordManager.setOnRecordChangeListener(new OnRecordChangeListener() {
+//
+//            @Override
+//            public void onVolumnChanged(int i) {
+//                iv_record.setImageDrawable(drawable_Anims[i]);
+//            }
+//
+//            @Override
+//            public void onTimeChanged(int recordTime, String localPath) {
+//                Log.d(TAG, "onTimeChanged: " + "已录音长度:" + recordTime);
+//                if (recordTime >= BmobRecordManager.MAX_RECORD_TIME) {// 1分钟结束，发送消息
+//                    // 需要重置按钮
+//                    btn_speak.setPressed(false);
+//                    btn_speak.setClickable(false);
+//                    // 取消录音框
+//                    layout_record.setVisibility(View.INVISIBLE);
+//                    // 发送语音消息
+//                    sendVoiceMessage(localPath, recordTime);
+//                    //是为了防止过了录音时间后，会多发一条语音出去的情况。
+//                    new Handler().postDelayed(new Runnable() {
+//
+//                        @Override
+//                        public void run() {
+//                            btn_speak.setClickable(true);
+//                        }
+//                    }, 1000);
+//                }
+//            }
+//        });
+//    }
 
     /**
      * 发送语音消息
@@ -318,6 +382,9 @@ public class FragmentIM extends Fragment {
     private void scrollToBottom() {
 //        layoutManager.scrollToPositionWithOffset(adapter.getItemCount() - 1, 0);
     }
+
+
+
     /**
      * 长按说话
      *

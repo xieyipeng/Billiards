@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.Constraints;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -35,17 +36,22 @@ import com.example.a13834598889.billiards.FragmentShopKepperMine.second.Fragment
 import com.example.a13834598889.billiards.JavaBean.BilliardStore;
 import com.example.a13834598889.billiards.JavaBean.ShopKeeper;
 import com.example.a13834598889.billiards.JavaBean.User;
+import com.example.a13834598889.billiards.Tool.DemoMessageHandler;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.List;
 
 import cn.bmob.newim.BmobIM;
 import cn.bmob.newim.bean.BmobIMUserInfo;
 import cn.bmob.newim.core.ConnectionStatus;
+import cn.bmob.newim.event.MessageEvent;
 import cn.bmob.newim.listener.ConnectListener;
 import cn.bmob.newim.listener.ConnectStatusChangeListener;
+import cn.bmob.newim.listener.MessageListHandler;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
@@ -56,7 +62,7 @@ import cn.bmob.v3.listener.SaveListener;
 
 import static android.content.ContentValues.TAG;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MessageListHandler{
     private Fragment save_fragment_mine;
     private Fragment save_fragment_order;
     private Fragment save_fragment_share;
@@ -84,41 +90,74 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
-        Bmob.initialize(this, "fef642bee9678388a478d8b5b25bafa0");
-
-        final User user = BmobUser.getCurrentUser(User.class);
-        //连接：3.1、登录成功、注册成功或处于登录状态重新打开应用后执行连接IM服务器的操作
-        //判断用户是否登录，并且连接状态不是已连接，则进行连接操作
-        if (!TextUtils.isEmpty(user.getObjectId()) && BmobIM.getInstance().getCurrentStatus().getCode() != ConnectionStatus.CONNECTED.getCode()) {
-            BmobIM.connect(user.getObjectId(), new ConnectListener() {
-                @Override
-                public void done(String uid, BmobException e) {
-                    if (e == null) {
-                        //服务器连接成功就发送一个更新事件，同步更新会话及主页的小红点
-                        //会话：2.7、更新用户资料，用于在会话页面、聊天页面以及个人信息页面显示
-                        BmobIM.getInstance().updateUserInfo(new BmobIMUserInfo(user.getObjectId(),
-                                user.getUsername(), user.getPicture_head().getFileUrl()));
-                        EventBus.getDefault().post(new RefreshEvent());
-                    } else {
-                        Log.e(TAG, "done: " + e.getMessage());
-                    }
-                }
-            });
-            //TODO 连接：3.3、监听连接状态，可通过BmobIM.getInstance().getCurrentStatus()来获取当前的长连接状态
-            BmobIM.getInstance().setOnConnectStatusChangeListener(new ConnectStatusChangeListener() {
-                @Override
-                public void onChange(ConnectionStatus status) {
-                    Toast.makeText(MainActivity.this, status.getMsg(), Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "onChange: " + BmobIM.getInstance().getCurrentStatus().getMsg());
-                }
-            });
-        }
-        //解决leancanary提示InputMethodManager内存泄露的问题
-        IMMLeaks.fixFocusedViewLeak(getApplication());
-
-
+        im();
         initViews();
         bmobCheckStore();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        BmobIM.getInstance().disConnect();
+    }
+
+    private void im() {
+        if (getApplicationInfo().packageName.equals(getMyProcessName())) {
+            Bmob.initialize(this, "fef642bee9678388a478d8b5b25bafa0");
+            BmobIM.init(this);
+            BmobIM.registerDefaultMessageHandler(new DemoMessageHandler());
+        }
+        //连接：3.1、登录成功、注册成功或处于登录状态重新打开应用后执行连接IM服务器的操作
+        BmobIM.connect(User.getCurrentUser().getObjectId(), new ConnectListener() {
+            @Override
+            public void done(String uid, BmobException e) {
+                if (e == null) {
+                    Log.e(TAG, "done: im连接成功");
+                } else {
+                    Log.e(TAG, "done: " + e.getMessage());
+                }
+            }
+        });
+        BmobIM.getInstance().setOnConnectStatusChangeListener(new ConnectStatusChangeListener() {
+            @Override
+            public void onChange(ConnectionStatus status) {
+                Toast.makeText(MainActivity.this, status.getMsg(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onChange: " + BmobIM.getInstance().getCurrentStatus().getMsg());
+            }
+        });
+    }
+
+
+
+    @Override
+    public void onMessageReceive(List<MessageEvent> list) {
+        for (int i = 0; i < list.size(); i++) {
+            Log.e(Constraints.TAG, "onMessageReceive: "+list.get(i).getMessage().getContent() );
+        }
+    }
+
+    /**
+     * 获取当前运行的进程名
+     *
+     * @return
+     */
+    public static String getMyProcessName() {
+        try {
+            File file = new File("/proc/" + android.os.Process.myPid() + "/" + "cmdline");
+            BufferedReader mBufferedReader = new BufferedReader(new FileReader(file));
+            String processName = mBufferedReader.readLine().trim();
+            mBufferedReader.close();
+            return processName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BmobIM.getInstance().disConnect();
     }
 
     @Override
@@ -578,6 +617,8 @@ public class MainActivity extends AppCompatActivity {
         }
         return path;
     }
+
+
 
     /**
      * Created by Administrator on 2016/4/28.
