@@ -1,68 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:sndroid="http://schemas.android.com/tools"
     android:background="#e4e4e4"
     android:orientation="vertical">
 
     <RelativeLayout
-        android:background="#414141"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:background="#414141"
         android:orientation="horizontal">
 
         <RelativeLayout
             android:layout_width="50dp"
             android:layout_height="50dp">
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/circleImageView"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true" />
         </RelativeLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#ffffff"
             android:layout_centerInParent="true"
-            android:textSize="20sp"
-            android:text="预    约"/>
+            android:text="预    约"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
 
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:padding="2dp"
             android:layout_margin="10dp"
             android:background="@drawable/shape_line"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="2dp">
 
             <EditText
                 android:id="@+id/city"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="太原"
-                android:textSize="16sp"
+                android:background="@null"
                 android:gravity="center"
-                android:background="@null"/>
+                android:text="太原"
+                android:textSize="16sp" />
 
             <AutoCompleteTextView
                 android:id="@+id/geocodekey"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
-                android:textSize="16sp"
                 android:gravity="center"
-                android:text="中北大学" />
+                android:text="中北大学"
+                android:textSize="16sp" />
 
             <Button
                 android:id="@+id/search"
@@ -76,59 +79,54 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_margin="5dp">
+            android:layout_weight="1">
 
-            <com.baidu.mapapi.map.MapView
-                android:id="@+id/mapView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </com.baidu.mapapi.map.MapView>
+                <com.baidu.mapapi.map.MapView
+                    android:id="@+id/mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/location"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="30dp"
-                android:background="@drawable/location"/>
+                </com.baidu.mapapi.map.MapView>
+
+                <Button
+                    android:id="@+id/my_location"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/location"
+                    android:layout_width="50dp"
+                    android:layout_margin="@dimen/margin_10"
+                    android:layout_height="50dp" />
 
         </RelativeLayout>
-
-
-
 
         <LinearLayout
             android:id="@+id/info"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="10dp"
+            android:layout_height="75dp"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:id="@+id/name"
-                    android:maxLines="1"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:ellipsize="end"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/juli"
-                    android:maxLines="1"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:ellipsize="end"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -138,23 +136,23 @@
 
                 <TextView
                     android:id="@+id/keliu"
-                    android:maxLines="1"
-                    android:textSize="14sp"
-                    android:textColor="#000000"
-                    android:ellipsize="end"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
-
-                <Button
-                    android:id="@+id/into"
-                    android:maxLines="1"
-                    android:textSize="14sp"
-                    android:ellipsize="end"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="立即预约"/>
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/into"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="立即预约"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 

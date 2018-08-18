@@ -77,10 +77,10 @@ public class Fragment_card_mine extends Fragment {
         layoutManager.setReverseLayout(true);//列表翻转
         recyclerView_share.setLayoutManager(layoutManager);
 
-        if (cards.size()==0){
+        if (cards.size() == 0) {
             relativeLayout_no_card.setVisibility(View.VISIBLE);
             recyclerView_share.setVisibility(View.GONE);
-        }else {
+        } else {
             relativeLayout_no_card.setVisibility(View.GONE);
             recyclerView_share.setVisibility(View.VISIBLE);
             ShareAdapter shareAdapter = new ShareAdapter(cards, getContext());

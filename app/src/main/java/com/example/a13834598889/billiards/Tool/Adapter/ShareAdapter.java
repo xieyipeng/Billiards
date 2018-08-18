@@ -133,7 +133,7 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ShareHolder>
         private ImageView shoucang;
         private ImageView jiahaoyou;
 
-        public ShareHolder(View view) {
+        private ShareHolder(View view) {
             super(view);
             circleImageView = view.findViewById(R.id.image_share_item_circleView);
             textView_idName = view.findViewById(R.id.text_share_item_idName);
@@ -147,7 +147,7 @@ public class ShareAdapter extends RecyclerView.Adapter<ShareAdapter.ShareHolder>
             jiahaoyou = view.findViewById(R.id.image_button_jiahaoyou);
         }
 
-        public void bindView(Card card) {
+        private void bindView(Card card) {
             textView_time.setText(card.getCreatedAt());
             textView_context.setText(card.getText());
             textView_dianzanshu.setText(String.valueOf(card.getDianzan().size()));

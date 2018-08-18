@@ -14,7 +14,10 @@ import com.bumptech.glide.Glide;
 import com.example.a13834598889.billiards.FragmentCustomerMine.second.FragmentHelp;
 import com.example.a13834598889.billiards.FragmentCustomerMine.second.Fragment_card;
 import com.example.a13834598889.billiards.FragmentCustomerMine.second.Fragment_friends;
+import com.example.a13834598889.billiards.FragmentCustomerMine.second.Fragment_huihua;
 import com.example.a13834598889.billiards.R;
+
+import org.w3c.dom.Text;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -29,8 +32,8 @@ public class Fragment_mine extends Fragment {
     private TextView textView_button_yuding;
     private TextView textView_button_qiubi;
     private TextView textView_button_bangzhu;
+    private TextView huihua;
 
-    private ImageView imageView_edit;
     private FragmentManager fragmentManager;
     private Fragment fragmentTest;
 
@@ -71,6 +74,17 @@ public class Fragment_mine extends Fragment {
             }
         });
 
+        huihua.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideFragment();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                        .add(R.id.fragment_container, Fragment_huihua.newInstance(), "huihua")
+                        .commit();
+            }
+        });
+
         textView_button_bangzhu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,11 +108,11 @@ public class Fragment_mine extends Fragment {
     private void initViews(View view) {
         CircleImageView circleImageView = view.findViewById(R.id.circleImageView_mine00);
         textView_button_tiezi = view.findViewById(R.id.text_button_wodetiezi);
+        huihua=view.findViewById(R.id.chat_huihua);
         textView_button_qiuyou = view.findViewById(R.id.text_button_wodeqiuyou);
         textView_button_yuding = view.findViewById(R.id.text_button_wodeyuding);
         textView_button_qiubi = view.findViewById(R.id.text_button_wodeqiubi);
         textView_button_bangzhu = view.findViewById(R.id.text_button_bangzhu);
-        imageView_edit = view.findViewById(R.id.image_button_edit);
         Glide.with(getActivity())
                 .load(R.drawable.test_touxiang)
                 .into(circleImageView);

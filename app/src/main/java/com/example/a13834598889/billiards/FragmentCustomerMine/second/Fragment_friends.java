@@ -3,19 +3,17 @@ package com.example.a13834598889.billiards.FragmentCustomerMine.second;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,10 +21,10 @@ import com.example.a13834598889.billiards.FragmentCustomerMine.thired.FragmentIM
 import com.example.a13834598889.billiards.FragmentCustomerMine.thired.Fragment_Friend_Add;
 import com.example.a13834598889.billiards.JavaBean.Customer;
 import com.example.a13834598889.billiards.JavaBean.Friend;
+import com.example.a13834598889.billiards.JavaBean.ShopKeeper;
 import com.example.a13834598889.billiards.JavaBean.User;
 import com.example.a13834598889.billiards.MainActivity;
 import com.example.a13834598889.billiards.R;
-import com.example.a13834598889.billiards.Tool.DemoMessageHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,16 +34,13 @@ import cn.bmob.newim.bean.BmobIMConversation;
 import cn.bmob.newim.bean.BmobIMUserInfo;
 import cn.bmob.newim.core.ConnectionStatus;
 import cn.bmob.newim.listener.ConnectListener;
-import cn.bmob.v3.Bmob;
+import cn.bmob.newim.listener.ConnectStatusChangeListener;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.DownloadFileListener;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.SaveListener;
 
 import static cn.bmob.v3.BmobRealTimeData.TAG;
-import static com.example.a13834598889.billiards.MainActivity.getMyProcessName;
 
 
 /**
@@ -57,7 +52,7 @@ public class Fragment_friends extends Fragment {
     private RecyclerView recyclerView_friends;
     private List<User> users = new ArrayList<>();
     private List<String> stringList = new ArrayList<>();
-    private ImageView addImageView;
+    private TextView addImageView;
     private ImageView imageView_back;
     private boolean isLast = false;
 
@@ -76,61 +71,6 @@ public class Fragment_friends extends Fragment {
         initClisks();
         initData();
         return view;
-    }
-
-    private void initData() {
-        BmobQuery<Friend> friendBmobQuery = new BmobQuery<>();
-        friendBmobQuery.findObjects(new FindListener<Friend>() {
-            @Override
-            public void done(List<Friend> list, BmobException e) {
-                if (e == null) {
-                    for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).getUser().getObjectId().equals(User.getCurrentUser().getObjectId())) {
-                            stringList.add(list.get(i).getFriendUser().getObjectId());
-                        }
-                    }
-                    Log.e(TAG, "done: " + stringList.size());
-                    if (stringList.size() != 0) {
-                        for (int i = 0; i < stringList.size(); i++) {
-                            if (i == (stringList.size() - 1)) {
-                                isLast = true;
-                            }
-                            final User user = new User();
-                            user.setObjectId(stringList.get(i));
-                            BmobQuery<User> userBmobQuery = new BmobQuery<>();
-                            userBmobQuery.findObjects(new FindListener<User>() {
-                                @Override
-                                public void done(List<User> list, BmobException e) {
-                                    if (e == null) {
-                                        for (int j = 0; j < list.size(); j++) {
-                                            if (list.get(j).getObjectId().equals(user.getObjectId())) {
-                                                users.add(list.get(j));
-                                            }
-                                        }
-                                        if (isLast) {
-                                            Log.e(TAG, "done: 次数 ");
-                                            setRecycleViews();
-                                        }
-                                        Log.e(TAG, "done: 好友数量： " + users.size());
-                                    } else {
-                                        Log.e(TAG, "done: " + e.getMessage());
-                                    }
-                                }
-                            });
-                        }
-                    }
-                } else {
-                    Log.e(TAG, "done: " + e.getMessage());
-                }
-            }
-        });
-    }
-
-    private void setRecycleViews() {
-        ContactsAdapter adapter = new ContactsAdapter(users);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView_friends.setLayoutManager(layoutManager);
-        recyclerView_friends.setAdapter(adapter);
     }
 
     private void initClisks() {
@@ -161,7 +101,6 @@ public class Fragment_friends extends Fragment {
         });
     }
 
-
     public class ContactsAdapter extends RecyclerView.Adapter<ContactsHolder> {
         private List<User> users;
 
@@ -182,42 +121,23 @@ public class Fragment_friends extends Fragment {
             holder.imLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (BmobIM.getInstance().getCurrentStatus().getCode() != ConnectionStatus.CONNECTED.getCode()){
-                        Toast.makeText(getContext(), "im未连接，正在重新连接im...", Toast.LENGTH_SHORT).show();
-                        BmobIM.connect(user.getObjectId(), new ConnectListener() {
-                            @Override
-                            public void done(String uid, BmobException e) {
-                                if (e == null) {
-                                    //连接成功
-                                    Toast.makeText(getContext(), "im连接成功", Toast.LENGTH_SHORT).show();
-                                    Log.e(TAG, "done: im连接成功");
-                                } else {
-                                    //连接失败
-                                    Log.e(TAG, "done: " + e.getMessage());
-                                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    }else {
-//                        BmobIMUserInfo info = new BmobIMUserInfo(User.getCurrentUser().getObjectId(), "123", "touxiang");
-
+                    if (BmobIM.getInstance().getCurrentStatus().getCode() != ConnectionStatus.CONNECTED.getCode()) {
+                        reConnect();
+                    } else {
+                        Log.e(TAG, "onClick: 聊天对方：" + user.getObjectId() + " " + user.getUsername());
+                        Log.e(TAG, "onClick: 聊天自己：" + User.getCurrentUser().getObjectId() + " " + User.getCurrentUser().getUsername());
                         BmobIMUserInfo info = new BmobIMUserInfo(user.getObjectId(), user.getNickName(), "touxiang");
                         BmobIMConversation conversation = BmobIM.getInstance().startPrivateConversation(info, null);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("c", conversation);
                         MainActivity.customerNavigation.setVisibility(View.GONE);
-                        MainActivity.shopNavigation.setVisibility(View.GONE);
                         fragmentManager.beginTransaction()
                                 .hide(fragmentManager.findFragmentByTag("text_button_wodeqiuyou"))
                                 .remove(fragmentManager.findFragmentByTag("text_button_wodeqiuyou"))
-                                .add(R.id.fragment_container, FragmentIM.newInstance(user.getNickName(),
-                                        user.getObjectId(), bundle), "im_Layout")
+                                .add(R.id.fragment_container, FragmentIM.newInstance(user.getNickName(), user.getObjectId(), conversation), "im_Layout")
                                 .commit();
                     }
                 }
             });
         }
-
 
         @Override
         public int getItemCount() {
@@ -271,5 +191,81 @@ public class Fragment_friends extends Fragment {
         addImageView = view.findViewById(R.id.circleImageView_mine88);
         recyclerView_friends = view.findViewById(R.id.contacts_list_recycler_view);
         imageView_back = view.findViewById(R.id.fragment_friends_back);
+    }
+
+    private void reConnect() {
+        Toast.makeText(getContext(), "正在连接im...", Toast.LENGTH_SHORT).show();
+        BmobIM.connect(User.getCurrentUser().getObjectId(), new ConnectListener() {
+            @Override
+            public void done(String uid, BmobException e) {
+                if (e == null) {
+                    Log.e(TAG, "done: im连接成功");
+                } else {
+                    Log.e(TAG, "done: " + e.getMessage());
+                }
+            }
+        });
+        BmobIM.getInstance().setOnConnectStatusChangeListener(new ConnectStatusChangeListener() {
+            @Override
+            public void onChange(ConnectionStatus status) {
+                Log.e(TAG, "onChange: " + BmobIM.getInstance().getCurrentStatus().getMsg());
+            }
+        });
+    }
+
+    private void initData() {
+        if (BmobIM.getInstance().getCurrentStatus().getCode() != ConnectionStatus.CONNECTED.getCode()) {
+            reConnect();
+        }
+        BmobQuery<Friend> friendBmobQuery = new BmobQuery<>();
+        friendBmobQuery.findObjects(new FindListener<Friend>() {
+            @Override
+            public void done(List<Friend> list, BmobException e) {
+                if (e == null) {
+                    for (int i = 0; i < list.size(); i++) {
+                        if (list.get(i).getUser().getObjectId().equals(User.getCurrentUser().getObjectId())) {
+                            stringList.add(list.get(i).getFriendUser().getObjectId());
+                        }
+                    }
+                    if (stringList.size() != 0) {
+                        for (int i = 0; i < stringList.size(); i++) {
+                            if (i == (stringList.size() - 1)) {
+                                isLast = true;
+                            }
+                            final User user = new User();
+                            user.setObjectId(stringList.get(i));
+                            BmobQuery<User> userBmobQuery = new BmobQuery<>();
+                            userBmobQuery.findObjects(new FindListener<User>() {
+                                @Override
+                                public void done(List<User> list, BmobException e) {
+                                    if (e == null) {
+                                        for (int j = 0; j < list.size(); j++) {
+                                            if (list.get(j).getObjectId().equals(user.getObjectId())) {
+                                                users.add(list.get(j));
+                                            }
+                                        }
+                                        if (isLast) {
+                                            setRecycleViews();
+                                        }
+                                    } else {
+                                        Log.e(TAG, "done: " + e.getMessage());
+                                    }
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    Log.e(TAG, "done: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+
+    private void setRecycleViews() {
+        ContactsAdapter adapter = new ContactsAdapter(users);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView_friends.setLayoutManager(layoutManager);
+        recyclerView_friends.setAdapter(adapter);
     }
 }

@@ -54,6 +54,7 @@ import cn.bmob.newim.listener.ConnectStatusChangeListener;
 import cn.bmob.newim.listener.MessageListHandler;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobRealTimeData;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
@@ -62,7 +63,8 @@ import cn.bmob.v3.listener.SaveListener;
 
 import static android.content.ContentValues.TAG;
 
-public class MainActivity extends AppCompatActivity implements MessageListHandler{
+public class MainActivity extends AppCompatActivity {
+    // implements MessageListHandler
     private Fragment save_fragment_mine;
     private Fragment save_fragment_order;
     private Fragment save_fragment_share;
@@ -81,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements MessageListHandle
     public static BottomNavigationView shopNavigation;
 
     private Fragment fragmentTest;
-
     public static File path;
 
     @Override
@@ -95,63 +96,27 @@ public class MainActivity extends AppCompatActivity implements MessageListHandle
         bmobCheckStore();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        BmobIM.getInstance().disConnect();
-    }
-
     private void im() {
-        if (getApplicationInfo().packageName.equals(getMyProcessName())) {
-            Bmob.initialize(this, "fef642bee9678388a478d8b5b25bafa0");
-            BmobIM.init(this);
-            BmobIM.registerDefaultMessageHandler(new DemoMessageHandler());
-        }
         //连接：3.1、登录成功、注册成功或处于登录状态重新打开应用后执行连接IM服务器的操作
         BmobIM.connect(User.getCurrentUser().getObjectId(), new ConnectListener() {
             @Override
             public void done(String uid, BmobException e) {
                 if (e == null) {
+                    Toast.makeText(MainActivity.this, "im连接成功", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "done: im连接成功");
                 } else {
+                    Toast.makeText(MainActivity.this, "im连接失败", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "done: " + e.getMessage());
                 }
             }
         });
+        //TODO 连接：3.3、监听连接状态，可通过BmobIM.getInstance().getCurrentStatus()来获取当前的长连接状态
         BmobIM.getInstance().setOnConnectStatusChangeListener(new ConnectStatusChangeListener() {
             @Override
             public void onChange(ConnectionStatus status) {
-                Toast.makeText(MainActivity.this, status.getMsg(), Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "onChange: " + BmobIM.getInstance().getCurrentStatus().getMsg());
             }
         });
-    }
-
-
-
-    @Override
-    public void onMessageReceive(List<MessageEvent> list) {
-        for (int i = 0; i < list.size(); i++) {
-            Log.e(Constraints.TAG, "onMessageReceive: "+list.get(i).getMessage().getContent() );
-        }
-    }
-
-    /**
-     * 获取当前运行的进程名
-     *
-     * @return
-     */
-    public static String getMyProcessName() {
-        try {
-            File file = new File("/proc/" + android.os.Process.myPid() + "/" + "cmdline");
-            BufferedReader mBufferedReader = new BufferedReader(new FileReader(file));
-            String processName = mBufferedReader.readLine().trim();
-            mBufferedReader.close();
-            return processName;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @Override
@@ -188,7 +153,8 @@ public class MainActivity extends AppCompatActivity implements MessageListHandle
         String[] toMineMessage = new String[]{
                 "card_fragment",
                 "text_button_bangzhu",
-                "text_button_wodeqiuyou"};
+                "text_button_wodeqiuyou",
+                "huihua"};
         for (String tag : toMineMessage) {
             if (tag.equals(fragmentTest.getTag())) {
                 fragmentManager.beginTransaction()
@@ -617,16 +583,4 @@ public class MainActivity extends AppCompatActivity implements MessageListHandle
         }
         return path;
     }
-
-
-
-    /**
-     * Created by Administrator on 2016/4/28.
-     */
-    public class RefreshEvent {
-        public RefreshEvent() {
-        }
-    }
-
-
 }
