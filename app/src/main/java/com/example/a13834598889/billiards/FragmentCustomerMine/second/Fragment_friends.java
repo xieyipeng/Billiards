@@ -25,6 +25,7 @@ import com.example.a13834598889.billiards.JavaBean.ShopKeeper;
 import com.example.a13834598889.billiards.JavaBean.User;
 import com.example.a13834598889.billiards.MainActivity;
 import com.example.a13834598889.billiards.R;
+import com.example.a13834598889.billiards.Tool.Adapter.ContactsAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ public class Fragment_friends extends Fragment {
     private TextView addImageView;
     private ImageView imageView_back;
     private boolean isLast = false;
+    private ContactsAdapter adapter;
 
     private FragmentManager fragmentManager;
 
@@ -67,6 +69,7 @@ public class Fragment_friends extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
         fragmentManager = getActivity().getSupportFragmentManager();
+
         initViews(view);
         initClisks();
         initData();
@@ -99,92 +102,6 @@ public class Fragment_friends extends Fragment {
                 }
             }
         });
-    }
-
-    public class ContactsAdapter extends RecyclerView.Adapter<ContactsHolder> {
-        private List<User> users;
-
-        public ContactsAdapter(List<User> users) {
-            this.users = users;
-        }
-
-        @Override
-        public ContactsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(getActivity()).inflate(R.layout.friend_item, parent, false);
-            return new ContactsHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(ContactsHolder holder, int position) {
-            final User user = users.get(position);
-            holder.bindView(user);
-            holder.imLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (BmobIM.getInstance().getCurrentStatus().getCode() != ConnectionStatus.CONNECTED.getCode()) {
-                        reConnect();
-                    } else {
-                        Log.e(TAG, "onClick: 聊天对方：" + user.getObjectId() + " " + user.getUsername());
-                        Log.e(TAG, "onClick: 聊天自己：" + User.getCurrentUser().getObjectId() + " " + User.getCurrentUser().getUsername());
-                        BmobIMUserInfo info = new BmobIMUserInfo(user.getObjectId(), user.getNickName(), "touxiang");
-                        BmobIMConversation conversation = BmobIM.getInstance().startPrivateConversation(info, null);
-                        MainActivity.customerNavigation.setVisibility(View.GONE);
-                        fragmentManager.beginTransaction()
-                                .hide(fragmentManager.findFragmentByTag("text_button_wodeqiuyou"))
-                                .remove(fragmentManager.findFragmentByTag("text_button_wodeqiuyou"))
-                                .add(R.id.fragment_container, FragmentIM.newInstance(user.getNickName(), user.getObjectId(), conversation), "im_Layout")
-                                .commit();
-                    }
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return users.size();
-        }
-    }
-
-    public class ContactsHolder extends RecyclerView.ViewHolder {
-
-        private TextView text_view_ni_cheng;
-        private TextView text_view_ge_xing_qian_ming;
-        private ImageView imageView_TouXiang;
-        private LinearLayout imLayout;
-
-        public ContactsHolder(View view) {
-            super(view);
-            text_view_ge_xing_qian_ming = view.findViewById(R.id.ge_xing_qian_ming_text_view);
-            text_view_ni_cheng = view.findViewById(R.id.ni_cheng_text_view);
-            imageView_TouXiang = view.findViewById(R.id.tou_xiang_image_view);
-            imLayout = view.findViewById(R.id.im_Layout);
-        }
-
-        public void bindView(User user) {
-            if (user.getSign() != null) {
-                text_view_ge_xing_qian_ming.setText(user.getSign());
-            } else {
-                text_view_ge_xing_qian_ming.setText(R.string.SnoSign);
-            }
-            text_view_ni_cheng.setText(user.getNickName());
-            if (user.getPicture_head() != null) {
-                user.getPicture_head().download(new DownloadFileListener() {
-                    @Override
-                    public void done(String s, BmobException e) {
-                        if (e == null) {
-                            imageView_TouXiang.setImageBitmap(BitmapFactory.decodeFile(s));
-                        } else {
-                            Log.e(TAG, "done: " + e.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onProgress(Integer integer, long l) {
-
-                    }
-                });
-            }
-        }
     }
 
     private void initViews(View view) {
@@ -229,29 +146,15 @@ public class Fragment_friends extends Fragment {
                     }
                     if (stringList.size() != 0) {
                         for (int i = 0; i < stringList.size(); i++) {
-                            if (i == (stringList.size() - 1)) {
+                            if (stringList.size() - 1 == i) {
                                 isLast = true;
                             }
-                            final User user = new User();
+                            User user = new User();
                             user.setObjectId(stringList.get(i));
-                            BmobQuery<User> userBmobQuery = new BmobQuery<>();
-                            userBmobQuery.findObjects(new FindListener<User>() {
-                                @Override
-                                public void done(List<User> list, BmobException e) {
-                                    if (e == null) {
-                                        for (int j = 0; j < list.size(); j++) {
-                                            if (list.get(j).getObjectId().equals(user.getObjectId())) {
-                                                users.add(list.get(j));
-                                            }
-                                        }
-                                        if (isLast) {
-                                            setRecycleViews();
-                                        }
-                                    } else {
-                                        Log.e(TAG, "done: " + e.getMessage());
-                                    }
-                                }
-                            });
+                            users.add(user);
+                            if (isLast) {
+                                setRecycleViews();
+                            }
                         }
                     }
                 } else {
@@ -261,9 +164,8 @@ public class Fragment_friends extends Fragment {
         });
     }
 
-
     private void setRecycleViews() {
-        ContactsAdapter adapter = new ContactsAdapter(users);
+        adapter = new ContactsAdapter(users, getContext(), fragmentManager,"liebiao");
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView_friends.setLayoutManager(layoutManager);
         recyclerView_friends.setAdapter(adapter);

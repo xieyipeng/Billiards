@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Fragment fragmentTest;
     public static File path;
+    public static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +95,11 @@ public class MainActivity extends AppCompatActivity {
         im();
         initViews();
         bmobCheckStore();
+        context=this;
+    }
+
+    public void Toast(String s) {
+        Toast.makeText(MainActivity.this, s, Toast.LENGTH_SHORT).show();
     }
 
     private void im() {
@@ -102,10 +108,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void done(String uid, BmobException e) {
                 if (e == null) {
-                    Toast.makeText(MainActivity.this, "im连接成功", Toast.LENGTH_SHORT).show();
+                    Toast("im连接成功");
                     Log.e(TAG, "done: im连接成功");
                 } else {
-                    Toast.makeText(MainActivity.this, "im连接失败", Toast.LENGTH_SHORT).show();
+                    Toast("im连接失败");
                     Log.e(TAG, "done: " + e.getMessage());
                 }
             }
@@ -118,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     @Override
     protected void onStop() {
@@ -161,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
                         .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                         .show(fragmentManager.findFragmentByTag("fragment_mine"))
                         .commit();
+                MainActivity.customerNavigation.setVisibility(View.VISIBLE);
             }
         }
 

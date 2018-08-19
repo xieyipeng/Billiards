@@ -5,22 +5,20 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.example.a13834598889.billiards.JavaBean.User;
 import com.example.a13834598889.billiards.R;
-import com.example.a13834598889.billiards.Tool.Adapter.ChatAdapter;
-import com.example.a13834598889.billiards.Tool.Conversation;
-import com.example.a13834598889.billiards.Tool.PrivateConversation;
+import com.example.a13834598889.billiards.Tool.Adapter.ContactsAdapter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import cn.bmob.newim.BmobIM;
@@ -33,13 +31,15 @@ import static org.greenrobot.eventbus.EventBus.TAG;
 
 public class Fragment_huihua extends Fragment {
 
+    //会话
+
     private FragmentManager fragmentManager;
     private ImageView back;
     private SwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
-    private ChatAdapter adapter;
+    private ContactsAdapter adapter;
     private LinearLayout linearLayout;
-    private List<BmobIMMessage> messageList;
+    private List<User> userList=new ArrayList<>();
 
     public static Fragment_huihua newInstance() {
         return new Fragment_huihua();
@@ -50,34 +50,17 @@ public class Fragment_huihua extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_huihua, container, false);
         fragmentManager = getActivity().getSupportFragmentManager();
-        adapter=new ChatAdapter();
+        initData();
         initViews(view);
         initClicks();
         return view;
     }
 
-//    /**
-//     * 首次加载，可设置msg为null，下拉刷新的时候，默认取消息表的第一个msg作为刷新的起始时间点，默认按照消息时间的降序排列
-//     *
-//     * @param msg
-//     */
-//    public void queryMessages(BmobIMMessage msg) {
-//        //TODO 消息：5.2、查询指定会话的消息记录
-//        mConversationManager.queryMessages(msg, 10, new MessagesQueryListener() {
-//            @Override
-//            public void done(List<BmobIMMessage> list, BmobException e) {
-//                sw_refresh.setRefreshing(false);
-//                if (e == null) {
-//                    if (null != list && list.size() > 0) {
-//                        adapter.addMessages(list);
-//                        layoutManager.scrollToPositionWithOffset(list.size() - 1, 0);
-//                    }
-//                } else {
-//                    toast(e.getMessage() + "(" + e.getErrorCode() + ")");
-//                }
-//            }
-//        });
-//    }
+    private void initData() {
+
+    }
+
+
 
     private void initClicks() {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -114,33 +97,27 @@ public class Fragment_huihua extends Fragment {
      *
      * @return
      */
-    private List<Conversation> getConversations() {
+    private List<User> getConversations() {
         //添加会话
-        List<Conversation> conversationList = new ArrayList<>();
-        conversationList.clear();
+        userList.clear();
         //TODO 会话：4.2、查询全部会话
         List<BmobIMConversation> list = BmobIM.getInstance().loadAllConversation();
-        Log.e(TAG, "getConversations: "+ list.size());
-        if (list != null && list.size() > 0) {
-            for (BmobIMConversation item : list) {
-                switch (item.getConversationType()) {
+        if (list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                switch (list.get(i).getConversationType()) {
                     case 1://私聊
-                        Log.e(TAG, "getConversations: id: "+item.getConversationId() );
-                        conversationList.add(new PrivateConversation(item));
+                        if (!list.get(i).getConversationId().equals(User.getCurrentUser().getObjectId())){
+                            final User user=new User();
+                            user.setObjectId(list.get(i).getConversationId());
+                            userList.add(user);
+                        }
                         break;
                     default:
                         break;
                 }
             }
         }
-        //添加新朋友会话-获取好友请求表中最新一条记录
-//        List<NewFriend> friends = NewFriendManager.getInstance(getActivity()).getAllNewFriend();
-//        if(friends!=null && friends.size()>0){
-//            conversationList.add(new NewFriendConversation(friends.get(0)));
-//        }
-        //重新排序
-        Collections.sort(conversationList);
-        return conversationList;
+        return userList;
     }
 
     @Override
@@ -150,9 +127,11 @@ public class Fragment_huihua extends Fragment {
         query();
     }
 
-
     private void query() {
-        adapter.bindDatas(getConversations());
+        LinearLayoutManager manager=new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(manager);
+        adapter=new ContactsAdapter(getConversations(),getContext(),fragmentManager,"huihua");
+        recyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         refreshLayout.setRefreshing(false);
     }

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.a13834598889.billiards.FragmentCustomerMine.thired.FragmentIM;
 import com.example.a13834598889.billiards.JavaBean.User;
 import com.example.a13834598889.billiards.R;
 
@@ -38,18 +39,21 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.SendHolder> {
     private List<BmobIMMessage> messageList;
     private Context mContext;
 
-    public ChatAdapter(){
-
-    }
-
     public ChatAdapter(List<BmobIMMessage> messages, Context context) {
         this.mContext = context;
         this.messageList = messages;
     }
 
+    public void addMessages(List<BmobIMMessage> messages) {
+        messageList.addAll(0, messages);
+        notifyDataSetChanged();
+        FragmentIM.scrollToBottom();
+    }
+
     public void addMessage(BmobIMMessage message) {
         messageList.addAll(Arrays.asList(message));
         notifyDataSetChanged();
+        FragmentIM.scrollToBottom();
     }
 
     @Override
@@ -63,19 +67,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.SendHolder> {
         BmobIMMessage bmobIMMessage = messageList.get(position);
         holder.bindView(bmobIMMessage);
     }
-
-
-    /**
-     * 绑定数据
-     * @param datas
-     * @return
-     */
-    public ChatAdapter bindDatas(Collection datas) {
-        this.messageList = datas == null ? new ArrayList() : new ArrayList(datas);
-        notifyDataSetChanged();
-        return this;
-    }
-
 
     @Override
     public int getItemCount() {
@@ -107,20 +98,18 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.SendHolder> {
         private void bindView(final BmobIMMessage bmobIMMessage) {
             @SuppressLint("SimpleDateFormat")
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-            Log.e(TAG, "bindView:  getFromId "+bmobIMMessage.getFromId() );
-            Log.e(TAG, "bindView:  getContent "+bmobIMMessage.getContent() );
-            Log.e(TAG, "bindView:  getExtra "+bmobIMMessage.getExtra() );
-            Log.e(TAG, "bindView:  getToId "+bmobIMMessage.getToId() );
-            Log.e(TAG, "bindView:  getCreateTime "+df.format(new Date()));
-            Log.e(TAG, "bindView:  getReceiveStatus "+bmobIMMessage.getReceiveStatus() );
-
+//            Log.e(TAG, "bindView:  getFromId " + bmobIMMessage.getFromId());
+//            Log.e(TAG, "bindView:  getContent " + bmobIMMessage.getContent());
+//            Log.e(TAG, "bindView:  getExtra " + bmobIMMessage.getExtra());
+//            Log.e(TAG, "bindView:  getToId " + bmobIMMessage.getToId());
+//            Log.e(TAG, "bindView:  getCreateTime " + df.format(new Date()));
+//            Log.e(TAG, "bindView:  getReceiveStatus " + bmobIMMessage.getReceiveStatus());
             if (bmobIMMessage.getFromId().equals(User.getCurrentUser().getObjectId())) {
                 receive.setVisibility(View.GONE);
                 send.setVisibility(View.VISIBLE);
                 context.setText(bmobIMMessage.getContent());
                 BmobQuery<User> userBmobQuery = new BmobQuery<>();
-                time.setText(String.valueOf(bmobIMMessage.getCreateTime()));
+                time.setText(df.format(bmobIMMessage.getCreateTime()));
                 userBmobQuery.findObjects(new FindListener<User>() {
                     @Override
                     public void done(List<User> list, BmobException e) {
@@ -136,6 +125,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.SendHolder> {
                                             Log.e(TAG, "done: " + e.getMessage());
                                         }
                                     }
+
                                     @Override
                                     public void onProgress(Integer integer, long l) {
 
@@ -148,7 +138,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.SendHolder> {
             } else {
                 receive.setVisibility(View.VISIBLE);
                 send.setVisibility(View.GONE);
-
                 rc_context.setText(bmobIMMessage.getContent());
                 BmobQuery<User> userBmobQuery = new BmobQuery<>();
                 time.setText(String.valueOf(bmobIMMessage.getCreateTime()));

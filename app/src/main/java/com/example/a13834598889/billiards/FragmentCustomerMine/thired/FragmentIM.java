@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -51,6 +52,7 @@ import cn.bmob.newim.core.ConnectionStatus;
 import cn.bmob.newim.event.MessageEvent;
 import cn.bmob.newim.listener.MessageListHandler;
 import cn.bmob.newim.listener.MessageSendListener;
+import cn.bmob.newim.listener.MessagesQueryListener;
 import cn.bmob.newim.listener.OnRecordChangeListener;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.exception.BmobException;
@@ -70,16 +72,16 @@ public class FragmentIM extends Fragment implements MessageListHandler {
     private LinearLayout layout_emo;
     private EditText editText;
     private Button btn_speak;
+    private SwipeRefreshLayout refreshLayout;
     private Button btn_chat_send;
     private Button btn_chat_keyboard;
     private Button btn_chat_voice;
     private BmobIMConversation mConversationManager;
     private BmobIMConversation conversation;
-    private ChatAdapter chatAdapter;
+    public static ChatAdapter chatAdapter;
     private RecyclerView recyclerView;
     private List<BmobIMMessage> messageList = new ArrayList<>();
-    private LinearLayoutManager layoutManager;
-
+    private static LinearLayoutManager layoutManager;
 
     private FragmentManager fragmentManager;
 
@@ -101,9 +103,36 @@ public class FragmentIM extends Fragment implements MessageListHandler {
             Toast.makeText(getContext(), "尚未连接IM服务器", Toast.LENGTH_SHORT).show();
         }
         initViews(view);
+        queryMessages(null);
         initClicks();
         return view;
     }
+
+    /**
+     * 首次加载，可设置msg为null，下拉刷新的时候，默认取消息表的第一个msg作为刷新的起始时间点，默认按照消息时间的降序排列
+     *
+     * @param msg
+     */
+    public void queryMessages(BmobIMMessage msg) {
+        //TODO 消息：5.2、查询指定会话的消息记录
+        mConversationManager.queryMessages(msg, 10, new MessagesQueryListener() {
+            @Override
+            public void done(List<BmobIMMessage> list, BmobException e) {
+                refreshLayout.setRefreshing(false);
+                if (e == null) {
+                    if (null != list && list.size() > 0) {
+                        chatAdapter.addMessages(list);
+                        chatAdapter.notifyDataSetChanged();
+                        layoutManager.scrollToPositionWithOffset(list.size() - 1, 0);
+                    }
+                } else {
+                    Log.e(TAG, "done: "+e.getMessage() );
+                }
+            }
+        });
+    }
+
+
 
     private void initClicks() {
         back.setOnClickListener(new View.OnClickListener() {
@@ -116,7 +145,6 @@ public class FragmentIM extends Fragment implements MessageListHandler {
                             .add(R.id.fragment_container, Fragment_friends.newInstance(), "text_button_wodeqiuyou")
                             .commit();
                     MainActivity.customerNavigation.setVisibility(View.VISIBLE);
-
                 }
             }
         });
@@ -217,6 +245,7 @@ public class FragmentIM extends Fragment implements MessageListHandler {
         btn_chat_voice = view.findViewById(R.id.btn_chat_voice);
 //        layout_record = view.findViewById(R.id.layout_record);
 //        iv_record = view.findViewById(R.id.iv_record);
+        refreshLayout=view.findViewById(R.id.chat_refresh);
         back = view.findViewById(R.id.tv_left);
         recyclerView = view.findViewById(R.id.rc_view);
         title = view.findViewById(R.id.chat_title);
@@ -283,7 +312,7 @@ public class FragmentIM extends Fragment implements MessageListHandler {
         }
     }
 
-    private void scrollToBottom() {
+    public static void scrollToBottom() {
         layoutManager.scrollToPositionWithOffset(chatAdapter.getItemCount() - 1, 0);
     }
 
