@@ -39,7 +39,7 @@ public class Fragment_huihua extends Fragment {
     private RecyclerView recyclerView;
     private ContactsAdapter adapter;
     private LinearLayout linearLayout;
-    private List<User> userList=new ArrayList<>();
+    private List<User> userList = new ArrayList<>();
 
     public static Fragment_huihua newInstance() {
         return new Fragment_huihua();
@@ -59,7 +59,6 @@ public class Fragment_huihua extends Fragment {
     private void initData() {
 
     }
-
 
 
     private void initClicks() {
@@ -97,7 +96,7 @@ public class Fragment_huihua extends Fragment {
      *
      * @return
      */
-    private List<User> getConversations() {
+    private void getConversations() {
         //添加会话
         userList.clear();
         //TODO 会话：4.2、查询全部会话
@@ -106,8 +105,8 @@ public class Fragment_huihua extends Fragment {
             for (int i = 0; i < list.size(); i++) {
                 switch (list.get(i).getConversationType()) {
                     case 1://私聊
-                        if (!list.get(i).getConversationId().equals(User.getCurrentUser().getObjectId())){
-                            final User user=new User();
+                        if (!list.get(i).getConversationId().equals(User.getCurrentUser().getObjectId())) {
+                            final User user = new User();
                             user.setObjectId(list.get(i).getConversationId());
                             userList.add(user);
                         }
@@ -117,7 +116,13 @@ public class Fragment_huihua extends Fragment {
                 }
             }
         }
-        return userList;
+        Log.e(TAG, "getConversations: size"+userList.size() );
+        if (userList.size()!=0){
+            adapter = new ContactsAdapter(userList, getContext(), fragmentManager, "huihua");
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            refreshLayout.setRefreshing(false);
+        }
     }
 
     @Override
@@ -128,16 +133,13 @@ public class Fragment_huihua extends Fragment {
     }
 
     private void query() {
-        LinearLayoutManager manager=new LinearLayoutManager(getContext());
+        LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
-        adapter=new ContactsAdapter(getConversations(),getContext(),fragmentManager,"huihua");
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-        refreshLayout.setRefreshing(false);
+        getConversations();
     }
 
     private void initViews(View view) {
-        linearLayout=view.findViewById(R.id.huihua_big);
+        linearLayout = view.findViewById(R.id.huihua_big);
         back = view.findViewById(R.id.message_back);
         refreshLayout = view.findViewById(R.id.message_refresh);
         recyclerView = view.findViewById(R.id.message_view);

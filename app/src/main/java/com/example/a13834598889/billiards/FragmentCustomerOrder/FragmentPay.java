@@ -2,6 +2,7 @@ package com.example.a13834598889.billiards.FragmentCustomerOrder;
 
 import android.animation.TimeAnimator;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.app.TimePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -57,22 +59,14 @@ public class FragmentPay extends Fragment {
     private TimePicker mTimePicker;
     private TextView pay_money;
     private TextView time_show;
+    private ImageView back;
+    private android.support.v4.app.FragmentManager fragmentManager;
     private String RSA_PRIVATE = "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCM+4vsh5mskSWiwDwBrMc8dGsTmtQInVimEkPnNsYQQ1ENvRjTttkSU3cXDrmO+coZCDWYRQhS72G/xHhgdcHf5rH+oTT6j3Xenww5oD41azPmRGnCNXLvReb1gHfYD64josY08nwBakSt/cHlSMCfkNDez0O0in1sEucYILNYkFCbpHY5rhgvN0jEAqYg2z43piEvARhiSjRaKHb8ZwrNFye91HsHxV5dHUmqwkfUaPl5yfAaYm7dlr/JlBsYEsOOwV11PvKYEQuTI6bHt//2w/D9JBnAXXxfeXndhBnlHmo+lrRsIK7ZPTz0rBnOb3KUpqMxn+LLo3Us+gTD/QLFAgMBAAECggEAKD8jScnIKAhjmxuPxdaiJfMCIl2fzDnG9dnfAqGTV08wU2C5Nq9LNr0XEUEF3fgXJqA+VJLYdnyaBhm7V6YmS5nbFFrG+gR8XKpA3i6Ns8g/z6uWGXgSsJXfAhTDoa2QQ+IS/Uh/+BNzOcxoTuE/BA5eYkz/AgpLFdAroqqrKEvR8FXbhFjES4yklTtC2TweDF2xCwEoeMFA8lbBjLECc40lesRoncC49/mxVbAZOwEhcB7hkvnLZ4one03O/gE0wdwyEbJHm23YyK2FkksDPtcCMBx1+HC4uA7zn3go3ZIjrfpeqSGG3d19UXDkDSIVTSqlGdrhonbOAmEJMAaOgQKBgQD6DpCFb3MxukpLchH6p4PJuXWr5evO5ZIAvDSvliKGkUGR37dlCGUmIGAgvCL2ldOatjQcwUcyZTqkwNuPgTtMzl2WSs3aiR0lzf2UQTD4cUDWRtyBj25J69ZqoR/87IyWqqqd4G7tdWr9a7xIxOn+9Rtr1qjj5auop/+frneCJQKBgQCQVVXJUx0MWuMpw9d20+XaUSzJEnv1ra6WHVjw04VRh5OeNzFw/S6RJDkgPPB5TsCMaGxNE4WhykKWBs0e7t0CQ9vufjEz5OXbCQb0By7f3pYtrOXTl20YMlFOcl/d5RWpRIECA5Ieqc5mkv25xnw1onkHC+47UZ8t/xY7hvWMIQKBgQDq0ViH5aPwU7dG6ATYNAy/F0jYNt5c+RpFVHfJV5xub+N6P/KxjtOlnQuIUgQnOYVvqKCBTEM2oPcUFgNY3Iu6UaRy6SYsjUvw32K8oQeClp/DWOHjTLTN+AjvMwWd9ukC55u3DDY/CV+CQXSbhUcT5Epu1zLcaCXuCG01H5ocfQKBgCuzWsUZQCtUfYFQxbU51Vdzyo6a5SNu0fSrsBlCwhP8a8q0xWiDkAzsHcvQB7ODD7Ozjk8MASMKfXy1VHfwNMSRzU55sOYYgSv/oLZUUnIAEBKGThPxvltcKNgKs1IZIaTdk/4LHLviCBdwnBgaq9MFfYWPrDMTtJGVsaKWa1RhAoGBAMqCNJcNDYs3vj8BDMdpWl3pVq5hl2BieYzvS0ZSKU99E278ejYWs2cn1kPaXO3qfs/V/uufYeeRK5mMd6xepBdI0zpe5vy99yB+pdA2tS7QAN5Wbk1NvFmHDnrMDRRikDI3+trTGjWPyIKk+L1lBJ2sPqnCbHnQuerWiEOA/jts";
     public static final String APPID = "2016091800539811";
     private static final int SDK_PAY_FLAG = 1001;
     private int my_hour, my_minute;
     private static final int TIMEPICKER_DIALOG_1 = 0;//设置Dialog的id
     private static double money1;
-
-
-    public static FragmentPay newInstance(String id, String name,Integer num) {
-        FragmentPay fragmentPay = new FragmentPay();
-        fragmentPay.id = id;
-        fragmentPay.name=name;
-        fragmentPay.table_num = num;
-        return fragmentPay;
-
-    }
 
     private Handler mHandler = new Handler() {
         @Override
@@ -97,10 +91,10 @@ public class FragmentPay extends Fragment {
                         order.save(new SaveListener<String>() {
                             @Override
                             public void done(String s, BmobException e) {
-                                if (e==null){
+                                if (e == null) {
 
-                                }else {
-                                    Log.e(TAG, "done: "+e.getMessage() );
+                                } else {
+                                    Log.e(TAG, "done: " + e.getMessage());
                                 }
                             }
                         });
@@ -121,8 +115,8 @@ public class FragmentPay extends Fragment {
                                             public void done(BmobException e) {
                                                 if (e == null) {
 
-                                                }else {
-                                                    Log.e(TAG, "done: "+e.getMessage() );
+                                                } else {
+                                                    Log.e(TAG, "done: " + e.getMessage());
                                                 }
                                             }
                                         });
@@ -138,30 +132,45 @@ public class FragmentPay extends Fragment {
         }
     };
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public static FragmentPay newInstance(String id, String name, Integer num) {
+        FragmentPay fragmentPay = new FragmentPay();
+        fragmentPay.id = id;
+        fragmentPay.name = name;
+        fragmentPay.table_num = num;
+        return fragmentPay;
+
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pay, container, false);
-        title_pay = (TextView) view.findViewById(R.id.title_name);
+        fragmentManager=getActivity().getSupportFragmentManager();
+        initViews(view);
+        initClicks();
+        return view;
+    }
+
+    private void initViews(View view) {
+        title_pay = view.findViewById(R.id.title_name);
         title_pay.setText(name);
-
-        time_show = (TextView) view.findViewById(R.id.time_show);
-        pay_money = (TextView) view.findViewById(R.id.pay_money);
-        mTimePicker = (TimePicker) view.findViewById(R.id.time_choose);
+        time_show = view.findViewById(R.id.time_show);
+        pay_money = view.findViewById(R.id.pay_money);
+        mTimePicker = view.findViewById(R.id.time_choose);
         mTimePicker.setIs24HourView(true);
+        pay = view.findViewById(R.id.pay);
+        back=view.findViewById(R.id.pay_back_ImageView);
+    }
 
+    private void initClicks() {
         mTimePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
             @Override
             public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                    time_show.setText("" + hourOfDay + ":" + minute);
-                    Timestamp timestamp = new Timestamp(new Date().getTime());
-                    int hour = timestamp.getHours();
+                time_show.setText("" + hourOfDay + ":" + minute);
+                Timestamp timestamp = new Timestamp(new Date().getTime());
+                int hour = timestamp.getHours();
                 int min = timestamp.getMinutes();
                 int gas = (hourOfDay - hour) * 60 * 60 * 1000 + (minute - min) * 60 * 1000;
                 double money = gas * (1.0 / 3600000.0);
@@ -170,8 +179,20 @@ public class FragmentPay extends Fragment {
 
             }
         });
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fragmentManager.findFragmentByTag("fragment_pay") != null) {
+                    Log.e(TAG, "onClick: hello");
 
-        pay = (Button) view.findViewById(R.id.pay);
+                    fragmentManager.beginTransaction()
+                            .hide(fragmentManager.findFragmentByTag("fragment_pay"))
+                            .remove(fragmentManager.findFragmentByTag("fragment_pay"))
+                            .show(fragmentManager.findFragmentByTag("into"))
+                            .commit();
+                }
+            }
+        });
         pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -206,9 +227,6 @@ public class FragmentPay extends Fragment {
                 payThread.start();
             }
         });
-
-
-        return view;
     }
 
 

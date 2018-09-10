@@ -131,8 +131,8 @@ public class Fragment_billiards extends Fragment {
                         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                         fragmentManager.beginTransaction()
                                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                                .addToBackStack(null)  //返回
-                                .add(R.id.fragment_container, FragmentPay.newInstance(shopID, shopNickName, selectTable.getTable_number()))
+                                .addToBackStack(null)
+                                .add(R.id.fragment_container, FragmentPay.newInstance(shopID, shopNickName, selectTable.getTable_number()),"fragment_pay")
                                 .commit();
                     }
                 }
@@ -141,7 +141,6 @@ public class Fragment_billiards extends Fragment {
     }
 
     private void initViews(View view) {
-        bt_good = view.findViewById(R.id.bt_good);
         bt_good = view.findViewById(R.id.bt_good);
         mScrollView = view.findViewById(R.id.billiards_scrollView);
         mBanner = view.findViewById(R.id.banner);

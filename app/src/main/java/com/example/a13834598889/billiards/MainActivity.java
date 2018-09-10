@@ -8,13 +8,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.constraint.Constraints;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,8 +25,8 @@ import com.example.a13834598889.billiards.FragmentCustomerMine.second.Fragment_f
 import com.example.a13834598889.billiards.FragmentCustomerOrder.Fragment_order;
 import com.example.a13834598889.billiards.FragmentCustomerShare.Fragment_share;
 import com.example.a13834598889.billiards.FragmentCustomerTeach.Fragment_teach;
-import com.example.a13834598889.billiards.FragmentShopKeeperNo1.FragmentShopKeeperNo1;
-import com.example.a13834598889.billiards.FragmentShopKeeperNo2.FragmentShopKeeperNo2;
+import com.example.a13834598889.billiards.FragmentShopKeeperNo1.Fragment_qiuzhuo_dianzhu;
+import com.example.a13834598889.billiards.FragmentShopKeeperNo2.Fragment_add_goods;
 import com.example.a13834598889.billiards.FragmentShopKeeperNo3.FragmentShopKeeperNo3;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.FragmentShopKeeperMine;
 import com.example.a13834598889.billiards.FragmentShopKepperMine.second.FragmentShopMemberMessage;
@@ -36,32 +34,19 @@ import com.example.a13834598889.billiards.FragmentShopKepperMine.second.Fragment
 import com.example.a13834598889.billiards.JavaBean.BilliardStore;
 import com.example.a13834598889.billiards.JavaBean.ShopKeeper;
 import com.example.a13834598889.billiards.JavaBean.User;
-import com.example.a13834598889.billiards.Tool.DemoMessageHandler;
 
-import org.greenrobot.eventbus.EventBus;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.util.List;
 
 import cn.bmob.newim.BmobIM;
-import cn.bmob.newim.bean.BmobIMUserInfo;
 import cn.bmob.newim.core.ConnectionStatus;
-import cn.bmob.newim.event.MessageEvent;
 import cn.bmob.newim.listener.ConnectListener;
 import cn.bmob.newim.listener.ConnectStatusChangeListener;
-import cn.bmob.newim.listener.MessageListHandler;
-import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobRealTimeData;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
-
-import static android.content.ContentValues.TAG;
 
 public class MainActivity extends AppCompatActivity {
     // implements MessageListHandler
@@ -259,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
             shopNavigation.setVisibility(View.VISIBLE);
             shopNavigation.setOnNavigationItemSelectedListener(shopKeeperBottomView);
             fragmentManager = getSupportFragmentManager();
-            fragment = FragmentShopKeeperNo1.newInstance();
+            fragment = Fragment_qiuzhuo_dianzhu.newInstance();
             shop_fragment_no1 = fragment;
             fragmentManager.beginTransaction()
                     .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -472,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
                     fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
                             android.R.anim.fade_out).hide(fragment).commit();
                     if (shop_fragment_no1 == null) {
-                        fragment = FragmentShopKeeperNo1.newInstance();
+                        fragment = Fragment_qiuzhuo_dianzhu.newInstance();
                         shop_fragment_no1 = fragment;
                         fragmentManager.beginTransaction()
                                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -506,7 +491,7 @@ public class MainActivity extends AppCompatActivity {
                     fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in,
                             android.R.anim.fade_out).hide(fragment).commit();
                     if (shop_fragment_no2 == null) {
-                        fragment = FragmentShopKeeperNo2.newInstance();
+                        fragment = Fragment_add_goods.newInstance();
                         shop_fragment_no2 = fragment;
                         fragmentManager.beginTransaction()
                                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)

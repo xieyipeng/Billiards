@@ -10,6 +10,21 @@
         android:background="#414141"
         android:layout_width="match_parent"
         android:layout_height="50dp">
+
+
+
+        <RelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/pay_back_ImageView"
+                android:layout_width="30dp"
+                android:background="@drawable/ic_back1"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+
+
         <TextView
             android:id="@+id/title_name"
             android:layout_width="wrap_content"
