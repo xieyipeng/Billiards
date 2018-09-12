@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -62,7 +61,7 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
     private User administor;
     private String picture_path = "";
     private List<Table> tableList = new ArrayList<>();
-    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+    private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 
     public static Fragment_qiuzhuo_dianzhu newInstance() {
         Fragment_qiuzhuo_dianzhu fragmentQiuzhuodianzhu = new Fragment_qiuzhuo_dianzhu();
@@ -183,7 +182,6 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
     }
 
 
-
     // 以下为测试方法
     public void test() {
         for (int i = 0; i < 16; i++) {
@@ -207,25 +205,28 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
 
 
     private void initClicks() {
-        commitTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (tableNum.getText().toString().equals("")
-                        || vipPay.getText().toString().equals("")
-                        || noemalPay.getText().toString().equals("")) {
-                    Toast.makeText(getContext(), "不能为空", Toast.LENGTH_SHORT).show();
-                } else if (!isInteger(tableNum.getText().toString())) {
-                    Toast.makeText(getContext(), "球桌数必须为整数", Toast.LENGTH_SHORT).show();
-                } else if (!isNumber(vipPay.getText().toString())) {
-                    Toast.makeText(getContext(), "会员价必须为数字", Toast.LENGTH_SHORT).show();
-                } else if (!isNumber(noemalPay.getText().toString())) {
-                    Toast.makeText(getContext(), "普通价必须为数字", Toast.LENGTH_SHORT).show();
-                } else {
-                    updataTableNumber();
-                    updataPay();
+        if (noTable.getVisibility()==View.VISIBLE){
+            commitTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (tableNum.getText().toString().equals("")
+                            || vipPay.getText().toString().equals("")
+                            || noemalPay.getText().toString().equals("")) {
+                        Toast.makeText(getContext(), "不能为空", Toast.LENGTH_SHORT).show();
+                    } else if (!isInteger(tableNum.getText().toString())) {
+                        Toast.makeText(getContext(), "球桌数必须为整数", Toast.LENGTH_SHORT).show();
+                    } else if (!isNumber(vipPay.getText().toString())) {
+                        Toast.makeText(getContext(), "会员价必须为数字", Toast.LENGTH_SHORT).show();
+                    } else if (!isNumber(noemalPay.getText().toString())) {
+                        Toast.makeText(getContext(), "普通价必须为数字", Toast.LENGTH_SHORT).show();
+                    } else {
+                        updataTableNumber();
+                        updataPay();
+                    }
                 }
-            }
-        });
+            });
+        }
+
     }
 
     private void updataPay() {
@@ -278,8 +279,12 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
     private void initViews(View view) {
         noTable = view.findViewById(R.id.no_table);
         haveTable = view.findViewById(R.id.have_table);
+
+
         noTable.setVisibility(View.GONE);
         haveTable.setVisibility(View.GONE);
+
+
         commitTextView = view.findViewById(R.id.shop_setting_table_commit);
         tableNum = view.findViewById(R.id.shop_setting_table_number);
         vipPay = view.findViewById(R.id.shop_setting_table_vip_pay);
@@ -287,8 +292,8 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
 
 
         circleImageView = view.findViewById(R.id.circleImageView_dianzhu);
-        recyclerView_table = (RecyclerView) view.findViewById(R.id.recycler_View_table_dianzhu);
-        linearLayout = (LinearLayout) view.findViewById(R.id.qiuzhuoxinxi);
+        recyclerView_table = view.findViewById(R.id.recycler_View_table_dianzhu);
+        linearLayout = view.findViewById(R.id.qiuzhuoxinxi);
         qiuzhuohao = view.findViewById(R.id.qiuzhuohao);
         startTime = view.findViewById(R.id.startTime);
         endTime = view.findViewById(R.id.endTime);

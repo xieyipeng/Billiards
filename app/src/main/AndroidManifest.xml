@@ -1,25 +1,25 @@
-<?xml version="{
-        circleImageView = view.findViewById(R.id.circleImageView_dianzhu);
-        recyclerView_table = (RecyclerView) view.findViewById(R.id.recycler_View_table_dianzhu);
-        linearLayout = (LinearLayout) view.findViewById(R.id.qiuzhuoxinxi);
-        qiuzhuohao = view.findViewById(R.id.qiuzhuohao);
-        startTime = view.findViewById(R.id.startTime);
-        endTime = view.findViewById(R.id.endTime);
-        zhuofei = view.findViewById(R.id.zhuofei);
+<!--<?xml version="{-->
+        <!--circleImageView = view.findViewById(R.id.circleImageView_dianzhu);-->
+        <!--recyclerView_table = (RecyclerView) view.findViewById(R.id.recycler_View_table_dianzhu);-->
+        <!--linearLayout = (LinearLayout) view.findViewById(R.id.qiuzhuoxinxi);-->
+        <!--qiuzhuohao = view.findViewById(R.id.qiuzhuohao);-->
+        <!--startTime = view.findViewById(R.id.startTime);-->
+        <!--endTime = view.findViewById(R.id.endTime);-->
+        <!--zhuofei = view.findViewById(R.id.zhuofei);-->
 
-        if (picture_path.equals("")) {
-            Glide.with(getActivity().getApplication()).load(R.drawable.test_touxiang3).into(circleImageView);
-        } else {
-            Glide.with(getActivity().getApplication()).load(picture_path).into(circleImageView);
-        }
+        <!--if (picture_path.equals("")) {-->
+            <!--Glide.with(getActivity().getApplication()).load(R.drawable.test_touxiang3).into(circleImageView);-->
+        <!--} else {-->
+            <!--Glide.with(getActivity().getApplication()).load(picture_path).into(circleImageView);-->
+        <!--}-->
 
-        test();
-        adapter = new TableAdapter(tableList);
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recyclerView_table.setLayoutManager(layoutManager);
-        recyclerView_table.setAdapter(adapter);
+        <!--test();-->
+        <!--adapter = new TableAdapter(tableList);-->
+        <!--StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);-->
+        <!--recyclerView_table.setLayoutManager(layoutManager);-->
+        <!--recyclerView_table.setAdapter(adapter);-->
 
-    }1.0" encoding="utf-8"?>
+    <!--}1.0" encoding="utf-8"?>-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.a13834598889.billiards">

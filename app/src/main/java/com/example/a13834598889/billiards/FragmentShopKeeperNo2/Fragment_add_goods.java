@@ -2,6 +2,7 @@ package com.example.a13834598889.billiards.FragmentShopKeeperNo2;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,7 +21,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -29,11 +29,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.example.a13834598889.billiards.JavaBean.Goods;
-import com.example.a13834598889.billiards.JavaBean.User;
 import com.example.a13834598889.billiards.R;
+
+import com.example.a13834598889.billiards.JavaBean.User;
+import com.example.a13834598889.billiards.Tool.PictureUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,8 +51,8 @@ import cn.bmob.v3.listener.UploadFileListener;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
+import static cn.bmob.v3.BmobRealTimeData.TAG;
 
-import android.widget.PopupMenu;
 
 /**
  * Created by Yangyulin on 2018/8/4.
@@ -156,7 +159,11 @@ public class Fragment_add_goods extends Fragment implements View.OnClickListener
                                         yuan_FILE.delete(new UpdateListener() {
                                             @Override
                                             public void done(BmobException e) {
+                                                if (e!=null){
 
+                                                }else {
+                                                    Log.e(TAG, "done: "+e.getMessage() );
+                                                }
                                             }
                                         });
                                     }
