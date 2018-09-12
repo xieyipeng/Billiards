@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -16,20 +16,22 @@
         <RelativeLayout
             android:layout_width="50dp"
             android:layout_height="50dp">
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/circleImageView_dianzhu"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_centerInParent="true" />
         </RelativeLayout>
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
-            android:text="球         桌"
             android:layout_marginLeft="100dp"
             android:layout_marginTop="13dp"
+            android:layout_weight="1"
+            android:text="球         桌"
             android:textSize="20sp" />
 
     </LinearLayout>
@@ -39,16 +41,38 @@
         android:layout_height="1dp"
         android:background="#848484" />
 
-    <LinearLayout
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="405dp">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_View_table_dianzhu"
+        <LinearLayout
+            android:visibility="invisible"
             android:layout_width="match_parent"
-            android:layout_height="426dp"
-            android:background="#00FFCC"></android.support.v7.widget.RecyclerView>
-    </LinearLayout>
+            android:layout_height="405dp">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_View_table_dianzhu"
+                android:layout_width="match_parent"
+                android:layout_height="426dp"
+                android:background="#00FFCC">
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
+
+
+        <include
+            android:id="@+id/noo_table"
+            android:visibility="visible"
+            layout="@layout/fragment_shop_keeper_no1"/>
+
+
+    </FrameLayout>
+
+
+
+
+
 
     <TextView
         android:layout_width="match_parent"
@@ -67,9 +91,9 @@
             android:id="@+id/qiuzhuohao"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="40dp"
             android:layout_marginTop="5dp"
             android:text="0号球桌使用信息："
-            android:layout_marginLeft="40dp"
             android:textColor="#ffffff" />
 
         <TextView
@@ -94,11 +118,11 @@
             android:id="@+id/zhuofei"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:layout_marginLeft="70dp"
             android:layout_marginTop="5dp"
             android:text="打球桌费："
-            android:textColor="#ffffff"
-            android:layout_marginBottom="5dp"/>
+            android:textColor="#ffffff" />
 
     </LinearLayout>
 

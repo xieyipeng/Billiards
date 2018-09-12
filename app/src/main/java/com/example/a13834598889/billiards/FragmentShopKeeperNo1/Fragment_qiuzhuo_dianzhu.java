@@ -277,9 +277,8 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
     }
 
     private void initViews(View view) {
-        noTable = view.findViewById(R.id.no_table);
+        noTable = view.findViewById(R.id.noo_table);
         haveTable = view.findViewById(R.id.have_table);
-
 
         noTable.setVisibility(View.GONE);
         haveTable.setVisibility(View.GONE);

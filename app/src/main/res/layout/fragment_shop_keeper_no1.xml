@@ -6,159 +6,115 @@
     android:background="#e2e2e2"
     android:orientation="vertical">
 
-    <FrameLayout
+
+    <LinearLayout
+        android:id="@+id/noo_table"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/no_table"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="#414141"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:background="#fff"
                 android:orientation="horizontal">
 
-                <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="50dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:text="球桌总数："
+                    android:textSize="15sp" />
 
-                </RelativeLayout>
+                <EditText
+                    android:id="@+id/shop_setting_table_number"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.8"
+                    android:background="@null" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:background="#fff"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:text="会员单价："
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/shop_setting_table_vip_pay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.2"
+                    android:background="@null" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
+                    android:layout_weight="0.7"
                     android:gravity="center"
-                    android:text="基本信息设置"
-                    android:textColor="#ffffff"
-                    android:textSize="18sp" />
-
-                <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="50dp">
-
-                    <TextView
-                        android:id="@+id/shop_setting_table_commit"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="完成"
-                        android:textColor="#ffffff"
-                        android:textSize="15sp" />
-                </RelativeLayout>
+                    android:text="单位：元/小时"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="45dp"
+                android:background="#fff"
+                android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="10dp"
-                    android:background="#fff"
-                    android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:text="普通单价："
+                    android:textSize="15sp" />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:padding="10dp"
-                        android:text="球桌总数："
-                        android:textSize="15sp" />
-
-                    <EditText
-                        android:id="@+id/shop_setting_table_number"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2.8"
-                        android:background="@null" />
-
-                </LinearLayout>
+                <EditText
+                    android:id="@+id/shop_setting_table_normal_pay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.2"
+                    android:background="@null" />
 
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:layout_marginTop="10dp"
-                    android:background="#fff"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:padding="10dp"
-                        android:text="会员单价："
-                        android:textSize="15sp" />
-
-                    <EditText
-                        android:id="@+id/shop_setting_table_vip_pay"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2.2"
-                        android:background="@null" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_weight="0.7"
-                        android:gravity="center"
-                        android:text="单位：元/小时"
-                        android:textSize="10sp"
-                        tools:ignore="SmallSp" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp"
-                    android:background="#fff"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="1"
-                        android:padding="10dp"
-                        android:text="普通单价："
-                        android:textSize="15sp" />
-
-                    <EditText
-                        android:id="@+id/shop_setting_table_normal_pay"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="2.2"
-                        android:background="@null" />
-
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_weight="0.7"
-                        android:gravity="center"
-                        android:text="单位：元/小时"
-                        android:textSize="10sp"
-                        tools:ignore="SmallSp" />
-
-                </LinearLayout>
-
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.7"
+                    android:gravity="center"
+                    android:text="单位：元/小时"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
 
             </LinearLayout>
 
@@ -166,58 +122,7 @@
         </LinearLayout>
 
 
-        <LinearLayout
-            android:id="@+id/have_table"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="#414141"
-                android:orientation="horizontal">
-
-                <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="50dp">
-
-                </RelativeLayout>
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="球桌信息"
-                    android:textColor="#ffffff"
-                    android:textSize="18sp" />
-
-                <RelativeLayout
-                    android:layout_width="50dp"
-                    android:layout_height="50dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="完成"
-                        android:textColor="#ffffff"
-                        android:textSize="15sp" />
-                </RelativeLayout>
-
-            </LinearLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/shop_table_show"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-            </android.support.v7.widget.RecyclerView>
-
-        </LinearLayout>
-    </FrameLayout>
+    </LinearLayout>
 
 
 </LinearLayout>
