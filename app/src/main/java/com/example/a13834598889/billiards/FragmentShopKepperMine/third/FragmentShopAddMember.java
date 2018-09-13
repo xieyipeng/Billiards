@@ -1,5 +1,7 @@
 package com.example.a13834598889.billiards.FragmentShopKepperMine.third;
 
+import android.app.Dialog;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,11 +18,13 @@ import com.example.a13834598889.billiards.FragmentShopKepperMine.second.Fragment
 import com.example.a13834598889.billiards.JavaBean.Member;
 import com.example.a13834598889.billiards.JavaBean.User;
 import com.example.a13834598889.billiards.R;
+import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.DownloadFileListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
@@ -93,40 +97,98 @@ public class FragmentShopAddMember extends Fragment {
             @Override
             public void done(List<User> list, BmobException e) {
                 if (e == null) {
-                    Log.e(TAG, "done: list.size " + list.size());
                     boolean have = false;
                     for (int i = 0; i < list.size(); i++) {
                         Log.e(TAG, "done: " + list.get(i).getNickName());
                         if (list.get(i).getUsername().equals(inputUserName)) {
                             have = true;
-                            member.setUserName(list.get(i).getUsername());
-                            Log.e(TAG, "done: nickName:" + member.getStoreName());
-                            member.save(new SaveListener<String>() {
-                                @Override
-                                public void done(String s, BmobException e) {
-                                    if (e == null) {
-                                        Toast.makeText(getContext(), "添加会员成功", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        if (e.getMessage().equals("unique index cannot has duplicate value: newName")) {
-                                            Toast.makeText(getContext(), "您已经添加了该会员", Toast.LENGTH_SHORT).show();
+                            final String name=list.get(i).getUsername();
+                            if (list.get(i).getPicture_head()!=null){
+                                list.get(i).getPicture_head().download(new DownloadFileListener() {
+                                    @Override
+                                    public void done(String s, BmobException e) {
+                                        if (e==null){
+                                            SweetAlertDialog sweetAlertDialog=new SweetAlertDialog(getContext(),SweetAlertDialog.CUSTOM_IMAGE_TYPE);
+                                            sweetAlertDialog.setCustomImage(Drawable.createFromPath(s));
+                                            sweetAlertDialog.setTitleText("确认添加？");
+                                            sweetAlertDialog.show();
+                                            sweetAlertDialog.setConfirmText("添加");
+                                            sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                @Override
+                                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+
+                                                    member.setUserName(name);
+                                                    member.save(new SaveListener<String>() {
+                                                        @Override
+                                                        public void done(String s, BmobException e) {
+                                                            if (e == null) {
+                                                                Toast.makeText(getContext(), "添加会员成功", Toast.LENGTH_SHORT).show();
+                                                            } else {
+                                                                if (e.getMessage().equals("unique index cannot has duplicate value: newName")) {
+                                                                    Toast.makeText(getContext(), "您已经添加了该会员", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                                Toast.makeText(getContext(), "添加会员失败", Toast.LENGTH_SHORT).show();
+                                                                Log.e(TAG, "done: 保存会员失败 " + e.getMessage());
+                                                            }
+                                                        }
+                                                    });
+                                                    sweetAlertDialog.dismiss();
+                                                    fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                                                    fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                                            .remove(fragmentTest)
+                                                            .add(R.id.fragment_container, FragmentShopMemberMessage.newInstance(), "shop_keeper_mine_members_message")
+                                                            .commit();
+                                                }
+                                            });
+                                        }else {
+                                            Log.e(TAG, "done: "+e.getMessage() );
                                         }
-                                        Toast.makeText(getContext(), "添加会员失败", Toast.LENGTH_SHORT).show();
-                                        Log.e(TAG, "done: 保存会员失败 " + e.getMessage());
                                     }
-                                }
-                            });
+                                    @Override
+                                    public void onProgress(Integer integer, long l) {
+                                        Log.d("bmob", "onProgress: 文件时下载进度：" + integer + "," + l);
+                                    }
+                                });
+                            }else {
+                                SweetAlertDialog sweetAlertDialog=new SweetAlertDialog(getContext(),SweetAlertDialog.CUSTOM_IMAGE_TYPE);
+                                sweetAlertDialog.setCustomImage(R.drawable.touxiang);
+                                sweetAlertDialog.setTitleText("确认添加？");
+                                sweetAlertDialog.show();
+
+                                sweetAlertDialog.setConfirmText("添加");
+                                sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                        member.setUserName(name);
+                                        member.save(new SaveListener<String>() {
+                                            @Override
+                                            public void done(String s, BmobException e) {
+                                                if (e == null) {
+                                                    Toast.makeText(getContext(), "添加会员成功", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    if (e.getMessage().equals("unique index cannot has duplicate value: newName")) {
+                                                        Toast.makeText(getContext(), "您已经添加了该会员", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                    Toast.makeText(getContext(), "添加会员失败", Toast.LENGTH_SHORT).show();
+                                                    Log.e(TAG, "done: 保存会员失败 " + e.getMessage());
+                                                }
+                                            }
+                                        });
+                                        sweetAlertDialog.dismiss();
+                                        fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                                        fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                                                .remove(fragmentTest)
+                                                .add(R.id.fragment_container, FragmentShopMemberMessage.newInstance(), "shop_keeper_mine_members_message")
+                                                .commit();
+                                    }
+                                });
+                            }
                             break;
                         }
                     }
                     if (!have) {
                         Toast.makeText(getContext(), "没有该名字", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "done: 添加会员界面，查找姓名时,服务器没有该名字");
                     }
-                    fragmentTest = getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                    fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                            .remove(fragmentTest)
-                            .add(R.id.fragment_container, FragmentShopMemberMessage.newInstance(), "shop_keeper_mine_members_message")
-                            .commit();
                 } else {
                     Log.e(TAG, "done: 添加会员界面，查找姓名时失败 " + e.getMessage());
                 }

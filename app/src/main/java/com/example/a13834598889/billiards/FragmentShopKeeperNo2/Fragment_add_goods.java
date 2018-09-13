@@ -159,10 +159,10 @@ public class Fragment_add_goods extends Fragment implements View.OnClickListener
                                         yuan_FILE.delete(new UpdateListener() {
                                             @Override
                                             public void done(BmobException e) {
-                                                if (e!=null){
+                                                if (e != null) {
 
-                                                }else {
-                                                    Log.e(TAG, "done: "+e.getMessage() );
+                                                } else {
+                                                    Log.e(TAG, "done: " + e.getMessage());
                                                 }
                                             }
                                         });
@@ -186,28 +186,33 @@ public class Fragment_add_goods extends Fragment implements View.OnClickListener
                                             drink.setGood_price(Double.valueOf(jiage.getText().toString()));
                                             drink.setShop_num(Integer.valueOf(kucunliang.getText().toString()));
                                             drink.setPicture(bmobFile);
+                                            drink.setStoreID(User.getCurrentUser().getObjectId());
                                             drink.save(new SaveListener<String>() {
                                                 @Override
                                                 public void done(String s, BmobException e) {
                                                     if (e == null) {
                                                         Log.i("bmob", "添加商品成功");
                                                         Toast.makeText(getActivity(), "添加商品成功", Toast.LENGTH_SHORT).show();
-                                                        new Thread(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                try {
-                                                                    Thread.sleep(2000);
-                                                                    //getActivity().finish();
-                                                                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                                                                    fragmentManager.beginTransaction()
-                                                                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
-                                                                            .add(R.id.fragment_container2, Fragment_store_dianzhu.newInstance(image))
-                                                                            .commit();
-                                                                } catch (InterruptedException e) {
-                                                                    e.printStackTrace();
-                                                                }
-                                                            }
-                                                        }).start();
+//                                                        new Thread(new Runnable() {
+//                                                            @Override
+//                                                            public void run() {
+//                                                                try {
+//                                                                    Thread.sleep(2000);
+//                                                                    //getActivity().finish();
+//                                                                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//                                                                    fragmentManager.beginTransaction()
+//                                                                            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+//                                                                            .add(R.id.fragment_container2, Fragment_store_dianzhu.newInstance(image))
+//                                                                            .commit();
+//                                                                } catch (InterruptedException e) {
+//                                                                    e.printStackTrace();
+//                                                                }
+//                                                            }
+//                                                        }).start();
+                                                        mingzi.setText("");
+                                                        jiage.setText("");
+                                                        kucunliang.setText("");
+                                                        tupian.setImageBitmap(null);
 
                                                     } else {
                                                         e.printStackTrace();
@@ -224,24 +229,29 @@ public class Fragment_add_goods extends Fragment implements View.OnClickListener
                                 goods.setGood_name(mingzi.getText().toString());
                                 goods.setGood_price(Double.valueOf(jiage.getText().toString()));
                                 goods.setShop_num(Integer.valueOf(kucunliang.getText().toString()));
+                                goods.setStoreID(User.getCurrentUser().getObjectId());
                                 goods.save(new SaveListener<String>() {
                                     @Override
                                     public void done(String s, BmobException e) {
                                         if (e == null) {
                                             Log.i("bmob", "添加商品成功");
                                             Toast.makeText(getActivity(), "添加商品成功", Toast.LENGTH_SHORT).show();
-                                            new Thread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    try {
-                                                        Thread.sleep(2000);
-                                                        fanhui.setEnabled(true);
-                                                        //getActivity().finish();
-                                                    } catch (InterruptedException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                            }).start();
+//                                            new Thread(new Runnable() {
+//                                                @Override
+//                                                public void run() {
+//                                                    try {
+//                                                        Thread.sleep(2000);
+//                                                        fanhui.setEnabled(true);
+//                                                        //getActivity().finish();
+//                                                    } catch (InterruptedException e) {
+//                                                        e.printStackTrace();
+//                                                    }
+//                                                }
+//                                            }).start();
+                                            mingzi.setText("");
+                                            jiage.setText("");
+                                            kucunliang.setText("");
+                                            tupian.setImageBitmap(null);
 
                                         } else {
                                             e.printStackTrace();

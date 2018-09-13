@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -44,86 +45,200 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="405dp">
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/have_table"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_View_table_dianzhu"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#00FFCC">
+
+                </android.support.v7.widget.RecyclerView>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/qiuzhuoxinxi"
+                android:layout_width="match_parent"
+                android:layout_gravity="bottom"
+                android:layout_height="110dp"
+                android:background="@color/colorAccent"
+                android:orientation="vertical"
+                android:visibility="invisible">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <TextView
+                        android:id="@+id/qiuzhuohao"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginTop="5dp"
+                        android:text="0号球桌使用信息："
+                        android:textColor="#ffffff" />
+
+                    <TextView
+                        android:id="@+id/startTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="70dp"
+                        android:layout_marginTop="5dp"
+                        android:text="开桌时间："
+                        android:textColor="#ffffff" />
+
+                    <TextView
+                        android:id="@+id/endTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="70dp"
+                        android:layout_marginTop="5dp"
+                        android:text="结束时间："
+                        android:textColor="#ffffff" />
+
+                    <TextView
+                        android:id="@+id/zhuofei"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="70dp"
+                        android:layout_marginTop="5dp"
+                        android:text="打球桌费："
+                        android:textColor="#ffffff" />
+
+                </LinearLayout>
+            </RelativeLayout>
+        </FrameLayout>
 
         <LinearLayout
-            android:visibility="invisible"
+            android:id="@+id/noo_table"
             android:layout_width="match_parent"
-            android:layout_height="405dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="invisible">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_View_table_dianzhu"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="426dp"
-                android:background="#00FFCC">
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:background="#fff"
+                android:visibility="visible"
+                android:orientation="horizontal">
 
-            </android.support.v7.widget.RecyclerView>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:text="球桌总数："
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/shop_setting_table_number"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.8"
+                    android:background="@null" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:background="#fff"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:text="会员单价："
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/shop_setting_table_vip_pay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.2"
+                    android:background="@null" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.7"
+                    android:gravity="center"
+                    android:text="单位：元/小时"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="#fff"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:text="普通单价："
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/shop_setting_table_normal_pay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.2"
+                    android:background="@null" />
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.7"
+                    android:gravity="center"
+                    android:text="单位：元/小时"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/shop_setting_table_commit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="提交" />
+
         </LinearLayout>
 
-
-        <include
-            android:id="@+id/noo_table"
-            android:visibility="visible"
-            layout="@layout/fragment_shop_keeper_no1"/>
-
-
     </FrameLayout>
-
-
-
-
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#848484" />
-
-    <LinearLayout
-        android:id="@+id/qiuzhuoxinxi"
-        android:layout_width="match_parent"
-        android:layout_height="110dp"
-        android:background="@color/colorAccent"
-        android:orientation="vertical"
-        android:visibility="invisible">
-
-        <TextView
-            android:id="@+id/qiuzhuohao"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="5dp"
-            android:text="0号球桌使用信息："
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:id="@+id/startTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
-            android:layout_marginTop="5dp"
-            android:text="开桌时间："
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:id="@+id/endTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
-            android:layout_marginTop="5dp"
-            android:text="结束时间："
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:id="@+id/zhuofei"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="70dp"
-            android:layout_marginTop="5dp"
-            android:text="打球桌费："
-            android:textColor="#ffffff" />
-
-    </LinearLayout>
 
 </LinearLayout>

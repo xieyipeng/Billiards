@@ -68,10 +68,10 @@ public class Fragment_huihua extends Fragment {
                 query();
             }
         });
-//        linearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//        relativeLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 //            @Override
 //            public void onGlobalLayout() {
-//                linearLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+//                relativeLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 //                refreshLayout.setRefreshing(true);
 //                //自动刷新
 //                queryMessages(null);

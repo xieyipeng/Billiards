@@ -44,7 +44,7 @@
                 android:textColor="#fff"
                 android:textSize="15sp"
                 android:gravity="center"
-                android:text="完成"
+                android:text="搜索"
                 android:onClick="onClick"/>
         </RelativeLayout>
 

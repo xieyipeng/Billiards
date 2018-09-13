@@ -50,7 +50,7 @@ public class FragmentShopMemberMessage extends Fragment {
         View view = inflater.inflate(R.layout.fragment_shop_member_message, container, false);
         initViews(view);
         initClicks();
-        loadingMessage();//更新列表
+//        loadingMessage();//更新列表
         return view;
     }
 
@@ -82,24 +82,14 @@ public class FragmentShopMemberMessage extends Fragment {
         });
     }
 
-    private void loadingMessage() {
-        final String[] storeUserName = new String[1];
-        BmobQuery<User> bmobQuery = new BmobQuery<>();
-        bmobQuery.getObject(User.getCurrentUser().getObjectId(), new QueryListener<User>() {
-            @Override
-            public void done(User user, BmobException e) {
-                //拿到店名
-                if (e == null) {
-                    storeUserName[0] = user.getUsername();
-                    getMembers(storeUserName);
-                } else {
-                    Log.e(TAG, "done: 获取店铺名错误");
-                }
-            }
-        });
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadingMessage();
     }
 
-    private void getMembers(final String[] storeUserName) {
+    private void loadingMessage() {
+        final String storeUserName = User.getCurrentUser().getUsername();
         BmobQuery<Member> memberBmobQuery = new BmobQuery<>();
         memberBmobQuery.findObjects(new FindListener<Member>() {
             @Override
@@ -108,16 +98,14 @@ public class FragmentShopMemberMessage extends Fragment {
                 if (e == null) {
                     List<Member> list1 = new ArrayList<>();
                     for (int i = 0; i < list.size(); i++) {
-                        if (list.get(i).getStoreName().equals(storeUserName[0])) {
+                        if (list.get(i).getStoreName().equals(storeUserName)) {
                             list1.add(list.get(i));
                         }
                     }
-                    Log.e(TAG, "done: list1.size() " + list1.size());
-
-                    if (list1.size() > 1) {
-                        users.clear();
-                    }
-
+//                    if (list1.size() > 1) {
+//                        users.clear();
+//                    }
+                    users.clear();
                     for (int i = 0; i < list1.size(); i++) {
                         boolean isLast = false;
                         if (i == list1.size() - 1) {
@@ -144,7 +132,7 @@ public class FragmentShopMemberMessage extends Fragment {
                             users.add(list.get(i));
                         }
                     }
-                    if (users.size() <= 0) {
+                    if (users.size() == 0) {
                         Toast.makeText(getContext(), "店长，您还没有会员呢", Toast.LENGTH_SHORT).show();
                     } else {
                         if (isLast) {

@@ -1,7 +1,7 @@
 <!--<?xml version="{-->
         <!--circleImageView = view.findViewById(R.id.circleImageView_dianzhu);-->
         <!--recyclerView_table = (RecyclerView) view.findViewById(R.id.recycler_View_table_dianzhu);-->
-        <!--linearLayout = (LinearLayout) view.findViewById(R.id.qiuzhuoxinxi);-->
+        <!--relayout = (LinearLayout) view.findViewById(R.id.qiuzhuoxinxi);-->
         <!--qiuzhuohao = view.findViewById(R.id.qiuzhuohao);-->
         <!--startTime = view.findViewById(R.id.startTime);-->
         <!--endTime = view.findViewById(R.id.endTime);-->
@@ -56,26 +56,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.hanrui.android.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths">
-            </meta-data>
-        </provider>
+        <!--<provider-->
+            <!--android:name="android.support.v4.content.FileProvider"-->
+            <!--android:authorities="com.hanrui.android.fileprovider"-->
+            <!--android:exported="false"-->
+            <!--android:grantUriPermissions="true">-->
+            <!--<meta-data-->
+                <!--android:name="android.support.FILE_PROVIDER_PATHS"-->
+                <!--android:resource="@xml/file_paths">-->
+            <!--</meta-data>-->
+        <!--</provider>-->
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="ARaVyu6mieqh1SrTsjopTgYGPsO4tMLx" />
+            android:value="p25hbkYkXOmeE113HEGvU0mjLGjKitGT" />
 
-        <!--37:DD:F3:1A:F4:D3:4B:98:FF:F3:2A:D9:10:E3:45:79:05:29:3E:A6-->
-
-
-        <!--05:86:29:7C:56:B2:68:97:2E:8E:1C:4F:89:E1:B6:51:ED:6D:97:55-->
-
+        <!--1E:F9:B3:63:79:73:58:A1:8D:7C:4E:62:FD:FA:5B:E6:AC:68:56:EC-->
+        <!--F1:B7:9A:4B:E3:DF:12:61:92:02:85:12:CB:78:1E:5D:D6:E7:EA:10-->
 
         <!--TODO 集成：1.3、配置Bmob平台的应用密钥-->
         <meta-data

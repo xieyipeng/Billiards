@@ -51,7 +51,7 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
 
     private CircleImageView circleImageView;
     private RecyclerView recyclerView_table;
-    public LinearLayout linearLayout;
+    public RelativeLayout relativeLayout;
     public TextView qiuzhuohao;
     public TextView startTime;
     public TextView endTime;
@@ -98,7 +98,7 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
                 tableView = view;
 //                imageView_table = view.findViewById(R.id.table_fightting);
                 textView_table_number = view.findViewById(R.id.table_number);
-                TextView_table_state = view.findViewById(R.id.fight_state);
+                TextView_table_state = view.findViewById(R.id.table_state);
             }
         }
 
@@ -134,7 +134,7 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
                     });
                     TextView_table_state.setText("已 开 始");
                     relativeLayout.setVisibility(View.VISIBLE);
-                    linearLayout.setVisibility(View.VISIBLE);
+                    Fragment_qiuzhuo_dianzhu.this.relativeLayout.setVisibility(View.VISIBLE);
                     qiuzhuohao.setText(table.getTable_number() + "号球桌使用信息：");
                     startTime.setText("开桌时间：" + table.getStart_time());
                     endTime.setText("结束时间：");
@@ -160,7 +160,7 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
                     });
                     TextView_table_state.setText("空    闲");
                     relativeLayout.setVisibility(View.INVISIBLE);
-                    linearLayout.setVisibility(View.VISIBLE);
+                    Fragment_qiuzhuo_dianzhu.this.relativeLayout.setVisibility(View.VISIBLE);
                     endTime.setText("结束时间：" + df.format(new Date()));
                     //zhuofei.setText("打球桌费：" + );
                 }
@@ -181,55 +181,75 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
         }
     }
 
-
-    // 以下为测试方法
-    public void test() {
-        for (int i = 0; i < 16; i++) {
-            Table table = new Table();
-            table.setTable_number(i);
-            table.setState("1");
-//            table.setEmpty(true);
-            table.save(new SaveListener<String>() {
-                @Override
-                public void done(String s, BmobException e) {
-                    if (e == null) {
-                        Log.i("bmob", "添加球桌成功");
-                    } else {
-                        e.printStackTrace();
+    public void loadingTable() {
+        final BmobQuery<Table> tableBmobQuery = new BmobQuery<>();
+        tableBmobQuery.findObjects(new FindListener<Table>() {
+            @Override
+            public void done(List<Table> list, BmobException e) {
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getStoreID().equals(User.getCurrentUser().getObjectId())) {
+                        tableList.add(list.get(i));
                     }
                 }
-            });
-            tableList.add(table);
-        }
+                if (tableList.size()!=0){
+                    adapter = new TableAdapter(tableList);
+                    StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+                    recyclerView_table.setLayoutManager(layoutManager);
+                    recyclerView_table.setAdapter(adapter);
+                }else {
+                    Toast.makeText(getContext(), "球桌数为0", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 
     private void initClicks() {
-        if (noTable.getVisibility()==View.VISIBLE){
-            commitTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (tableNum.getText().toString().equals("")
-                            || vipPay.getText().toString().equals("")
-                            || noemalPay.getText().toString().equals("")) {
-                        Toast.makeText(getContext(), "不能为空", Toast.LENGTH_SHORT).show();
-                    } else if (!isInteger(tableNum.getText().toString())) {
-                        Toast.makeText(getContext(), "球桌数必须为整数", Toast.LENGTH_SHORT).show();
-                    } else if (!isNumber(vipPay.getText().toString())) {
-                        Toast.makeText(getContext(), "会员价必须为数字", Toast.LENGTH_SHORT).show();
-                    } else if (!isNumber(noemalPay.getText().toString())) {
-                        Toast.makeText(getContext(), "普通价必须为数字", Toast.LENGTH_SHORT).show();
-                    } else {
-                        updataTableNumber();
-                        updataPay();
-                    }
-                }
-            });
-        }
+        commitTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (tableNum.getText().toString().equals("")
+                        || vipPay.getText().toString().equals("")
+                        || noemalPay.getText().toString().equals("")) {
+                    Toast.makeText(getContext(), "不能为空", Toast.LENGTH_SHORT).show();
+                } else if (!isInteger(tableNum.getText().toString())) {
+                    Toast.makeText(getContext(), "球桌数必须为整数", Toast.LENGTH_SHORT).show();
+                } else if (!isNumber(vipPay.getText().toString())) {
+                    Toast.makeText(getContext(), "会员价必须为数字", Toast.LENGTH_SHORT).show();
+                } else if (!isNumber(noemalPay.getText().toString())) {
+                    Toast.makeText(getContext(), "普通价必须为数字", Toast.LENGTH_SHORT).show();
+                } else {
+                    updataTableNumber();
+                    updataPay();
 
+                    for (int i = 0; i < Integer.valueOf(tableNum.getText().toString()); i++) {
+                        Log.e(TAG, "onClick: " + i);
+                        Table table = new Table();
+                        table.setStoreID(ShopKeeper.getCurrentUser().getObjectId());
+                        table.setTable_number(i);
+                        table.setState("1");
+                        table.setStart(false);
+                        table.setReserve(false);
+                        table.save(new SaveListener<String>() {
+                            @Override
+                            public void done(String s, BmobException e) {
+                                if (e == null) {
+                                    Log.e(TAG, "done: " + s);
+                                } else {
+                                    Log.e(TAG, "done: " + e.getMessage());
+                                }
+                            }
+                        });
+                    }
+                    noTable.setVisibility(View.GONE);
+                    haveTable.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private void updataPay() {
+        Log.e(TAG, "updataPay: update" );
         BmobQuery<BilliardStore> billiardStoreBmobQuery = new BmobQuery<>();
         billiardStoreBmobQuery.findObjects(new FindListener<BilliardStore>() {
             @Override
@@ -292,7 +312,8 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
 
         circleImageView = view.findViewById(R.id.circleImageView_dianzhu);
         recyclerView_table = view.findViewById(R.id.recycler_View_table_dianzhu);
-        linearLayout = view.findViewById(R.id.qiuzhuoxinxi);
+        relativeLayout = view.findViewById(R.id.qiuzhuoxinxi);
+        relativeLayout.setVisibility(View.INVISIBLE);
         qiuzhuohao = view.findViewById(R.id.qiuzhuohao);
         startTime = view.findViewById(R.id.startTime);
         endTime = view.findViewById(R.id.endTime);
@@ -304,11 +325,7 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
             Glide.with(getActivity().getApplication()).load(picture_path).into(circleImageView);
         }
 
-        test();
-        adapter = new TableAdapter(tableList);
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        recyclerView_table.setLayoutManager(layoutManager);
-        recyclerView_table.setAdapter(adapter);
+
 
     }
 
@@ -335,32 +352,14 @@ public class Fragment_qiuzhuo_dianzhu extends Fragment {
                             bmobTableNum = list.get(i).getTableNum();
                         }
                     }
+                    Log.e(TAG, "done: " + bmobTableNum);
                     if (bmobTableNum == 0) {
                         noTable.setVisibility(View.VISIBLE);
-                        haveTable.setVisibility(View.GONE);
+                        haveTable.setVisibility(View.INVISIBLE);
                     } else {
                         noTable.setVisibility(View.GONE);
                         haveTable.setVisibility(View.VISIBLE);
-
-                        for (int i = 0; i < bmobTableNum; i++) {
-                            Log.e(TAG, "onClick: " + i);
-                            Table table = new Table();
-                            table.setStoreID(ShopKeeper.getCurrentUser().getObjectId());
-                            table.setTable_number(i);
-                            table.setState("1");
-                            table.setStart(false);
-                            table.setReserve(false);
-                            table.save(new SaveListener<String>() {
-                                @Override
-                                public void done(String s, BmobException e) {
-                                    if (e == null) {
-                                        Log.e(TAG, "done: " + s);
-                                    } else {
-                                        Log.e(TAG, "done: " + e.getMessage());
-                                    }
-                                }
-                            });
-                        }
+                        loadingTable();
                     }
                 } else {
                     Log.e(TAG, "done: zhelima " + e);
