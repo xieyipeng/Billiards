@@ -91,8 +91,7 @@ public class FragmentShopMessageSetting extends Fragment {
 
     //签名字数：17*2
     public static FragmentShopMessageSetting newInstance() {
-        FragmentShopMessageSetting fragmentShopMessageSetting = new FragmentShopMessageSetting();
-        return fragmentShopMessageSetting;
+        return new FragmentShopMessageSetting();
     }
 
     @Nullable
@@ -202,7 +201,7 @@ public class FragmentShopMessageSetting extends Fragment {
                 fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                         .remove(fragmentTest)
-                        .add(R.id.fragment_container, FragmentShopKeeperMine.newInstance(), "shop_fragment_mine")
+                        .show(fragmentManager.findFragmentByTag("shop_fragment_mine"))
                         .commit();
             }
         });

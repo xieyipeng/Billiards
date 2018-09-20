@@ -75,9 +75,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         path = getExternalCacheDir();
         super.onCreate(savedInstanceState);
-        SDKInitializer.initialize(getApplicationContext());
+        SDKInitializer.initialize(getApplicationContext());    //////////////////////!!!!!!!!!!!!!!!!!!!!!!!!
         setContentView(R.layout.activity_main);
-        im();
+        im();  //////////////////////!!!!!!!!!!!!!!!!!!!!!!!!
         initViews();
         bmobCheckStore();
         context=this;
@@ -349,7 +349,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        customerNavigation = findViewById(R.id.navigation);
+        customerNavigation = findViewById(R.id.navigation);     //////////////////////!!!!!!!!!!!!!!!!!!!!!!!!
         shopNavigation = findViewById(R.id.shop_navigation);
     }
 
